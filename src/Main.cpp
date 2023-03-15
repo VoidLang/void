@@ -1,4 +1,8 @@
 #include "Common.hpp"
+#include "Launcher.hpp"
+#include "util/Exceptions.hpp"
+
+using namespace Void;
 
 /**
  * Hey there,
@@ -27,13 +31,28 @@
  * Last updated at: 03/15/2023 07:39 (MM-dd-yyyy HH-mm)
  */
 
+/**
+ * Start the program.
+ * This must be a separated method because of the __try __except thing.
+ */
+void start(int argc, char** argv) {
+    setConsoleSync(false);
+    Launcher().start(argc, argv);
+}
 
 /**
- * The current version of the build.
+ * Program entry point.
  */
-const String VERSION = "1.0.1-BETA";
-
-int main() {
-    std::cout << "Hello, World!\n";
+int main(int argc, char** argv) {
+    
+    // What the...?
+    // Well, there should probably be a better way of doing this, 
+    // but gotta catch those windows-level errors...
+    __try {
+        start(argc, argv);
+    }
+    __except (Exceptions::handle(GetExceptionCode(), GetExceptionInformation())) {
+        // no need to do anything in here because the exception is handled in Exceptions::handle
+    }
     return 0;
 }

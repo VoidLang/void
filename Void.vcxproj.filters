@@ -2,8 +2,27 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="src\Common.hpp" />
+    <ClInclude Include="src\util\Exceptions.hpp">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Launcher.hpp" />
+    <ClInclude Include="src\util\Options.hpp">
+      <Filter>util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\util\Exceptions.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Launcher.cpp" />
+    <ClCompile Include="src\util\Options.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="util">
+      <UniqueIdentifier>{ae75c5c6-de75-469e-93aa-6a2d195abf10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

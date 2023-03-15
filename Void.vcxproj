@@ -20,9 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common.hpp" />
+    <ClInclude Include="src\Launcher.hpp" />
+    <ClInclude Include="src\util\Exceptions.hpp" />
+    <ClInclude Include="src\util\Options.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Launcher.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\util\Exceptions.cpp" />
+    <ClCompile Include="src\util\Options.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
