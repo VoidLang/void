@@ -8,7 +8,7 @@ using namespace Void;
  * Hey there,
  *  Welcome to the Void.
  *  I am Ábel (aka AdvancedAntiSkid) the founder of Void.
- *  If you have any questions feel free to join my discord.
+ *  If you have any questions regarding to Void feel free to join my discord.
  *    https://discord.gg/HdgnHqqGAW
  *
  * What is Void?
