@@ -7,7 +7,7 @@ using namespace Void;
 /**
  * Hey there,
  *  Welcome to the Void.
- *  I am Ábel (aka AdvancedAntiSkid) the founder of Void.
+ *  I am AdvancedAntiSkid the founder of Void.
  *  If you have any questions regarding to Void feel free to join my discord.
  *    https://discord.gg/HdgnHqqGAW
  *
@@ -44,7 +44,6 @@ void start(int argc, char** argv) {
  * Program entry point.
  */
 int main(int argc, char** argv) {
-    
     // What the...?
     // Well, there should probably be a better way of doing this, 
     // but gotta catch those windows-level errors...

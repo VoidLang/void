@@ -2,6 +2,8 @@
 
 // string manipulation
 
+#define NOMINMAX
+
 #include <iostream>
 #include <string>
 
@@ -35,6 +37,32 @@ using List = std::vector<T>;
 
 #define warn(x) \
     std::cout << "[Warning] " << x << '\n'
+
+// files
+
+#include <filesystem>
+
+#define FS std::filesystem
+
+#define fileIsDirectory FS::is_directory
+#define fileExists FS::exists
+
+typedef FS::path Path;
+
+#include <fstream>
+
+typedef std::ifstream FileReader;
+typedef std::ofstream FileWriter;
+
+typedef FS::directory_iterator DirIterator;
+typedef FS::directory_entry DirEntiry;
+
+#define readNextLine std::getline
+
+// integers
+
+typedef unsigned int uint;
+typedef size_t ulong;
 
 // windows exceptions
 

@@ -1,4 +1,5 @@
 #include "Launcher.hpp"
+#include "vm/parser/Program.hpp"
 
 namespace Void {
     /**
@@ -47,6 +48,18 @@ namespace Void {
      */
     void Launcher::launchProgram(Options& options) {
         println("Running executable " << options.get("run"));
+
+        // get the path of the executable file
+        String path = options.get("run");
+
+        // create a program that will read the raw bytecode from a file or folder
+        Program program(path, options.arguments);
+
+        // read the bytecode from the file path
+        List<String> bytecode = program.build();
+        for (String line : bytecode) {
+            println("> " << line);
+        }
     }
 
     /**

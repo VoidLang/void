@@ -22,13 +22,19 @@
     <ClInclude Include="src\Common.hpp" />
     <ClInclude Include="src\Launcher.hpp" />
     <ClInclude Include="src\util\Exceptions.hpp" />
+    <ClInclude Include="src\util\Files.hpp" />
     <ClInclude Include="src\util\Options.hpp" />
+    <ClInclude Include="src\util\Strings.hpp" />
+    <ClInclude Include="src\vm\parser\Program.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Launcher.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\util\Exceptions.cpp" />
+    <ClCompile Include="src\util\Files.cpp" />
     <ClCompile Include="src\util\Options.cpp" />
+    <ClCompile Include="src\util\Strings.cpp" />
+    <ClCompile Include="src\vm\parser\Program.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -116,6 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
