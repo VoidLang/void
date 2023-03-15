@@ -13,7 +13,18 @@ namespace Void {
             return;
         }
 
+        // parse the program arguments
+        Options options(argc, argv);
 
+        // launch a compiled void executable
+        if (options.has("run"))
+            launchProgram(options);
+        // compile source code to executable
+        else if (options.has("compile"))
+            compileSources(options);
+        // generate a native header for a compiled void executable
+        else if (options.has("header"))
+            generateHeader(options);
     }
 
     /**
@@ -28,5 +39,29 @@ namespace Void {
         println("	-compile <project folder>	Compile vertex source files.");
         println("	-header <source file>		Create a c++ header for the given source file.");
         println("");
+    }
+
+    /**
+     * Launch a compiled void executable application.
+     * @param options command line arguments
+     */
+    void Launcher::launchProgram(Options& options) {
+        println("Running executable " << options.get("run"));
+    }
+
+    /**
+     * Compiule project source code to a void executable.
+     * @param options command line arguments
+     */
+    void Launcher::compileSources(Options& options) {
+        println("Compiling sources " << options.get("compile"));
+    }
+
+    /**
+     * Generate a native header for a compile void class.
+     * @param options command line arguments
+     */
+    void Launcher::generateHeader(Options& options) {
+        println("Generating headers " << options.get("header"));
     }
 }
