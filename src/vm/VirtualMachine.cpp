@@ -41,17 +41,9 @@ namespace Void {
 
         // parse the raw bytecode instructions
         for (String line : bytecode) {
-
-            println("loading " << line);
-
             // split up the raw instruciton line
             List<String> args = Strings::split(line, ' ');
-
-            println("1");
-
             String instruction = args[0];
-
-            println("2");
 
             // check if the class content declaration has begun
             if (contentBegun) {
@@ -107,8 +99,6 @@ namespace Void {
             // handle class content declaration begin
             else if (instruction == Instructions::CLASS_BEGIN && classOffset++ == 0)
                 contentBegun = true;
-
-            println("loaded " << line);
         }
     }
 

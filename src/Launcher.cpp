@@ -61,15 +61,11 @@ namespace Void {
         for (String line : bytecode) 
             println("> " << line);
 
-        println("done");
-
         // create the virtual machine
         // make the virtual machine load application elements 
         // pre-parse all the classes, fields and methods
         VirtualMachine* vm = new VirtualMachine(options);
         vm->loadBytecode(bytecode);
-
-        println("loadwd");
 
         // debug data of the virtual machine
         if (options.has("XVMDebug")) {
