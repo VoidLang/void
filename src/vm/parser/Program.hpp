@@ -21,6 +21,11 @@ namespace Void {
          */
         Map<String, String> definitions;
 
+        /**
+         * The fully qualified path of the main method.
+         */
+        String programMain;
+
     public:
         /**
          * Initialize the program.
@@ -31,13 +36,36 @@ namespace Void {
 
         /**
          * Validate that the target path is a void executable or a folder.
+         * @return true if the program path is valid
          */
         bool validate();
 
         /**
          * Read the content from the application path and build bytecode instructions.
+         * @return the bytecode content of the executable
          */
         List<String> build();
+
+        /**
+         * Determine if the given definition key is registered.
+         * @param definition definition key
+         * @return true if the definition value is set
+         */
+        bool hasDefinition(String definition);
+
+        /**
+         * Get the value of the given definition.
+         * @param definition definition key
+         * @return definition value or <unknown>
+         */
+        String getDefinition(String definiton);
+
+        /**
+         * Set the value of the given definition.
+         * @param definition definition key
+         * @param value definition value
+         */
+        void setDefinition(String definition, String value);
 
     private:
         /**

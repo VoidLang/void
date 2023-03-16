@@ -18,6 +18,18 @@
     <ClInclude Include="src\util\Strings.hpp">
       <Filter>util</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\Lists.hpp">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\VirtualMachine.hpp">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\element\Class.hpp">
+      <Filter>vm\element</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\parser\Instruction.hpp">
+      <Filter>vm\parser</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -37,6 +49,12 @@
     <ClCompile Include="src\util\Strings.cpp">
       <Filter>util</Filter>
     </ClCompile>
+    <ClCompile Include="src\util\Lists.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\VirtualMachine.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="util">
@@ -47,6 +65,9 @@
     </Filter>
     <Filter Include="vm\parser">
       <UniqueIdentifier>{38782a99-6896-46ca-8c97-713a738d7202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vm\element">
+      <UniqueIdentifier>{4b7719e8-f645-4970-bf09-53a2772d06d3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

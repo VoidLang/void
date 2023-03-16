@@ -1,5 +1,6 @@
 #include "Launcher.hpp"
 #include "vm/parser/Program.hpp"
+#include "vm/VirtualMachine.hpp"
 
 namespace Void {
     /**
@@ -57,8 +58,23 @@ namespace Void {
 
         // read the bytecode from the file path
         List<String> bytecode = program.build();
-        for (String line : bytecode) {
+        for (String line : bytecode) 
             println("> " << line);
+
+        println("done");
+
+        // create the virtual machine
+        // make the virtual machine load application elements 
+        // pre-parse all the classes, fields and methods
+        VirtualMachine* vm = new VirtualMachine(options);
+        vm->loadBytecode(bytecode);
+
+        println("loadwd");
+
+        // debug data of the virtual machine
+        if (options.has("XVMDebug")) {
+            println("[Void] Virtual Machine debug output:");
+            vm->debug();
         }
     }
 

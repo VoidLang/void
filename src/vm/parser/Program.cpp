@@ -2,6 +2,7 @@
 
 #include "../../util/Files.hpp"
 #include "../../util/Strings.hpp"
+#include "../../util/Lists.hpp"
 
 namespace Void {
     /**
@@ -88,17 +89,61 @@ namespace Void {
             // handle definitions
             if (args[0] == "#define") {
                 // get the definition key
-                
+                String definition = args[1];
+                // check if the definition already exists
+                if (hasDefinition(definition) /* TODO !noWarnings && !noDefinitionWarnings */)
+                    warn("Duplicate definition '" << definition + "' in file " << file);
+
+                // set the definition value
+                List<String> subArgs = Lists::subList(args, 2);
+                setDefinition(definition, Strings::join(subArgs, " "));
             }
 
             // handle main path declaration
-            else if (args[0] == "#main") {
-
-            }
+            else if (args[0] == "#main") 
+                programMain = args[1];
 
             // apppend modifier bytecode
             result.push_back(line);
         }
+    }
 
+    /**
+     * Determine if the given definition key is registered.
+     * @param definition definition key
+     * @return true if the definition value is set
+     */
+    bool Program::hasDefinition(String definition) {
+        // loop through the registered definitions
+        for (const auto& [key, value] : definitions) {
+            // check if the definition key matches
+            if (key == definition)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get the value of the given definition.
+     * @param definition definition key
+     * @return definition value or <unknown>
+     */
+    String Program::getDefinition(String definition) {
+        // loop through the registered definitions
+        for (const auto& [key, value] : definitions) {
+            // check if the definition key matches
+            if (key == definition)
+                return value;
+        }
+        return "<unknown>";
+    }
+
+    /**
+     * Set the value of the given definition.
+     * @param definition definition key
+     * @param value definition value
+     */
+    void Program::setDefinition(String definition, String value) {
+        definitions[definition] = value;
     }
 }
