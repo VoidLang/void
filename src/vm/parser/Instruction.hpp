@@ -61,7 +61,7 @@ namespace Void {
         /**
          * Set the parameters of the method.
          */
-        METHOD_PARAMETER,
+        METHOD_PARAMETERS,
 
         /**
          * Begin the content declaration of the method.

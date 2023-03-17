@@ -30,6 +30,15 @@
     <ClInclude Include="src\vm\parser\Instruction.hpp">
       <Filter>vm\parser</Filter>
     </ClInclude>
+    <ClInclude Include="src\vm\runtime\Modifier.hpp">
+      <Filter>vm\runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\element\Executable.hpp">
+      <Filter>vm\element</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\element\Method.hpp">
+      <Filter>vm\element</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -55,6 +64,21 @@
     <ClCompile Include="src\vm\VirtualMachine.cpp">
       <Filter>vm</Filter>
     </ClCompile>
+    <ClCompile Include="src\vm\element\Class.cpp">
+      <Filter>vm\element</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\element\Executable.cpp">
+      <Filter>vm\element</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\parser\Instruction.cpp">
+      <Filter>vm\parser</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\runtime\Modifier.cpp">
+      <Filter>vm\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\element\Method.cpp">
+      <Filter>vm\element</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="util">
@@ -68,6 +92,9 @@
     </Filter>
     <Filter Include="vm\element">
       <UniqueIdentifier>{4b7719e8-f645-4970-bf09-53a2772d06d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vm\runtime">
+      <UniqueIdentifier>{8c8aeba4-9692-4957-afc5-783bf1e06ac7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

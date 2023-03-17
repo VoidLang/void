@@ -5,7 +5,7 @@ namespace Void {
      * Create a sub-list from a begin and end index
      */
     List<String> Lists::subList(List<String> list, ulong begin) {
-        return List<String>(list.begin() + begin, list.begin() + begin);
+        return List<String>(list.begin() + begin, list.begin() + list.size());
     }
 
     /**

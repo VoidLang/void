@@ -1,9 +1,11 @@
 #pragma once
 
 #include "../VirtualMachine.hpp"
+#include "Method.hpp"
 
 namespace Void {
     class VirtualMachine;
+    class Method;
 
     /**
      * Represens a void class in the virtual machine.
@@ -16,6 +18,11 @@ namespace Void {
          * The running virtual machine.
          */
         VirtualMachine* vm;
+
+        /**
+         * The list of the declared class methods.
+         */
+        List<Method*> methods;
         
     public:
         /**
@@ -68,5 +75,29 @@ namespace Void {
          * Debug parsed class and its content.
          */
         void debug();
+
+        // TODO initialize
+
+        /**
+         * Retrieve a class method with the given signature.
+         * @param name method name
+         * @param parameters method parameters
+         */
+        Method* getMethod(String name, List<String> parameters);
+
+        /**
+         * Define a method in the class.
+         */
+        void defineMethod(Method* method);
+    };
+
+    /**
+     * Represents a registery of parseable element types.
+     */
+    enum ElementType {
+        CLASS,
+        METHOD,
+        FIELD,
+        NONE
     };
 }

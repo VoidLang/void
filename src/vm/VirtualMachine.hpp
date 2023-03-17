@@ -14,17 +14,17 @@ namespace Void {
     class VirtualMachine {
     private:
         /**
-         * The command line options of the application.
-         */
-        Options& options;
-
-        /**
          * The list of the runtime loaded classes.
          */
     private:
         List<Class*> classes;
     
     public:
+        /**
+         * The command line options of the application.
+         */
+        Options& options;
+
         /**
          * Initialize the virtual machine.
          * @param options command line options

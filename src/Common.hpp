@@ -38,6 +38,18 @@ using List = std::vector<T>;
 #define warn(x) \
     std::cout << "[Warning] " << x << '\n'
 
+// number conversion 
+
+#define stringToInt std::stoi
+
+// funcations
+
+#include <functional>
+
+template <typename T>
+using Function = std::function<T>;
+// #define Function std::function
+
 // files
 
 #include <filesystem>
@@ -75,3 +87,5 @@ typedef size_t ulong;
 
 #define setConsoleSync(x) \
     std::ios::sync_with_stdio(x)
+
+#define UnderlyingType std::underlying_type

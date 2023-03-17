@@ -27,8 +27,11 @@
     <ClInclude Include="src\util\Options.hpp" />
     <ClInclude Include="src\util\Strings.hpp" />
     <ClInclude Include="src\vm\element\Class.hpp" />
+    <ClInclude Include="src\vm\element\Executable.hpp" />
+    <ClInclude Include="src\vm\element\Method.hpp" />
     <ClInclude Include="src\vm\parser\Instruction.hpp" />
     <ClInclude Include="src\vm\parser\Program.hpp" />
+    <ClInclude Include="src\vm\runtime\Modifier.hpp" />
     <ClInclude Include="src\vm\VirtualMachine.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -40,8 +43,11 @@
     <ClCompile Include="src\util\Options.cpp" />
     <ClCompile Include="src\util\Strings.cpp" />
     <ClCompile Include="src\vm\element\Class.cpp" />
+    <ClCompile Include="src\vm\element\Executable.cpp" />
+    <ClCompile Include="src\vm\element\Method.cpp" />
     <ClCompile Include="src\vm\parser\Instruction.cpp" />
     <ClCompile Include="src\vm\parser\Program.cpp" />
+    <ClCompile Include="src\vm\runtime\Modifier.cpp" />
     <ClCompile Include="src\vm\VirtualMachine.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

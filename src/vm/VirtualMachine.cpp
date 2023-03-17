@@ -21,7 +21,7 @@ namespace Void {
         // the name of the parsed class
         String name = "<unk>";
         // the superclass of the parsed class
-        String superclass = "void.lang.Object";
+        String superclass = "Object";
 
         // the modifiers of the parsed class
         List<String> modifiers;
@@ -64,7 +64,7 @@ namespace Void {
 
                     // reset the class declaration variables
                     name = "<unk>";
-                    superclass = "void.lang.Object";
+                    superclass = "Object";
                     modifiers.clear();
                     interfaces.clear();
                     content.clear();
