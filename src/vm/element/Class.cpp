@@ -210,12 +210,8 @@ namespace Void {
                     methodReturnType = args[1];
 
                 // set the method parameters
-                else if (instruction == Instructions::METHOD_PARAMETERS) {
+                else if (instruction == Instructions::METHOD_PARAMETERS)
                     methodParameters = Lists::subList(args, 1);
-                    println("params " << Strings::join(methodParameters, "|"));
-                    println("gec " << args.size() << " " << Strings::join(args, ";"));
-                    println("wtf " << line);
-                }
 
                 // handle method content declaration begin
                 else if (instruction == Instructions::METHOD_BEGIN && methodOffset++ == 0)
