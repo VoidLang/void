@@ -1,6 +1,7 @@
 #include "Launcher.hpp"
 #include "vm/parser/Program.hpp"
 #include "vm/VirtualMachine.hpp"
+#include "vm/element/Method.hpp"
 
 namespace Void {
     /**

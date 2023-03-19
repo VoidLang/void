@@ -33,6 +33,9 @@
     <ClInclude Include="src\vm\parser\Instruction.hpp" />
     <ClInclude Include="src\vm\parser\Program.hpp" />
     <ClInclude Include="src\vm\runtime\Modifier.hpp" />
+    <ClInclude Include="src\vm\runtime\Reference.hpp" />
+    <ClInclude Include="src\vm\runtime\Stack.hpp" />
+    <ClInclude Include="src\vm\runtime\Storage.hpp" />
     <ClInclude Include="src\vm\runtime\Type.hpp" />
     <ClInclude Include="src\vm\VirtualMachine.hpp" />
   </ItemGroup>
@@ -51,6 +54,8 @@
     <ClCompile Include="src\vm\parser\Instruction.cpp" />
     <ClCompile Include="src\vm\parser\Program.cpp" />
     <ClCompile Include="src\vm\runtime\Modifier.cpp" />
+    <ClCompile Include="src\vm\runtime\Stack.cpp" />
+    <ClCompile Include="src\vm\runtime\Storage.cpp" />
     <ClCompile Include="src\vm\runtime\Type.cpp" />
     <ClCompile Include="src\vm\VirtualMachine.cpp" />
   </ItemGroup>

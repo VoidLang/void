@@ -1,8 +1,16 @@
 #pragma once
 
 #include "../../Common.hpp"
+#include "../element/Executable.hpp"
 
+#ifndef VOID_INSTRUCTION
+#define VOID_INSTRUCTION
 namespace Void {
+    class Stack;
+    class Storage;
+    class Executable;
+    class VirtualMachine;
+
     /**
      * Represents a holder of the registered bytecode instructions.
      */
@@ -994,6 +1002,47 @@ namespace Void {
     bool operator==(String string, Instructions instruction);
 
     /**
+     * Represents a bytecode executing context. A context is created for every invocation of methods and fields.
+     */
+    class Context {
+    public:
+        /**
+         * The value stack of the caller executable context.
+         */
+        Stack* stack;
+
+        /**
+         * The variable storage of the caller executable context.
+         */
+        Storage* storage;
+
+        /**
+         * The current index of the executing bytecode.
+         */
+        uint cursor;
+
+        /**
+         * The total length of the executing bytecode.
+         */
+        uint length;
+
+        /**
+         * The result object of the bytecode execution.
+         */
+        Object result;
+
+        /**
+         * The executor of the bytecode.
+         */
+        Executable* executable;
+
+        /**
+         * Initialize the execution context.
+         */
+        Context(Stack* stack, Storage* storage, uint length, Executable* executable);
+    };
+
+    /**
      * Represents an executable bytecode instruction.
      */
     class Instruction {
@@ -1004,8 +1053,62 @@ namespace Void {
         Instructions kind;
 
         /**
-         * Initialize instruction.
+         * Initialize the instruction.
          */
         Instruction(Instructions kind);
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @aram executable bytecode executor
+         */
+        virtual void parse(String data, List<String> args, uint line, Executable* executable);
+
+        /**
+         * Initialize the references in the const pool after the whole program has been parsed.
+         * @param vm running virtual machine
+         * @param executable bytecode executor
+         */
+        virtual void initialize(VirtualMachine* vm, Executable* executable);
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        virtual void execute(Context* context);
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        virtual String debug();
+
+        /**
+         * Create an instruction from raw bytecode input.
+         * @param data raw bytecode instruction
+         * @param line current bytecode line index
+         * @param executable bytecode executor
+         */
+        static Instruction* of(String data, uint line, Executable* executable);
+    };
+
+    /**
+     * Represents a dummy instruction that does nothing
+     */
+    class EmptyInstruction : public Instruction {
+    public:
+        /**
+         * Initialize the instruction.
+         */
+        EmptyInstruction();
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
     };
 }
+#endif

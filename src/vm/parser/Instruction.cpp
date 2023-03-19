@@ -1,4 +1,5 @@
 #include "Instruction.hpp"
+#include "../../util/Strings.hpp"
 
 namespace Void {
     /**
@@ -15,4 +16,87 @@ namespace Void {
      */
     Instruction::Instruction(Instructions kind) : kind(kind) 
     { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void Instruction::parse(String data, List<String> args, uint line, Executable* executable)
+    { }
+
+    /**
+     * Initialize the references in the const pool after the whole program has been parsed.
+     * @param vm running virtual machine
+     * @param executable bytecode executor
+     */
+    void Instruction::initialize(VirtualMachine* vm, Executable* executable)
+    { }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void Instruction::execute(Context* context)
+    { }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String Instruction::debug() {
+        return "<not implemented>";
+    }
+
+    /**
+     * Create an instruction from raw bytecode input.
+     * @param data raw bytecode instruction
+     * @param line current bytecode line index
+     * @param executable bytecode executor
+     */
+    Instruction* Instruction::of(String data, uint line, Executable* executable) {
+        // split the raw bytecode instruction
+        List<String> args = Strings::split(data, ' ');
+        String identifier = args[0];
+
+        // find the instruction wrapper from instruction name
+        Instruction* instruction = nullptr;
+
+        // TODO create instruction wrappers
+
+        // check if the instruction implementation was not found
+        if (instruction == nullptr)
+            instruction = new EmptyInstruction();
+
+        // remove the identifier from the instruction arguments
+        args.erase(args.begin());
+        // parse the instruction data
+        instruction->parse(data, args, line, executable);
+
+        return instruction;
+    }
+
+    /**
+     * Initialize the execution context.
+     */
+    Context::Context(Stack* stack, Storage* storage, uint length, Executable* executable) 
+        : stack(stack), storage(storage), length(length), executable(executable)
+    { }
+
+    /**
+     * Initialize the instruction.
+     */
+    EmptyInstruction::EmptyInstruction()
+        : Instruction(Instructions::NONE)
+    { }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String EmptyInstruction::debug() {
+        return "-";
+    }
 }
