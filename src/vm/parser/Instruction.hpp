@@ -17,7 +17,7 @@ namespace Void {
         /**
          * Set the access modifiers of the class.
          */
-        CLASS_MODIFIER,
+        CLASS_MODIFIERS,
 
         /**
          * Set the superclass of the class.
@@ -51,7 +51,7 @@ namespace Void {
         /**
          * Set the access modifiers of the method.
          */
-        METHOD_MODIFIER,
+        METHOD_MODIFIERS,
 
         /**
          * Set the return type of the method.
@@ -85,7 +85,7 @@ namespace Void {
         /**
          * Set the access modifiers of the field.
          */
-        FIELD_MODIFIER,
+        FIELD_MODIFIERS,
 
         /**
          * Set the type of the field.

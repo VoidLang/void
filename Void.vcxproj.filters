@@ -12,9 +12,6 @@
     <ClInclude Include="src\vm\parser\Program.hpp">
       <Filter>vm\parser</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\Files.hpp">
-      <Filter>vm\parser</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\Strings.hpp">
       <Filter>util</Filter>
     </ClInclude>
@@ -39,6 +36,15 @@
     <ClInclude Include="src\vm\element\Method.hpp">
       <Filter>vm\element</Filter>
     </ClInclude>
+    <ClInclude Include="src\vm\element\Field.hpp">
+      <Filter>vm\element</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\runtime\Type.hpp">
+      <Filter>vm\runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\Files.hpp">
+      <Filter>util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -50,9 +56,6 @@
       <Filter>util</Filter>
     </ClCompile>
     <ClCompile Include="src\vm\parser\Program.cpp">
-      <Filter>vm\parser</Filter>
-    </ClCompile>
-    <ClCompile Include="src\util\Files.cpp">
       <Filter>vm\parser</Filter>
     </ClCompile>
     <ClCompile Include="src\util\Strings.cpp">
@@ -78,6 +81,15 @@
     </ClCompile>
     <ClCompile Include="src\vm\element\Method.cpp">
       <Filter>vm\element</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\element\Field.cpp">
+      <Filter>vm\element</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\runtime\Type.cpp">
+      <Filter>vm\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\Files.cpp">
+      <Filter>util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

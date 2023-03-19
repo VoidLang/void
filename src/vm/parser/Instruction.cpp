@@ -15,5 +15,4 @@ namespace Void {
      */
     Instruction::Instruction(Instructions kind) : kind(kind) 
     { }
-
 }

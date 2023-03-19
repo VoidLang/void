@@ -2,10 +2,12 @@
 
 #include "../VirtualMachine.hpp"
 #include "Method.hpp"
+#include "Field.hpp"
 
 namespace Void {
     class VirtualMachine;
     class Method;
+    class Field;
 
     /**
      * Represens a void class in the virtual machine.
@@ -23,6 +25,11 @@ namespace Void {
          * The list of the declared class methods.
          */
         List<Method*> methods;
+
+        /**
+         * The list of the declared class fields.
+         */
+        List<Field*> fields;
         
     public:
         /**
@@ -82,13 +89,28 @@ namespace Void {
          * Retrieve a class method with the given signature.
          * @param name method name
          * @param parameters method parameters
+         * @return found method or nullptr
          */
         Method* getMethod(String name, List<String> parameters);
 
         /**
-         * Define a method in the class.
+         * Define a new method in the class.
+         * @param method target method
          */
         void defineMethod(Method* method);
+
+        /**
+         * Retrieve a class field with the given name.
+         * @param name field name
+         * @return found field or nullptr
+         */
+        Field* getField(String name);
+
+        /**
+         * Define a new field in the class.
+         * @param field target field
+         */
+        void defineField(Field* field);
     };
 
     /**

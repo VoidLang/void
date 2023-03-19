@@ -1,13 +1,21 @@
 #pragma once
 
-// string manipulation
-
 #define NOMINMAX
+
+// string manipulation
 
 #include <iostream>
 #include <string>
+#include <sstream>
 
 typedef std::string String;
+typedef std::stringstream StringStream;
+
+// objects
+#include <any>
+
+typedef std::any Object;
+#define object_cast std::any_cast;
 
 // maps
 

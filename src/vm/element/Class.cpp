@@ -50,7 +50,7 @@ namespace Void {
         
         // the attributes of the currently parsed field
         String fieldName = "<unk>";
-        String fieldType = "";
+        String fieldType = "LObject";
         List<String> fieldModifiers;
 
         // the content of the currently parsed element
@@ -112,7 +112,7 @@ namespace Void {
 
                 // handle method content declaration end
                 else if (instruction == Instructions::METHOD_END && type == ElementType::METHOD && --methodOffset == 0) {
-                    // make the method declaration ended
+                    // mark the method declaration ended
                     contentBegun = false;
                     type = ElementType::NONE;
 
@@ -140,7 +140,25 @@ namespace Void {
 
                 // handle field content declaration end
                 else if (instruction == Instructions::FIELD_END && type == ElementType::FIELD && --fieldOffset == 0) {
-                    // TODO handle field declaration
+                    // mark the field declaration ended
+                    contentBegun = false;
+                    type = ElementType::NONE;
+
+                    // check if the field name is already in use
+                    if (getField(fieldName) != nullptr)
+                        error("FieldRedefineException: Field " << fieldName << " is already for class " << name);
+
+                    // define the field for the class
+                    Field* field = new Field(fieldName, fieldType, fieldModifiers, this, vm);
+                    defineField(field);
+                    // make the field build its content
+                    field->build(content);
+
+                    // reset the field declaration variables
+                    fieldName = "<unk>";
+                    fieldType = "LObject";
+                    fieldModifiers.clear();
+                    content.clear();
                 }
 
                 // handle inner classes, methods and fields
@@ -183,7 +201,7 @@ namespace Void {
             // handle class property setters
             else if (type == ElementType::CLASS) {
                 // set class access modifiers
-                if (instruction == Instructions::CLASS_MODIFIER)
+                if (instruction == Instructions::CLASS_MODIFIERS)
                     classModifiers = Lists::subList(args, 1);
 
                 // set class superclass
@@ -202,7 +220,7 @@ namespace Void {
             // handle method property setters
             else if (type == ElementType::METHOD) {
                 // set the method access modifiers
-                if (instruction == Instructions::METHOD_MODIFIER)
+                if (instruction == Instructions::METHOD_MODIFIERS)
                     methodModifiers = Lists::subList(args, 1);
 
                 // set the method return type
@@ -218,7 +236,20 @@ namespace Void {
                     contentBegun = true;
             }
 
-            // TODO handle field property setters
+            // handle field property setters
+            else if (type == ElementType::FIELD) {
+                // set the field access modifiers
+                if (instruction == Instructions::FIELD_MODIFIERS)
+                    fieldModifiers = Lists::subList(args, 1);
+
+                // set the field type
+                else if (instruction == Instructions::FIELD_TYPE)
+                    fieldType = args[1];
+
+                // handle field content declaration begin
+                else if (instruction == Instructions::FIELD_BEGIN && fieldOffset++ == 0)
+                    contentBegun = true;
+            }
         }
     }
 
@@ -246,11 +277,13 @@ namespace Void {
         // debug the class body
         println('{');
 
-        // TODO debug the class fields
-    
-        // debuf the class methods
+        // debug the class methods
         for (Method* method : methods)
             method->debug();
+
+        // debug the class fields
+        for (Field* field : fields)
+            field->debug();
 
         // finish debugging
         println("}");
@@ -260,6 +293,7 @@ namespace Void {
      * Retrieve a class method with the given signature.
      * @param name method name
      * @param parameters method parameters
+     * @return found method or nullptr
      */
     Method* Class::getMethod(String name, List<String> parameters) {
         // get the length of the erquired parameters list
@@ -287,9 +321,34 @@ namespace Void {
     }
 
     /**
-     * Define a method in the class.
+     * Define a new method in the class.
+     * @param method target method
      */
     void Class::defineMethod(Method* method) {
         methods.push_back(method);
+    }
+
+    /**
+     * Retrieve a class field with the given name.
+     * @param name field name
+     * @return found field or nullptr
+     */
+    Field* Class::getField(String name) {
+        // loop through the declared fields
+        for (Field* field : fields) {
+            // check if the field name matches
+            if (field->name == name)
+                return field;
+        }
+        // field not found, return a null field pointer
+        return nullptr;
+    }
+
+    /**
+     * Define a new field in the class.
+     * @param field target field
+     */
+    void Class::defineField(Field* field) {
+        fields.push_back(field);
     }
 }

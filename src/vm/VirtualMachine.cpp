@@ -85,7 +85,7 @@ namespace Void {
                 name = args[1];
 
             // set the class modifiers
-            else if (instruction == Instructions::CLASS_MODIFIER)
+            else if (instruction == Instructions::CLASS_MODIFIERS)
                 modifiers = Lists::subList(args, 1);
 
             // set the class superclass
