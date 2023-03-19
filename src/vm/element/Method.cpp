@@ -26,7 +26,7 @@ namespace Void {
         // debug the method modifiers
         List<String>modifiers = parseModifiers(this->modifiers);
         if (!modifiers.empty())
-            print(Strings::join(modifiers, ", ") << ' ');
+            print(Strings::join(modifiers, " ") << ' ');
 
         // debug the method return type and name
         print(returnType << ' ' << name);

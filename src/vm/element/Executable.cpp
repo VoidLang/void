@@ -26,6 +26,7 @@ namespace Void {
         bool noLinkerWarns = vm->options.has("XNoLinkerWarns");
         bool noDuplicateLinkerWarns = vm->options.has("XNoDupLinkerWarns");
 
+
         // preprocess some executable instructions that will be used for other instructions
         // and must be parsed before all the others
         for (uint i = 0; i < bytecode.size(); i++) {
@@ -90,7 +91,13 @@ namespace Void {
      * @return true if the section is set
      */
     bool Executable::hasSection(String section) {
-        return getSection(section) >= 0;
+        // loop through the registered jump sections
+        for (const auto& [key, value] : sections) {
+            // check if the section name matches
+            if (key == section)
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -105,7 +112,7 @@ namespace Void {
             if (key == section)
                 return value;
         }
-        return -1;
+        return 0;
     }
 
     /**
@@ -114,7 +121,14 @@ namespace Void {
      * @return true if the variable linker is set
      */
     bool Executable::hasLinker(String linker) {
-        return getLinker(linker) >= 0;
+        // loop through the regitered variable linksers
+        for (const auto& [key, value] : linkers) {
+            // check if the linker name matches
+            if (key == linker)
+                return true;
+        }
+        // linker not found
+        return false;
     }
 
     /**
@@ -146,7 +160,7 @@ namespace Void {
                 return value;
         }
         // linker not found
-        return -1;
+        return 0;
     }
 
     /**
