@@ -74,7 +74,9 @@ namespace Void {
             // get the current line of the bytecdeo
             String line = bytecode[i];
 
-            // TODO parse instruction
+            // parse the instruction from raw string
+            Instruction* instruction = Instruction::of(line, i, this);
+            this->bytecode.push_back(instruction);
         }
     }
 
@@ -82,7 +84,9 @@ namespace Void {
      * Initialize the const pool references for the executable instructions.
      */
     void Executable::initalize() {
-
+        // post initialize the instructions after the whole program has been built
+        for (Instruction* instruction : bytecode)
+            instruction->initialize(vm, this);
     }
 
     /**
@@ -170,7 +174,7 @@ namespace Void {
      */
     bool Executable::hasModifier(Modifier modifier) {
         // get the flag of the modifier
-        int flag = static_cast<UnderlyingType<Modifier>::type>(modifiers);
+        int flag = static_cast<UnderlyingType<Modifier>::type>(modifier);
         // test if the method modifiers mask has the flag
         return (modifiers & flag) > 0;
     }

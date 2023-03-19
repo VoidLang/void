@@ -2,12 +2,14 @@
 
 #include "../VirtualMachine.hpp"
 #include "../runtime/Modifier.hpp"
+#include "../parser/Instruction.hpp"
 
 #ifndef VOID_EXECUTABLE
 #define VOID_EXECUTABLE
 namespace Void {
     class VirtualMachine;
     class Class;
+    class Instruction;
 
     /**
      * Represents an object in hte virtual machine that is 
@@ -30,7 +32,10 @@ namespace Void {
          */
         int modifiers;
     
-        // TODO List<Instruction*> bytecode;
+        /**
+         * The list of the executable bytecode instructions. 
+         */
+        List<Instruction*> bytecode;
 
         /**
          * The map of the sections which link up section names with
