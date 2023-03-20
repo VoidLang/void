@@ -54,6 +54,9 @@
     <ClInclude Include="src\vm\runtime\Reference.hpp">
       <Filter>vm\runtime</Filter>
     </ClInclude>
+    <ClInclude Include="src\vm\runtime\Instance.hpp">
+      <Filter>vm\runtime</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -104,6 +107,9 @@
       <Filter>vm\runtime</Filter>
     </ClCompile>
     <ClCompile Include="src\vm\runtime\Storage.cpp">
+      <Filter>vm\runtime</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\runtime\Instance.cpp">
       <Filter>vm\runtime</Filter>
     </ClCompile>
   </ItemGroup>

@@ -44,7 +44,8 @@ namespace Void {
         // debug the method body
         println(" {");
 
-        // TODO debug bytecode instructions
+        for (uint i = 0; i < bytecode.size(); i++)
+            println("        " << i << ": " << bytecode[i]->debug());
         
         println("    }");
     }

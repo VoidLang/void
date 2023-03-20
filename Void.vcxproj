@@ -32,6 +32,7 @@
     <ClInclude Include="src\vm\element\Method.hpp" />
     <ClInclude Include="src\vm\parser\Instruction.hpp" />
     <ClInclude Include="src\vm\parser\Program.hpp" />
+    <ClInclude Include="src\vm\runtime\Instance.hpp" />
     <ClInclude Include="src\vm\runtime\Modifier.hpp" />
     <ClInclude Include="src\vm\runtime\Reference.hpp" />
     <ClInclude Include="src\vm\runtime\Stack.hpp" />
@@ -53,6 +54,7 @@
     <ClCompile Include="src\vm\element\Method.cpp" />
     <ClCompile Include="src\vm\parser\Instruction.cpp" />
     <ClCompile Include="src\vm\parser\Program.cpp" />
+    <ClCompile Include="src\vm\runtime\Instance.cpp" />
     <ClCompile Include="src\vm\runtime\Modifier.cpp" />
     <ClCompile Include="src\vm\runtime\Stack.cpp" />
     <ClCompile Include="src\vm\runtime\Storage.cpp" />

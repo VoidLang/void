@@ -20,7 +20,8 @@ namespace Void {
          * The running virtual machine.
          */
         VirtualMachine* vm;
-
+        
+    public:
         /**
          * The list of the declared class methods.
          */
@@ -30,8 +31,7 @@ namespace Void {
          * The list of the declared class fields.
          */
         List<Field*> fields;
-        
-    public:
+
         /**
          * The name of the class.
          */

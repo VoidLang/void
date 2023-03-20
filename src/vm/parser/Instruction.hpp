@@ -1100,9 +1100,46 @@ namespace Void {
     class EmptyInstruction : public Instruction {
     public:
         /**
-         * Initialize the instruction.
+         * Initialize the empty instruction.
          */
         EmptyInstruction();
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+
+    /**
+     * Represents a variable linker that links up variable names to their corresponding storage indices. 
+     * This way in the bytecode we can use the variable names instead of having to remember the numbers of the variables.
+     */
+    class Linker : public Instruction {
+    public:
+        /**
+         * The name of the variable.
+         */
+        String variable;
+
+        /**
+         * The linked storage index of the variable.
+         */
+        uint index;
+
+        /**
+         * Initialize the linker instruction.
+         */
+        Linker();
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @aram executable bytecode executor
+         */
+        void parse(String data, List<String> args, uint line, Executable* executable) override;
 
         /**
          * Get the string representation of the instruction.

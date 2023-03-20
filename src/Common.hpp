@@ -11,6 +11,9 @@
 typedef std::string String;
 typedef std::stringstream StringStream;
 
+#define toString(x) \
+    std::to_string(x)
+
 // objects
 #include <any>
 
@@ -50,7 +53,7 @@ using List = std::vector<T>;
 
 #define stringToInt std::stoi
 
-// funcations
+// functions
 
 #include <functional>
 

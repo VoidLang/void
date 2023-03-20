@@ -64,7 +64,8 @@ namespace Void {
         // find the instruction wrapper from instruction name
         Instruction* instruction = nullptr;
 
-        // TODO create instruction wrappers
+        if (identifier == "#link")
+            instruction = new Linker();
 
         // check if the instruction implementation was not found
         if (instruction == nullptr)
@@ -97,6 +98,35 @@ namespace Void {
      * @return instruction bytecode data
      */
     String EmptyInstruction::debug() {
-        return "-";
+        return "<unrecognized instruction>";
+    }
+
+    /**
+     * Initialize the linker instruction.
+     */
+    Linker::Linker()
+        : Instruction(Instructions::LINKER)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void Linker::parse(String data, List<String> args, uint line, Executable* executable) {
+        // parse the variable name of the linker
+        variable = args[0];
+        // parse the line number of the linker
+        index = stringToInt(args[1]);
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String Linker::debug() {
+        return "#link " + variable + " " + toString(index);
     }
 }
