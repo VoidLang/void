@@ -3,6 +3,8 @@
 #include "Executable.hpp"
 #include "../runtime/Reference.hpp"
 #include "../runtime/Instance.hpp"
+#include "../runtime/Stack.hpp"
+#include "../runtime/Storage.hpp"
 
 #ifdef VOID_EXECUTABLE
 #ifndef VOID_METHOD
@@ -54,6 +56,13 @@ namespace Void {
          * @param caller parent caller executable that called this executable
          */
         void invoke(VirtualMachine* vm, Stack* callerStack, Reference<Instance*>* instance, Executable* caller);
+
+        /**
+         * Copy method call arguments from the caller stack to the variable storage of this execution context.
+         * @param callerStack method execution caller stack
+         * @param storage method execution context variable storage
+         */
+        void copyArguments(Stack* callerStack, Storage* storage, Reference<Instance*>* instance);
 
         /**
          * Debug the parsed method and its content.

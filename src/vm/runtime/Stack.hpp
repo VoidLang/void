@@ -1,9 +1,11 @@
 #pragma once
 
 #include "../../Common.hpp"
+#include "Instance.hpp"
 
 namespace Void {
     class Executable;
+    class Instance;
 
     /**
      * Represents a registry of the sub-stack types.
@@ -22,6 +24,7 @@ namespace Void {
      */
     template <typename T>
     class Node {
+    public:
         /**
          * The data of the node.
          */
@@ -164,6 +167,81 @@ namespace Void {
         Stack* parent;
 
     public:
+        /**
+         * The byte value holder sub-stack.
+         */
+        SubStack<byte> bytes;
+
+        /**
+         * The byte reference value holder sub-stack.
+         */
+        SubStack<Reference<byte>*> byteRefs;
+
+        /**
+         * The short value holder sub-stack.
+         */
+        SubStack<short> shorts;
+
+        /**
+         * The short reference value holder sub-stack.
+         */
+        SubStack<Reference<short>*> shortRefs;
+
+        /**
+         * The int value holder sub-stack.
+         */
+        SubStack<int> ints;
+
+        /**
+         * The int reference value holder sub-stack.
+         */
+        SubStack<Reference<int>*> intRefs;
+
+        /**
+         * The long value holder sub-stack.
+         */
+        SubStack<lint> longs;
+
+        /**
+         * The long reference value holder sub-stack.
+         */
+        SubStack<Reference<lint>*> longRefs;
+
+        /**
+         * The float value holder sub-stack.
+         */
+        SubStack<float> floats;
+
+        /**
+         * The float reference value holder sub-stack.
+         */
+        SubStack<Reference<float>*> floatRefs;
+
+        /**
+         * The double value holder sub-stack.
+         */
+        SubStack<double> doubles;
+
+        /**
+         * The double reference value holder sub-stack.
+         */
+        SubStack<Reference<double>*> doubleRefs;
+
+        /**
+         * The boolean value holder sub-stack.
+         */
+        SubStack<bool> booleans;
+
+        /**
+         * The boolean reference value holder sub-stack.
+         */
+        SubStack<Reference<bool>*> booleanRefs;
+
+        /**
+         * The instance reference value holder sub-stack.
+         */
+        SubStack<Reference<Instance*>*> instances;
+
         /**
          * The offset of the current stack that determines
          * how far this stack is from the heap.

@@ -82,10 +82,12 @@ typedef FS::directory_entry DirEntiry;
 
 #define readNextLine std::getline
 
-// integers
+// numbers
 
 typedef unsigned int uint;
 typedef size_t ulong;
+typedef unsigned char byte;
+typedef __int64 lint;
 
 // windows exceptions
 
