@@ -17,6 +17,18 @@ namespace Void {
     { }
 
     /**
+     * Perform a method call. Copy method arguments form the caller stack to the current stack.
+     * Perform operations on the new stack. Put the return value back to the caller stack. If
+     * the instance is not null, it is a non-static method call, otherwise it is static.
+     * @param vm running virtual machine
+     * @param callerStack stack of the method's call context
+     * @param instance target instance to perform the method call with, nullptr it is static call
+     * @param caller parent caller executable that called this executable
+     */
+    void Method::invoke(VirtualMachine* vm, Stack* callerStack, Reference<Instance*>* instance, Executable* caller) {
+    }
+
+    /**
      * Debug the parsed method and its content.
      */
     void Method::debug() {

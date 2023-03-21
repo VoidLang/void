@@ -5,8 +5,9 @@
 #include "../runtime/Type.hpp"
 
 #ifdef VOID_EXECUTABLE
+#ifndef VOID_FIELD
+#define VOID_FIELD
 namespace Void {
-    
     class Field : public Executable {
     public:
         /**
@@ -40,4 +41,5 @@ namespace Void {
         void debug();
     };
 }
+#endif
 #endif

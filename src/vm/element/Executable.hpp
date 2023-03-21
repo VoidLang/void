@@ -10,6 +10,7 @@ namespace Void {
     class VirtualMachine;
     class Class;
     class Instruction;
+    class Instance;
 
     /**
      * Represents an object in hte virtual machine that is 

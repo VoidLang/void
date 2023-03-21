@@ -2,8 +2,11 @@
 
 #include "Executable.hpp"
 #include "../runtime/Reference.hpp"
+#include "../runtime/Instance.hpp"
 
 #ifdef VOID_EXECUTABLE
+#ifndef VOID_METHOD
+#define VOID_METHOD
 namespace Void {
     /**
      * Represents a class method in the virtual machine.
@@ -41,13 +44,16 @@ namespace Void {
 
         Method(String name, String returnType, List<String> modifiers, List<String> parameters, Class* clazz, VirtualMachine* vm);
 
-
         /**
          * Perform a method call. Copy method arguments form the caller stack to the current stack. 
          * Perform operations on the new stack. Put the return value back to the caller stack. If 
          * the instance is not null, it is a non-static method call, otherwise it is static.
+         * @param vm running virtual machine
+         * @param callerStack stack of the method's call context
+         * @param instance target instance to perform the method call with, nullptr it is static call
+         * @param caller parent caller executable that called this executable
          */
-        // void invoke(VirtualMachine* vm, Stack* callerStack, Reference<Instance>)
+        void invoke(VirtualMachine* vm, Stack* callerStack, Reference<Instance*>* instance, Executable* caller);
 
         /**
          * Debug the parsed method and its content.
@@ -55,4 +61,5 @@ namespace Void {
         void debug();
     };
 }
+#endif
 #endif

@@ -1,13 +1,17 @@
 #include "Stack.hpp"
+#include "../../util/Strings.hpp"
 
 namespace Void {
+    class Executable;
+
     /**
      * Initialize the stack.
      * @param parent parent stack of this stack
-     * @param name stack caller name
+     * @param executable stack creator executable
+     * @param name stack name
      */
-    Stack::Stack(Stack* parent, String name) 
-        : parent(parent), name(name), offset(parent == nullptr ? 0 : parent->offset + 1)
+    Stack::Stack(Stack* parent, Executable* executable, String name) 
+        : parent(parent), executable(executable), offset(parent == nullptr ? 0 : parent->offset + 1), name(name)
     { }
 
     /**
@@ -20,5 +24,13 @@ namespace Void {
         // make the parent stack add their parents recursively
         if (parent != nullptr)
             parent->stackTrace(result);
+    }
+
+    /**
+     * Get the string representation of the stack.
+     * @return stack debug information
+     */
+    String Stack::debug() {
+        return "[" + toString(offset) + "] " + name;
     }
 }

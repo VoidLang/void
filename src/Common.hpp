@@ -15,6 +15,7 @@ typedef std::stringstream StringStream;
     std::to_string(x)
 
 // objects
+
 #include <any>
 
 typedef std::any Object;
@@ -59,7 +60,6 @@ using List = std::vector<T>;
 
 template <typename T>
 using Function = std::function<T>;
-// #define Function std::function
 
 // files
 
@@ -100,3 +100,6 @@ typedef size_t ulong;
     std::ios::sync_with_stdio(x)
 
 #define UnderlyingType std::underlying_type
+
+#define instanceof(obj, T) \
+    ((bool) (dynamic_cast<T*>(obj) != nullptr))

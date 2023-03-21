@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../VirtualMachine.hpp"
+#include "../element/Executable.hpp"
 #include "Method.hpp"
 #include "Field.hpp"
 

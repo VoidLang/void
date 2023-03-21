@@ -3,6 +3,8 @@
 #include "../../Common.hpp"
 
 namespace Void {
+    class Executable;
+
     /**
      * Represents a registry of the sub-stack types.
      */
@@ -169,21 +171,33 @@ namespace Void {
         int offset;
 
         /**
-         * The name of the caller of the stack.
+         * The executor of this stack.
+         */
+        Executable* executable;
+
+        /**
+         * The name of the stack.
          */
         String name;
 
         /**
          * Initialize the stack.
          * @param parent parent stack of this stack
-         * @param name stack caller name
+         * @param executable stack creator executable
+         * @param name stack name
          */
-        Stack(Stack* parent, String name);
+        Stack(Stack* parent, Executable* executable, String name);
 
         /**
          * Recursively get the current stack trace.
          * @param result stack trace list
          */
         void stackTrace(List<Stack*>& result);
+
+        /**
+         * Get the string representation of the stack.
+         * @return stack debug information
+         */
+        String debug();
     };
 }

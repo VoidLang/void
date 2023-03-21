@@ -2,10 +2,16 @@
 
 #include "../../Common.hpp"
 #include "../element/Field.hpp"
+#include "Type.hpp"
 
 #ifndef VOID_INSTANCE
 #define VOID_INSTANCE
 namespace Void {
+    class Field;
+    class Class;
+    class VirtualMachine;
+    class Stack;
+
     /**
      * The instance identifier incremention counter.
      */

@@ -1,7 +1,10 @@
 #include "Launcher.hpp"
 #include "vm/parser/Program.hpp"
 #include "vm/VirtualMachine.hpp"
+#include "vm/element/Executable.hpp"
+#include "vm/runtime/Stack.hpp"
 #include "vm/element/Method.hpp"
+#include "vm/element/Field.hpp"
 
 namespace Void {
     /**
