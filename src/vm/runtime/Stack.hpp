@@ -178,6 +178,16 @@ namespace Void {
         SubStack<Reference<byte>*> byteRefs;
 
         /**
+         * The char value holder sub-stack.
+         */
+        SubStack<cint> chars;
+
+        /**
+         * The char reference value holder sub-stack.
+         */
+        SubStack<Reference<cint>*> charRefs;
+
+        /**
          * The short value holder sub-stack.
          */
         SubStack<short> shorts;

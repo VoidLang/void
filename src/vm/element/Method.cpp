@@ -48,6 +48,7 @@ namespace Void {
         // create storage offsets which are used to indicate which storage unit should a parameter value be copied into
         // when copying a certain type of parameter, the offset is incremented by one
         uint byteOffset     = 0;
+        uint charOffset     = 0;
         uint shortOffset    = 0;
         uint intOffset      = 0;
         uint longOffset     = 0;
@@ -71,6 +72,10 @@ namespace Void {
             // handle byte parameter
             if (prefix == 'B')
                 storage->bytes.set(byteOffset++, callerStack->bytes.pull());
+
+            // handle char parameter
+            else if (prefix == 'C')
+                storage->chars.set(charOffset++, callerStack->chars.pull());
 
             // handle short parameter
             else if (prefix == 'S')

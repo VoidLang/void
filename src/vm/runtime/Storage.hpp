@@ -113,6 +113,16 @@ namespace Void {
         SubStorage<Reference<byte>*> byteRefs;
 
         /**
+         * The char value holder sub-storage.
+         */
+        SubStorage<cint> chars;
+
+        /**
+         * The char reference value holder sub-storage.
+         */
+        SubStorage<cint> charRefs;
+
+        /**
          * The short value holder sub-storage.
          */
         SubStorage<short> shorts;

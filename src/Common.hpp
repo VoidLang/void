@@ -88,6 +88,7 @@ typedef unsigned int uint;
 typedef size_t ulong;
 typedef unsigned char byte;
 typedef __int64 lint;
+typedef wchar_t cint;
 
 // windows exceptions
 
