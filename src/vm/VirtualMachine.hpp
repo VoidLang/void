@@ -3,9 +3,11 @@
 #include "../Common.hpp"
 #include "../util/Options.hpp"
 #include "element/Class.hpp"
+#include "../vm/runtime/Stack.hpp"
 
 namespace Void {
     class Class;
+    class Stack;
 
     /**
      * Represents a high-level application environment emulator.
@@ -54,5 +56,11 @@ namespace Void {
          * @param class class to add
          */
         void defineClass(Class* clazz);
+
+        /**
+         * Initialize classes and their static members.
+         * @param heap root program stack
+         */
+        void initialize(Stack* heap);
     };
 }

@@ -62,8 +62,6 @@ namespace Void {
 
         // read the bytecode from the file path
         List<String> bytecode = program.build();
-        for (String line : bytecode) 
-            println("> " << line);
 
         // create the virtual machine
         // make the virtual machine load application elements 
@@ -76,6 +74,35 @@ namespace Void {
             println("[Void] Virtual Machine debug output:");
             vm->debug();
         }
+
+        // check if the main path was not specified
+        if (program.programMain.empty())
+            error("Main method in not specified.");
+
+        // get the main class of the program
+        Class* mainClass = vm->getClass(program.programMain);
+        if (mainClass == nullptr) 
+            error("NoClassFoundException: No such class " << program.programMain);
+    
+        // get the main method
+        Method* mainMethod = mainClass->getMethod("main", List<String>());
+        if (mainMethod == nullptr)
+            error("NoSuckMethodException: No such method " << mainClass->name + ".main()V");
+    
+        // create the heap stack
+        Stack* heap = new Stack(nullptr, nullptr, "Heap");
+
+        // call static constructors and initialize static fields
+        vm->initialize(heap);
+
+        // TODO setup program arguments for the environment
+
+        auto begin = currentTimeMillis();
+        mainMethod->invoke(vm, heap, nullptr, nullptr);
+        auto end = currentTimeMillis();
+
+        println("");
+        println("Executed in " << end - begin << "ms");
     }
 
     /**

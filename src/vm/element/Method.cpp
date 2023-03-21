@@ -36,7 +36,26 @@ namespace Void {
         // copy the method arguments from the method caller's stack to the current variable storage
         copyArguments(callerStack, storage, instance);
 
+        // TODO declare method call result
 
+        // TODO handle native method call
+
+        // TODO handle a normal method call
+
+        // create the method execution content
+        Context* context = new Context(stack, storage, bytecode.size(), this);
+
+        // create a new loop that will execute until a return is called or there is nothing left to be executed
+        for (; context->cursor < context->length; context->cursor++) {
+            // get the instruction at the current cursor
+            Instruction* instruction = bytecode[context->cursor];
+
+            // execute the bytecode instruction that will perform stack and storage manipulation
+            // this will might modify the cursor, and return a value
+            instruction->execute(context);
+        }
+
+        // TODO handle method return value
     }
 
     /**

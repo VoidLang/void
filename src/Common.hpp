@@ -2,7 +2,7 @@
 
 #define NOMINMAX
 
-// string manipulation
+// strings
 
 #include <iostream>
 #include <string>
@@ -106,3 +106,19 @@ typedef wchar_t cint;
 
 #define instanceof(obj, T) \
     ((bool) (dynamic_cast<T*>(obj) != nullptr))
+
+// time
+
+#include <ctime>
+#include <cstdlib>
+
+#define MILLISECONDS std::chrono::milliseconds
+#define NANOSECONDS std::chrono::nanoseconds
+#define DURATION_CAST std::chrono::duration_cast
+#define SYSTEM_CLOCK std::chrono::system_clock
+
+#define currentTimeMillis() \
+    (DURATION_CAST<MILLISECONDS>(SYSTEM_CLOCK::now().time_since_epoch()).count())
+
+#define nanoTime() \
+    (DURATION_CAST<NANOSECONDS>(SYSTEM_CLOCK::now().time_since_epoch()).count())

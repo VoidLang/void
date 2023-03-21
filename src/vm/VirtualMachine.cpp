@@ -133,4 +133,14 @@ namespace Void {
     void VirtualMachine::defineClass(Class* clazz) {
         classes.push_back(clazz);
     }
+
+    /**
+     * Initialize classes and their static members.
+     * @param heap root program stack
+     */
+    void VirtualMachine::initialize(Stack* heap) {
+        // loop through the defined classes
+        for (Class* clazz : classes)
+            clazz->initialize(heap);
+    }
 }

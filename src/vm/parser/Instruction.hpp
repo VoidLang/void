@@ -1019,7 +1019,7 @@ namespace Void {
         /**
          * The current index of the executing bytecode.
          */
-        uint cursor;
+        ulong cursor;
 
         /**
          * The total length of the executing bytecode.
@@ -1039,7 +1039,7 @@ namespace Void {
         /**
          * Initialize the execution context.
          */
-        Context(Stack* stack, Storage* storage, uint length, Executable* executable);
+        Context(Stack* stack, Storage* storage, ulong length, Executable* executable);
     };
 
     /**

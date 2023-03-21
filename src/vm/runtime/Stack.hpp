@@ -2,10 +2,14 @@
 
 #include "../../Common.hpp"
 #include "Instance.hpp"
+#include "Reference.hpp"
 
 namespace Void {
     class Executable;
     class Instance;
+    
+    template <typename T>
+    class Reference;
 
     /**
      * Represents a registry of the sub-stack types.

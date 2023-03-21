@@ -85,6 +85,8 @@ namespace Void {
 #pragma region Integers
         else if (identifier == "ipush")
             return new IntegerPush();
+        else if (identifier == "idebug")
+            return new IntegerDebug();
 #pragma endregion
 
         else
@@ -94,8 +96,9 @@ namespace Void {
     /**
      * Initialize the execution context.
      */
-    Context::Context(Stack* stack, Storage* storage, uint length, Executable* executable) 
-        : stack(stack), storage(storage), length(length), executable(executable)
+    Context::Context(Stack* stack, Storage* storage, ulong length, Executable* executable)
+        : stack(stack), storage(storage), length(length), 
+          executable(executable), cursor(0), result(nullptr)
     { }
 
     /**

@@ -9,6 +9,7 @@ namespace Void {
     class VirtualMachine;
     class Method;
     class Field;
+    class Stack;
 
     /**
      * Represens a void class in the virtual machine.
@@ -112,6 +113,12 @@ namespace Void {
          * @param field target field
          */
         void defineField(Field* field);
+
+        /**
+         * Call the static constructor and initialize static class fields.
+         * @param heap root program stack
+         */
+        void initialize(Stack* heap);
     };
 
     /**

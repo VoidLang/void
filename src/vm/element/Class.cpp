@@ -351,4 +351,29 @@ namespace Void {
     void Class::defineField(Field* field) {
         fields.push_back(field);
     }
+
+    /**
+     * Call the static constructor and initialize static class fields.
+     * @param heap root program stack
+     */
+    void Class::initialize(Stack* heap) {
+        // call the static constructor if it is registered
+        Method* constructor = getMethod("<cinit>", List<String>());
+        if (constructor != nullptr)
+            constructor->invoke(vm, heap, nullptr, nullptr);
+
+        // initialize the const pool references for the instructions
+        for (Method* method : methods)
+            method->initalize();
+
+        // initialize the static class fields 
+        // and initialize const pool references for the field instructions
+        for (Field* field : fields) {
+            // ignore the field if it is non-static
+            if (!field->hasModifier(Modifier::STATIC))
+                continue;
+            // initialize the static field
+            // TODO invoke field
+        }
+    }
 }

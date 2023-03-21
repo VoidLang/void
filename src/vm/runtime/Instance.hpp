@@ -11,6 +11,9 @@ namespace Void {
     class Class;
     class VirtualMachine;
     class Stack;
+    class Instance;
+    template <typename T>
+    class Reference;
 
     /**
      * The instance identifier incremention counter.

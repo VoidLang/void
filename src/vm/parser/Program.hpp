@@ -20,13 +20,13 @@ namespace Void {
          * The map of the program definitions that replaces aliases with keywords.
          */
         Map<String, String> definitions;
-
+        
+    public:
         /**
          * The fully qualified path of the main method.
          */
         String programMain;
 
-    public:
         /**
          * Initialize the program.
          * @param path void executable pathh

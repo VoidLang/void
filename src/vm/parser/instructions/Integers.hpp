@@ -43,5 +43,51 @@ namespace Void {
         String debug() override;
     };
 #pragma endregion
+
+#pragma region INTEGER_DEBUG
+    /**
+     * Represents an instruction that prints an integer value from the stack.
+     */
+    class IntegerDebug : public Instruction {
+    private:
+        /**
+         * Determine if a new line should be inserted after the debug.
+         */
+        bool newLine = false;
+
+        /**
+         * Determine if the value should be kept on the stack.
+         */
+        bool keepStack = false;
+    
+    public:
+        /**
+         * Initailize the integer debug instruction.
+         */
+        IntegerDebug();
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @aram executable bytecode executor
+         */
+        void parse(String data, List<String> args, uint line, Executable* executable) override;
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        void execute(Context* context) override;
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+    
+#pragma endregion
 }
 #endif
