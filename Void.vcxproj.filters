@@ -57,6 +57,9 @@
     <ClInclude Include="src\vm\runtime\Instance.hpp">
       <Filter>vm\runtime</Filter>
     </ClInclude>
+    <ClInclude Include="src\vm\parser\instructions\Integers.hpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -112,6 +115,9 @@
     <ClCompile Include="src\vm\runtime\Instance.cpp">
       <Filter>vm\runtime</Filter>
     </ClCompile>
+    <ClCompile Include="src\vm\parser\instructions\Integers.cpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="util">
@@ -128,6 +134,9 @@
     </Filter>
     <Filter Include="vm\runtime">
       <UniqueIdentifier>{8c8aeba4-9692-4957-afc5-783bf1e06ac7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vm\parser\instructions">
+      <UniqueIdentifier>{56840ae4-b2c9-4c5a-a1e1-c92ca4de9ca6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

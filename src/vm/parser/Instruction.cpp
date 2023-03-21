@@ -1,5 +1,6 @@
 #include "Instruction.hpp"
 #include "../../util/Strings.hpp"
+#include "instructions/Integers.hpp"
 
 namespace Void {
     /**
@@ -62,14 +63,7 @@ namespace Void {
         String identifier = args[0];
 
         // find the instruction wrapper from instruction name
-        Instruction* instruction = nullptr;
-
-        if (identifier == "#link")
-            instruction = new Linker();
-
-        // check if the instruction implementation was not found
-        if (instruction == nullptr)
-            instruction = new EmptyInstruction();
+        Instruction* instruction = createWrapper(identifier);
 
         // remove the identifier from the instruction arguments
         args.erase(args.begin());
@@ -77,6 +71,24 @@ namespace Void {
         instruction->parse(data, args, line, executable);
 
         return instruction;
+    }
+
+    /**
+     * Instantiate a bytecode instruction wrapper by its identifier.
+     * @param identifier instruction identifier
+     * @return new instruction wrapper
+     */
+    Instruction* Instruction::createWrapper(String identifier) {
+        if (identifier == "#link")
+            return new Linker();
+
+#pragma region Integers
+        else if (identifier == "ipush")
+            return new IntegerPush();
+#pragma endregion
+
+        else
+            return new EmptyInstruction();
     }
 
     /**

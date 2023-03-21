@@ -1092,6 +1092,14 @@ namespace Void {
          * @param executable bytecode executor
          */
         static Instruction* of(String data, uint line, Executable* executable);
+
+    private:
+        /**
+         * Instantiate a bytecode instruction wrapper by its identifier.
+         * @param identifier instruction identifier
+         * @return new instruction wrapper
+         */
+        static Instruction* createWrapper(String identifier);
     };
 
     /**
