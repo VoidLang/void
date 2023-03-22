@@ -93,6 +93,22 @@ namespace Void {
             return new IntegerSet();
         else if (identifier == "iensure")
             return new IntegerEnsure();
+        else if (identifier == "iadd")
+            return new IntegerAdd();
+        else if (identifier == "isub")
+            return new IntegerSubtract();
+        else if (identifier == "imul")
+            return new IntegerMultiply();
+        else if (identifier == "idiv")
+            return new IntegerDivide();
+        else if (identifier == "imod")
+            return new IntegerModulo();
+        else if (identifier == "iinc")
+            return new IntegerIncrement();
+        else if (identifier == "idecr")
+            return new IntegerDecrement();
+        else if (identifier == "ineg")
+            return new IntegerNegate();
         else if (identifier == "idebug")
             return new IntegerDebug();
 #pragma endregion

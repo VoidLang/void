@@ -1009,6 +1009,26 @@ namespace Void {
     bool operator==(String string, Instructions instruction);
 
     /**
+     * Represents a value target.
+     */
+    enum class Target {
+        /**
+         * The value is retrieved from the stack.
+         */
+        STACK,
+
+        /**
+         * The value is retrieved from a local variable.
+         */
+        LOCAL,
+
+        /**
+         * The value is a constant from the bytecode.
+         */
+        CONSTANT
+    };
+
+    /**
      * Represents a bytecode executing context. A context is created for every invocation of methods and fields.
      */
     class Context {

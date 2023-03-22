@@ -50,17 +50,17 @@ namespace Void {
             // get the instruction at the current cursor
             Instruction* instruction = bytecode[context->cursor];
 
-            auto begin = nanoTime();
+            //auto begin = nanoTime();
 
             // execute the bytecode instruction that will perform stack and storage manipulation
             // this will might modify the cursor, and return a value
             instruction->execute(context);
         
-            auto end = nanoTime();
+            //auto end = nanoTime();
 
-            auto name = ELEMENT_INSTRUCTIONS_MAPPED[static_cast<int>(instruction->kind)];
+            //auto name = ELEMENT_INSTRUCTIONS_MAPPED[static_cast<int>(instruction->kind)];
 
-            println(name << " took " << (end - begin) << "ns" << " " << ((end - begin) / 1000000.0) << "ms");
+            //println(name << " took " << (end - begin) << "ns" << " " << ((end - begin) / 1000000.0) << "ms");
         }
 
         // TODO handle method return value

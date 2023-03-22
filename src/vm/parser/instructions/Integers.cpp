@@ -56,13 +56,7 @@ namespace Void {
      */
     void IntegerLoad::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
-        try {
-            index = stringToInt(args[0]);
-        }
-        // get the section index from variable name 
-        catch (...) {
-            index = executable->getLinker(args[0]);
-        }
+        index = executable->getLinker(args[0]);
     }
 
     /**
@@ -218,6 +212,896 @@ namespace Void {
      */
     String IntegerEnsure::debug() {
         return "iensure " + toString(size);
+    }
+#pragma endregion
+
+#pragma region INTEGER_ADD
+    /**
+     * Initialize the integer add instruction.
+     */
+    IntegerAdd::IntegerAdd() 
+        : Instruction(Instructions::INTEGER_ADD)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void IntegerAdd::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        bool firstVariable = true;
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l") {
+                if (firstVariable) {
+                    firstTarget = Target::LOCAL;
+                    firstValue = executable->getLinker(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::LOCAL;
+                    secondValue = executable->getLinker(args[++i]);
+                }
+            }
+            // handle value from the stack
+            else if (arg == "-s") {
+                if (firstVariable) {
+                    firstTarget = Target::STACK;
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::STACK;
+                }
+            }
+            // handle const value
+            else if (arg == "-c") {
+                if (firstVariable) {
+                    firstTarget = Target::CONSTANT;
+                    firstValue = stringToInt(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::CONSTANT;
+                    secondValue = stringToInt(args[++i]);
+                }
+            }
+            // handle addition result
+            else if (arg == "-r") {
+                resultTarget = Target::LOCAL;
+                resultLocalIndex = executable->getLinker(args[++i]);
+            }
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void IntegerAdd::execute(Context* context) {
+        // get the first value to be added
+        switch (firstTarget) {
+            case Target::STACK:
+                firstValue = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                firstValue = context->storage->ints.get(firstValue);
+                break;
+        }
+        // get the second value to be added
+        switch (secondTarget) {
+            case Target::STACK:
+                secondValue = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                secondValue = context->storage->ints.get(secondValue);
+                break;
+        }
+        // add those two numbers
+        int result = firstValue + secondValue;
+        if (resultTarget == Target::STACK)
+            context->stack->ints.push(result);
+        else
+            context->storage->ints.set(resultLocalIndex, result);
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String IntegerAdd::debug() {
+        String result = "iadd";
+        switch (firstTarget) {
+            case Target::STACK:
+                result += " -s";
+                break;
+            case Target::LOCAL:
+                result += " -l " + toString(firstValue);
+                break;
+            case Target::CONSTANT:
+                result += " -c " + toString(firstValue);
+                break;
+        }
+        switch (secondTarget) {
+            case Target::STACK:
+                result += " -s";
+                break;
+            case Target::LOCAL:
+                result += " -l " + toString(secondValue);
+                break;
+            case Target::CONSTANT:
+                result += " -c " + toString(secondValue);
+                break;
+        }
+        if (resultTarget == Target::LOCAL)
+            result += " -r " + toString(resultLocalIndex);
+        return result;
+    }
+#pragma endregion
+
+#pragma region INTEGER_SUBTRACT
+    /**
+     * Initialize the integer subtract instruction.
+     */
+    IntegerSubtract::IntegerSubtract()
+        : Instruction(Instructions::INTEGER_SUBTRACT)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void IntegerSubtract::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        bool firstVariable = true;
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l") {
+                if (firstVariable) {
+                    firstTarget = Target::LOCAL;
+                    firstValue = executable->getLinker(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::LOCAL;
+                    secondValue = executable->getLinker(args[++i]);
+                }
+            }
+            // handle value from the stack
+            else if (arg == "-s") {
+                if (firstVariable) {
+                    firstTarget = Target::STACK;
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::STACK;
+                }
+            }
+            // handle const value
+            else if (arg == "-c") {
+                if (firstVariable) {
+                    firstTarget = Target::CONSTANT;
+                    firstValue = stringToInt(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::CONSTANT;
+                    secondValue = stringToInt(args[++i]);
+                }
+            }
+            // handle addition result
+            else if (arg == "-r") {
+                resultTarget = Target::LOCAL;
+                resultLocalIndex = executable->getLinker(args[++i]);
+            }
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void IntegerSubtract::execute(Context* context) {
+        // get the first value to be added
+        switch (firstTarget) {
+            case Target::STACK:
+                firstValue = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                firstValue = context->storage->ints.get(firstValue);
+                break;
+        }
+        // get the second value to be added
+        switch (secondTarget) {
+            case Target::STACK:
+                secondValue = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                secondValue = context->storage->ints.get(secondValue);
+                break;
+        }
+        // add those two numbers
+        int result = firstValue - secondValue;
+        if (resultTarget == Target::STACK)
+            context->stack->ints.push(result);
+        else
+            context->storage->ints.set(resultLocalIndex, result);
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String IntegerSubtract::debug() {
+        String result = "isub";
+        switch (firstTarget) {
+            case Target::STACK:
+                result += " -s";
+                break;
+            case Target::LOCAL:
+                result += " -l " + toString(firstValue);
+                break;
+            case Target::CONSTANT:
+                result += " -c " + toString(firstValue);
+                break;
+        }
+        switch (secondTarget) {
+            case Target::STACK:
+                result += " -s";
+                break;
+            case Target::LOCAL:
+                result += " -l " + toString(secondValue);
+                break;
+            case Target::CONSTANT:
+                result += " -c " + toString(secondValue);
+                break;
+        }
+        if (resultTarget == Target::LOCAL)
+            result += " -r " + toString(resultLocalIndex);
+        return result;
+    }
+#pragma endregion
+
+#pragma region INTEGER_MULTIPLY
+    /**
+     * Initialize the integer subtract instruction.
+     */
+    IntegerMultiply::IntegerMultiply()
+        : Instruction(Instructions::INTEGER_MULTIPLY)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void IntegerMultiply::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        bool firstVariable = true;
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l") {
+                if (firstVariable) {
+                    firstTarget = Target::LOCAL;
+                    firstValue = executable->getLinker(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::LOCAL;
+                    secondValue = executable->getLinker(args[++i]);
+                }
+            }
+            // handle value from the stack
+            else if (arg == "-s") {
+                if (firstVariable) {
+                    firstTarget = Target::STACK;
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::STACK;
+                }
+            }
+            // handle const value
+            else if (arg == "-c") {
+                if (firstVariable) {
+                    firstTarget = Target::CONSTANT;
+                    firstValue = stringToInt(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::CONSTANT;
+                    secondValue = stringToInt(args[++i]);
+                }
+            }
+            // handle addition result
+            else if (arg == "-r") {
+                resultTarget = Target::LOCAL;
+                resultLocalIndex = executable->getLinker(args[++i]);
+            }
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void IntegerMultiply::execute(Context* context) {
+        // get the first value to be added
+        switch (firstTarget) {
+            case Target::STACK:
+                firstValue = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                firstValue = context->storage->ints.get(firstValue);
+                break;
+            }
+        // get the second value to be added
+        switch (secondTarget) {
+            case Target::STACK:
+                secondValue = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                secondValue = context->storage->ints.get(secondValue);
+                break;
+            }
+        // add those two numbers
+        int result = firstValue * secondValue;
+        if (resultTarget == Target::STACK)
+            context->stack->ints.push(result);
+        else
+            context->storage->ints.set(resultLocalIndex, result);
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String IntegerMultiply::debug() {
+        String result = "imul";
+        switch (firstTarget) {
+            case Target::STACK:
+                result += " -s";
+                break;
+            case Target::LOCAL:
+                result += " -l " + toString(firstValue);
+                break;
+            case Target::CONSTANT:
+                result += " -c " + toString(firstValue);
+                break;
+        }
+        switch (secondTarget) {
+            case Target::STACK:
+                result += " -s";
+                break;
+            case Target::LOCAL:
+                result += " -l " + toString(secondValue);
+                break;
+            case Target::CONSTANT:
+                result += " -c " + toString(secondValue);
+                break;
+        }
+        if (resultTarget == Target::LOCAL)
+            result += " -r " + toString(resultLocalIndex);
+        return result;
+    }
+#pragma endregion
+
+#pragma region INTEGER_DIVIDE
+    /**
+     * Initialize the integer divide instruction.
+     */
+    IntegerDivide::IntegerDivide()
+        : Instruction(Instructions::INTEGER_DIVIDE)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void IntegerDivide::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        bool firstVariable = true;
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l") {
+                if (firstVariable) {
+                    firstTarget = Target::LOCAL;
+                    firstValue = executable->getLinker(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::LOCAL;
+                    secondValue = executable->getLinker(args[++i]);
+                }
+            }
+            // handle value from the stack
+            else if (arg == "-s") {
+                if (firstVariable) {
+                    firstTarget = Target::STACK;
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::STACK;
+                }
+            }
+            // handle const value
+            else if (arg == "-c") {
+                if (firstVariable) {
+                    firstTarget = Target::CONSTANT;
+                    firstValue = stringToInt(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::CONSTANT;
+                    secondValue = stringToInt(args[++i]);
+                }
+            }
+            // handle addition result
+            else if (arg == "-r") {
+                resultTarget = Target::LOCAL;
+                resultLocalIndex = executable->getLinker(args[++i]);
+            }
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void IntegerDivide::execute(Context* context) {
+        // get the first value to be added
+        switch (firstTarget) {
+            case Target::STACK:
+                firstValue = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                firstValue = context->storage->ints.get(firstValue);
+                break;
+        }
+        // get the second value to be added
+        switch (secondTarget) {
+            case Target::STACK:
+                secondValue = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                secondValue = context->storage->ints.get(secondValue);
+                break;
+        }
+        // add those two numbers
+        int result = firstValue / secondValue;
+        if (resultTarget == Target::STACK)
+            context->stack->ints.push(result);
+        else
+            context->storage->ints.set(resultLocalIndex, result);
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String IntegerDivide::debug() {
+        String result = "idiv";
+        switch (firstTarget) {
+            case Target::STACK:
+                result += " -s";
+                break;
+            case Target::LOCAL:
+                result += " -l " + toString(firstValue);
+                break;
+            case Target::CONSTANT:
+                result += " -c " + toString(firstValue);
+                break;
+        }
+        switch (secondTarget) {
+            case Target::STACK:
+                result += " -s";
+                break;
+            case Target::LOCAL:
+                result += " -l " + toString(secondValue);
+                break;
+            case Target::CONSTANT:
+                result += " -c " + toString(secondValue);
+                break;
+        }
+        if (resultTarget == Target::LOCAL)
+            result += " -r " + toString(resultLocalIndex);
+        return result;
+    }
+#pragma endregion
+
+#pragma region INTEGER_MODULO
+    /**
+     * Initialize the integer modulo instruction.
+     */
+    IntegerModulo::IntegerModulo()
+        : Instruction(Instructions::INTEGER_MODULO)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void IntegerModulo::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        bool firstVariable = true;
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l") {
+                if (firstVariable) {
+                    firstTarget = Target::LOCAL;
+                    firstValue = executable->getLinker(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::LOCAL;
+                    secondValue = executable->getLinker(args[++i]);
+                }
+            }
+            // handle value from the stack
+            else if (arg == "-s") {
+                if (firstVariable) {
+                    firstTarget = Target::STACK;
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::STACK;
+                }
+            }
+            // handle const value
+            else if (arg == "-c") {
+                if (firstVariable) {
+                    firstTarget = Target::CONSTANT;
+                    firstValue = stringToInt(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::CONSTANT;
+                    secondValue = stringToInt(args[++i]);
+                }
+            }
+            // handle addition result
+            else if (arg == "-r") {
+                resultTarget = Target::LOCAL;
+                resultLocalIndex = executable->getLinker(args[++i]);
+            }
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void IntegerModulo::execute(Context* context) {
+        // get the first value to be added
+        switch (firstTarget) {
+            case Target::STACK:
+                firstValue = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                firstValue = context->storage->ints.get(firstValue);
+                break;
+        }
+        // get the second value to be added
+        switch (secondTarget) {
+            case Target::STACK:
+                secondValue = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                secondValue = context->storage->ints.get(secondValue);
+                break;
+        }
+        // add those two numbers
+        int result = firstValue % secondValue;
+        switch (resultTarget) {
+            case Target::STACK:
+                context->stack->ints.push(result);
+                break;
+            case Target::LOCAL:
+                context->storage->ints.set(resultLocalIndex, result);
+                break;
+        }
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String IntegerModulo::debug() {
+        String result = "imod";
+        switch (firstTarget) {
+            case Target::STACK:
+                result += " -s";
+                break;
+            case Target::LOCAL:
+                result += " -l " + toString(firstValue);
+                break;
+            case Target::CONSTANT:
+                result += " -c " + toString(firstValue);
+                break;
+        }
+        switch (secondTarget) {
+            case Target::STACK:
+                result += " -s";
+                break;
+            case Target::LOCAL:
+                result += " -l " + toString(secondValue);
+                break;
+            case Target::CONSTANT:
+                result += " -c " + toString(secondValue);
+                break;
+        }
+        if (resultTarget == Target::LOCAL)
+            result += " -r " + toString(resultLocalIndex);
+        return result;
+    }
+#pragma endregion
+
+#pragma region INTEGER_INCREMENT
+    /**
+     * Initialize the integer increment instruction.
+     */
+    IntegerIncrement::IntegerIncrement()
+        : Instruction(Instructions::INTEGER_INCREMENT)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void IntegerIncrement::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l") {
+                source = Target::LOCAL;
+                sourceIndex = executable->getLinker(args[++i]);
+            }
+            // handle addition result
+            else if (arg == "-r") {
+                result = Target::LOCAL;
+                resultIndex = executable->getLinker(args[++i]);
+            }
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void IntegerIncrement::execute(Context* context) {
+        // get the value to be incremented
+        int value = 0;
+        switch (source) {
+            case Target::STACK:
+                value = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                value = context->storage->ints.get(sourceIndex);
+                break;
+        }
+        // increment the value
+        value++;
+        switch (result) {
+            case Target::STACK:
+                context->stack->ints.push(value);
+                break;
+            case Target::LOCAL:
+                context->storage->ints.set(resultIndex, value);
+                break;
+        }
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String IntegerIncrement::debug() {
+        String debug = "iinc";
+        switch (source) {
+            case Target::STACK:
+                debug += " -s";
+                break;
+            case Target::LOCAL:
+                debug += " -l " + toString(sourceIndex);
+                break;
+        }
+        switch (result) {
+            case Target::LOCAL:
+                debug += " -r " + toString(resultIndex);
+        }
+        return debug;
+    }
+#pragma endregion
+
+#pragma region INTEGER_DECREMENT
+    /**
+     * Initialize the integer decrement instruction.
+     */
+    IntegerDecrement::IntegerDecrement()
+        : Instruction(Instructions::INTEGER_DECREMENT)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void IntegerDecrement::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l") {
+                source = Target::LOCAL;
+                sourceIndex = executable->getLinker(args[++i]);
+            }
+            // handle addition result
+            else if (arg == "-r") {
+                result = Target::LOCAL;
+                resultIndex = executable->getLinker(args[++i]);
+            }
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void IntegerDecrement::execute(Context* context) {
+        // get the value to be incremented
+        int value = 0;
+        switch (source) {
+            case Target::STACK:
+                value = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                value = context->storage->ints.get(sourceIndex);
+                break;
+        }
+        // increment the value
+        value--;
+        switch (result) {
+            case Target::STACK:
+                context->stack->ints.push(value);
+                break;
+            case Target::LOCAL:
+                context->storage->ints.set(resultIndex, value);
+                break;
+        }
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String IntegerDecrement::debug() {
+        String debug = "idecr";
+        switch (source) {
+            case Target::STACK:
+                debug += " -s";
+                break;
+            case Target::LOCAL:
+                debug += " -l " + toString(sourceIndex);
+                break;
+        }
+        switch (result) {
+            case Target::LOCAL:
+                debug += " -r " + toString(resultIndex);
+            }
+        return debug;
+    }
+#pragma endregion
+
+#pragma region INTEGER_NEGATE
+    /**
+     * Initialize the integer negate instruction.
+     */
+    IntegerNegate::IntegerNegate()
+        : Instruction(Instructions::INTEGER_NEGATE)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void IntegerNegate::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l") {
+                source = Target::LOCAL;
+                sourceIndex = executable->getLinker(args[++i]);
+            }
+            // handle addition result
+            else if (arg == "-r") {
+                result = Target::LOCAL;
+                resultIndex = executable->getLinker(args[++i]);
+            }
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void IntegerNegate::execute(Context* context) {
+        // get the value to be incremented
+        int value = 0;
+        switch (source) {
+            case Target::STACK:
+                value = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                value = context->storage->ints.get(sourceIndex);
+                break;
+        }
+        // negate the value
+        value = -value;
+        switch (result) {
+            case Target::STACK:
+                context->stack->ints.push(value);
+                break;
+            case Target::LOCAL:
+                context->storage->ints.set(resultIndex, value);
+                break;
+        }
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String IntegerNegate::debug() {
+        String debug = "ineg";
+        switch (source) {
+            case Target::STACK:
+                debug += " -s";
+                break;
+            case Target::LOCAL:
+                debug += " -l " + toString(sourceIndex);
+                break;
+        }
+        switch (result) {
+            case Target::LOCAL:
+                debug += " -r " + toString(resultIndex);
+        }
+        return debug;
     }
 #pragma endregion
 

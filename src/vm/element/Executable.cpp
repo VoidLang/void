@@ -157,14 +157,19 @@ namespace Void {
      * @return the storage unit of the variable
      */
     uint Executable::getLinker(String linker) {
-        // loop through the regitered variable linksers
-        for (const auto& [key, value] : linkers) {
-            // check if the linker name matches
-            if (key == linker)
-                return value;
+        uint result = 0;
+        try {
+            result = stringToInt(linker);
         }
-        // linker not found
-        return 0;
+        catch (...) {
+            // loop through the regitered variable linksers
+            for (const auto& [key, value] : linkers) {
+                // check if the linker name matches
+                if (key == linker)
+                    return value;
+            }
+        }
+        return result;
     }
 
     /**
