@@ -122,6 +122,15 @@ namespace Void {
         }
 
         /**
+         * Get a value from the sub-stack
+         * @param keepStack should the value be kept on the stack
+         * @return oldest sub-stack element
+         */
+        T pull(bool keepStack) {
+            return keepStack ? pull() : get();
+        }
+
+        /**
          * Get the first element of the sub-stack without removing it.
          * @return oldest sub-stack element
          */

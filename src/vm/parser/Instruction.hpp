@@ -165,9 +165,14 @@ namespace Void {
         INTEGER_STORE,
 
         /**
-         * Store an integer in the storage with keeping the value in the stack.
+         * Set the value of the given local variable. 
          */
-        INTEGER_STORE_KEEP_STACK,
+        INTEGER_SET,
+
+        /**
+         * Ensure the capacity of the integer variable storage.
+         */
+        INTEGER_ENSURE,
 
         /**
          * Load an integer value from an array.
@@ -784,7 +789,7 @@ namespace Void {
     /**
      * The registry of the mapped instruction names.
      */
-    static const char* ELEMENT_INSTRUCTIONS_MAPPED[109] = {
+    static const char* ELEMENT_INSTRUCTIONS_MAPPED[110] = {
         "cdef",
         "cmod",
         "cext",
@@ -816,7 +821,8 @@ namespace Void {
         "ipush",
         "iload",
         "istore",
-        "istorew",
+        "iset",
+        "iensure",
         "iaload",
         "iastore",
         "iadd",
@@ -906,7 +912,7 @@ namespace Void {
     /**
      * The registry of the unmapped raw instruction values.
      */
-    static const char* ELEMENT_INSTRUCTIONS_UNMAPPED[109] = {
+    static const char* ELEMENT_INSTRUCTIONS_UNMAPPED[110] = {
         "cdef",
         "cmod",
         "cext",
@@ -938,7 +944,8 @@ namespace Void {
         "ipush",
         "iload",
         "istore",
-        "istorew",
+        "iset",
+        "iensure",
         "iaload",
         "iastore",
         "iadd",
@@ -1024,7 +1031,7 @@ namespace Void {
         /**
          * The total length of the executing bytecode.
          */
-        uint length;
+        ulong length;
 
         /**
          * The result object of the bytecode execution.

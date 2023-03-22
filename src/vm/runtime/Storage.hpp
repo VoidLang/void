@@ -10,6 +10,8 @@ namespace Void {
      * Represents a registry of the sub-storage types.
      */
     enum class StorageUnit {
+        BYTE,
+        SHORT,
         INT,
         FLOAT,
         DOUBLE,

@@ -85,6 +85,14 @@ namespace Void {
 #pragma region Integers
         else if (identifier == "ipush")
             return new IntegerPush();
+        else if (identifier == "iload")
+            return new IntegerLoad();
+        else if (identifier == "istore")
+            return new IntegerStore();
+        else if (identifier == "iset")
+            return new IntegerSet();
+        else if (identifier == "iensure")
+            return new IntegerEnsure();
         else if (identifier == "idebug")
             return new IntegerDebug();
 #pragma endregion
