@@ -83,6 +83,10 @@ namespace Void {
             if (begin > 0)
                 line = line.substr(begin);
 
+            // ignore the line if it is a comment
+            if (line[0] == ';')
+                continue;
+
             // split the instruction line
             List<String> args = Strings::split(line, ' ');
 

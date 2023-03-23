@@ -127,7 +127,7 @@ namespace Void {
          * @return oldest sub-stack element
          */
         T pull(bool keepStack) {
-            return keepStack ? pull() : get();
+            return keepStack ? get() : pull();
         }
 
         /**

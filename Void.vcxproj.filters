@@ -60,6 +60,9 @@
     <ClInclude Include="src\vm\parser\instructions\Integers.hpp">
       <Filter>vm\parser\instructions</Filter>
     </ClInclude>
+    <ClInclude Include="src\vm\parser\instructions\Sections.hpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -116,6 +119,9 @@
       <Filter>vm\runtime</Filter>
     </ClCompile>
     <ClCompile Include="src\vm\parser\instructions\Integers.cpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\parser\instructions\Sections.cpp">
       <Filter>vm\parser\instructions</Filter>
     </ClCompile>
   </ItemGroup>

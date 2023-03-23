@@ -1,6 +1,7 @@
 #include "Instruction.hpp"
 #include "../../util/Strings.hpp"
 #include "instructions/Integers.hpp"
+#include "instructions/Sections.hpp"
 
 namespace Void {
     /**
@@ -79,7 +80,11 @@ namespace Void {
      * @return new instruction wrapper
      */
     Instruction* Instruction::createWrapper(String identifier) {
-        if (identifier == "#link")
+        if (identifier[0] == ':')
+            return new Section();
+        else if (identifier == "goto")
+            return new Goto();
+        else if (identifier == "#link")
             return new Linker();
 
 #pragma region Integers
@@ -111,6 +116,8 @@ namespace Void {
             return new IntegerNegate();
         else if (identifier == "idebug")
             return new IntegerDebug();
+        else if (identifier == "ifieq")
+            return new IntegerEquals();
 #pragma endregion
 
         else

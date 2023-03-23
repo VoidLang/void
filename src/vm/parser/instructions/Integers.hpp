@@ -749,5 +749,65 @@ namespace Void {
     };
     
 #pragma endregion
+
+#pragma region INTEGER_IF_EQUALS
+    /**
+     * Represents an instruction that jumps to a given section if two integers are equal.
+     */
+    class IntegerEquals : public Instruction {
+    private:
+        /**
+         * The target of the first number in the remainder division.
+         */
+        Target firstTarget = Target::STACK;
+
+        /**
+         * The storage index or the value of the first number.
+         */
+        int firstValue = 0;
+
+        /**
+         * Determine if the second number should be loaded from the stack.
+         */
+        Target secondTarget = Target::STACK;
+
+        /**
+         * The storage index or the value of the second number.
+         */
+        int secondValue = 0;
+
+        /**
+         * The bytecode instruction index to jump to.
+         */
+        uint index = 0;
+
+    public:
+        /**
+         * Initialize the goto instruction.
+         */
+        IntegerEquals();
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @aram executable bytecode executor
+         */
+        void parse(String data, List<String> args, uint line, Executable* executable) override;
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        void execute(Context* context) override;
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+#pragma endregion
 }
 #endif

@@ -237,7 +237,7 @@ namespace Void {
             // get the current argument
             String arg = args[i];
             // handle value from local variable
-            if (arg == "-l") {
+            if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
                     firstValue = executable->getLinker(args[++i]);
@@ -249,7 +249,7 @@ namespace Void {
                 }
             }
             // handle value from the stack
-            else if (arg == "-s") {
+            else if (arg == "-s" || arg == "-stack") {
                 if (firstVariable) {
                     firstTarget = Target::STACK;
                     firstVariable = false;
@@ -259,7 +259,7 @@ namespace Void {
                 }
             }
             // handle const value
-            else if (arg == "-c") {
+            else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
                     firstValue = stringToInt(args[++i]);
@@ -271,7 +271,7 @@ namespace Void {
                 }
             }
             // handle addition result
-            else if (arg == "-r") {
+            else if (arg == "-r" || arg == "-result") {
                 resultTarget = Target::LOCAL;
                 resultLocalIndex = executable->getLinker(args[++i]);
             }
@@ -284,29 +284,35 @@ namespace Void {
      */
     void IntegerAdd::execute(Context* context) {
         // get the first value to be added
+        int first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                firstValue = context->stack->ints.pull();
+                first = context->stack->ints.pull();
                 break;
             case Target::LOCAL:
-                firstValue = context->storage->ints.get(firstValue);
+                first = context->storage->ints.get(firstValue);
                 break;
         }
         // get the second value to be added
+        int second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                secondValue = context->stack->ints.pull();
+                second = context->stack->ints.pull();
                 break;
             case Target::LOCAL:
-                secondValue = context->storage->ints.get(secondValue);
+                second = context->storage->ints.get(secondValue);
                 break;
         }
         // add those two numbers
-        int result = firstValue + secondValue;
-        if (resultTarget == Target::STACK)
-            context->stack->ints.push(result);
-        else
-            context->storage->ints.set(resultLocalIndex, result);
+        int result = first + second;
+        switch (resultTarget) {
+            case Target::STACK:
+                context->stack->ints.push(result);
+                break;
+            case Target::LOCAL:
+                context->storage->ints.set(resultLocalIndex, result);
+                break;
+        }
     }
 
     /**
@@ -317,24 +323,24 @@ namespace Void {
         String result = "iadd";
         switch (firstTarget) {
             case Target::STACK:
-                result += " -s";
+                result += " -stack";
                 break;
             case Target::LOCAL:
-                result += " -l " + toString(firstValue);
+                result += " -local " + toString(firstValue);
                 break;
             case Target::CONSTANT:
-                result += " -c " + toString(firstValue);
+                result += " -const " + toString(firstValue);
                 break;
         }
         switch (secondTarget) {
             case Target::STACK:
-                result += " -s";
+                result += " -stack";
                 break;
             case Target::LOCAL:
-                result += " -l " + toString(secondValue);
+                result += " -local " + toString(secondValue);
                 break;
             case Target::CONSTANT:
-                result += " -c " + toString(secondValue);
+                result += " -const " + toString(secondValue);
                 break;
         }
         if (resultTarget == Target::LOCAL)
@@ -365,7 +371,7 @@ namespace Void {
             // get the current argument
             String arg = args[i];
             // handle value from local variable
-            if (arg == "-l") {
+            if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
                     firstValue = executable->getLinker(args[++i]);
@@ -377,7 +383,7 @@ namespace Void {
                 }
             }
             // handle value from the stack
-            else if (arg == "-s") {
+            else if (arg == "-s" || arg == "-stack") {
                 if (firstVariable) {
                     firstTarget = Target::STACK;
                     firstVariable = false;
@@ -387,7 +393,7 @@ namespace Void {
                 }
             }
             // handle const value
-            else if (arg == "-c") {
+            else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
                     firstValue = stringToInt(args[++i]);
@@ -399,7 +405,7 @@ namespace Void {
                 }
             }
             // handle addition result
-            else if (arg == "-r") {
+            else if (arg == "-r" || arg == "-result") {
                 resultTarget = Target::LOCAL;
                 resultLocalIndex = executable->getLinker(args[++i]);
             }
@@ -412,29 +418,35 @@ namespace Void {
      */
     void IntegerSubtract::execute(Context* context) {
         // get the first value to be added
+        int first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                firstValue = context->stack->ints.pull();
+                first = context->stack->ints.pull();
                 break;
             case Target::LOCAL:
-                firstValue = context->storage->ints.get(firstValue);
+                first = context->storage->ints.get(firstValue);
                 break;
         }
         // get the second value to be added
+        int second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                secondValue = context->stack->ints.pull();
+                second = context->stack->ints.pull();
                 break;
             case Target::LOCAL:
-                secondValue = context->storage->ints.get(secondValue);
+                second = context->storage->ints.get(secondValue);
                 break;
         }
         // add those two numbers
-        int result = firstValue - secondValue;
-        if (resultTarget == Target::STACK)
-            context->stack->ints.push(result);
-        else
-            context->storage->ints.set(resultLocalIndex, result);
+        int result = first - second;
+        switch (resultTarget) {
+            case Target::STACK:
+                context->stack->ints.push(result);
+                break;
+            case Target::LOCAL:
+                context->storage->ints.set(resultLocalIndex, result);
+                break;
+        }
     }
 
     /**
@@ -445,24 +457,24 @@ namespace Void {
         String result = "isub";
         switch (firstTarget) {
             case Target::STACK:
-                result += " -s";
+                result += " -stack";
                 break;
             case Target::LOCAL:
-                result += " -l " + toString(firstValue);
+                result += " -local " + toString(firstValue);
                 break;
             case Target::CONSTANT:
-                result += " -c " + toString(firstValue);
+                result += " -const " + toString(firstValue);
                 break;
         }
         switch (secondTarget) {
             case Target::STACK:
-                result += " -s";
+                result += " -stack";
                 break;
             case Target::LOCAL:
-                result += " -l " + toString(secondValue);
+                result += " -local " + toString(secondValue);
                 break;
             case Target::CONSTANT:
-                result += " -c " + toString(secondValue);
+                result += " -const " + toString(secondValue);
                 break;
         }
         if (resultTarget == Target::LOCAL)
@@ -493,7 +505,7 @@ namespace Void {
             // get the current argument
             String arg = args[i];
             // handle value from local variable
-            if (arg == "-l") {
+            if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
                     firstValue = executable->getLinker(args[++i]);
@@ -505,7 +517,7 @@ namespace Void {
                 }
             }
             // handle value from the stack
-            else if (arg == "-s") {
+            else if (arg == "-s" || arg == "-stack") {
                 if (firstVariable) {
                     firstTarget = Target::STACK;
                     firstVariable = false;
@@ -515,7 +527,7 @@ namespace Void {
                 }
             }
             // handle const value
-            else if (arg == "-c") {
+            else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
                     firstValue = stringToInt(args[++i]);
@@ -527,7 +539,7 @@ namespace Void {
                 }
             }
             // handle addition result
-            else if (arg == "-r") {
+            else if (arg == "-r" || arg == "-result") {
                 resultTarget = Target::LOCAL;
                 resultLocalIndex = executable->getLinker(args[++i]);
             }
@@ -540,29 +552,35 @@ namespace Void {
      */
     void IntegerMultiply::execute(Context* context) {
         // get the first value to be added
+        int first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                firstValue = context->stack->ints.pull();
+                first = context->stack->ints.pull();
                 break;
             case Target::LOCAL:
-                firstValue = context->storage->ints.get(firstValue);
+                first = context->storage->ints.get(firstValue);
                 break;
             }
         // get the second value to be added
+        int second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                secondValue = context->stack->ints.pull();
+                second = context->stack->ints.pull();
                 break;
             case Target::LOCAL:
-                secondValue = context->storage->ints.get(secondValue);
+                second = context->storage->ints.get(secondValue);
                 break;
             }
         // add those two numbers
-        int result = firstValue * secondValue;
-        if (resultTarget == Target::STACK)
-            context->stack->ints.push(result);
-        else
-            context->storage->ints.set(resultLocalIndex, result);
+        int result = first * second;
+        switch (resultTarget) {
+            case Target::STACK:
+                context->stack->ints.push(result);
+                break;
+            case Target::LOCAL:
+                context->storage->ints.set(resultLocalIndex, result);
+                break;
+        }
     }
 
     /**
@@ -573,24 +591,24 @@ namespace Void {
         String result = "imul";
         switch (firstTarget) {
             case Target::STACK:
-                result += " -s";
+                result += " -stack";
                 break;
             case Target::LOCAL:
-                result += " -l " + toString(firstValue);
+                result += " -local " + toString(firstValue);
                 break;
             case Target::CONSTANT:
-                result += " -c " + toString(firstValue);
+                result += " -const " + toString(firstValue);
                 break;
         }
         switch (secondTarget) {
             case Target::STACK:
-                result += " -s";
+                result += " -stack";
                 break;
             case Target::LOCAL:
-                result += " -l " + toString(secondValue);
+                result += " -local " + toString(secondValue);
                 break;
             case Target::CONSTANT:
-                result += " -c " + toString(secondValue);
+                result += " -const " + toString(secondValue);
                 break;
         }
         if (resultTarget == Target::LOCAL)
@@ -621,7 +639,7 @@ namespace Void {
             // get the current argument
             String arg = args[i];
             // handle value from local variable
-            if (arg == "-l") {
+            if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
                     firstValue = executable->getLinker(args[++i]);
@@ -633,7 +651,7 @@ namespace Void {
                 }
             }
             // handle value from the stack
-            else if (arg == "-s") {
+            else if (arg == "-s" || arg == "-stack") {
                 if (firstVariable) {
                     firstTarget = Target::STACK;
                     firstVariable = false;
@@ -643,7 +661,7 @@ namespace Void {
                 }
             }
             // handle const value
-            else if (arg == "-c") {
+            else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
                     firstValue = stringToInt(args[++i]);
@@ -655,7 +673,7 @@ namespace Void {
                 }
             }
             // handle addition result
-            else if (arg == "-r") {
+            else if (arg == "-r" || arg == "-result") {
                 resultTarget = Target::LOCAL;
                 resultLocalIndex = executable->getLinker(args[++i]);
             }
@@ -668,29 +686,35 @@ namespace Void {
      */
     void IntegerDivide::execute(Context* context) {
         // get the first value to be added
+        int first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                firstValue = context->stack->ints.pull();
+                first = context->stack->ints.pull();
                 break;
             case Target::LOCAL:
-                firstValue = context->storage->ints.get(firstValue);
+                first = context->storage->ints.get(firstValue);
                 break;
         }
         // get the second value to be added
+        int second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                secondValue = context->stack->ints.pull();
+                second = context->stack->ints.pull();
                 break;
             case Target::LOCAL:
-                secondValue = context->storage->ints.get(secondValue);
+                second = context->storage->ints.get(secondValue);
                 break;
         }
         // add those two numbers
-        int result = firstValue / secondValue;
-        if (resultTarget == Target::STACK)
-            context->stack->ints.push(result);
-        else
-            context->storage->ints.set(resultLocalIndex, result);
+        int result = first / second;
+        switch (resultTarget) {
+            case Target::STACK:
+                context->stack->ints.push(result);
+                break;
+            case Target::LOCAL:
+                context->storage->ints.set(resultLocalIndex, result);
+                break;
+        }
     }
 
     /**
@@ -701,24 +725,24 @@ namespace Void {
         String result = "idiv";
         switch (firstTarget) {
             case Target::STACK:
-                result += " -s";
+                result += " -stack";
                 break;
             case Target::LOCAL:
-                result += " -l " + toString(firstValue);
+                result += " -local " + toString(firstValue);
                 break;
             case Target::CONSTANT:
-                result += " -c " + toString(firstValue);
+                result += " -const " + toString(firstValue);
                 break;
         }
         switch (secondTarget) {
             case Target::STACK:
-                result += " -s";
+                result += " -stack";
                 break;
             case Target::LOCAL:
-                result += " -l " + toString(secondValue);
+                result += " -local " + toString(secondValue);
                 break;
             case Target::CONSTANT:
-                result += " -c " + toString(secondValue);
+                result += " -const " + toString(secondValue);
                 break;
         }
         if (resultTarget == Target::LOCAL)
@@ -749,7 +773,7 @@ namespace Void {
             // get the current argument
             String arg = args[i];
             // handle value from local variable
-            if (arg == "-l") {
+            if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
                     firstValue = executable->getLinker(args[++i]);
@@ -761,7 +785,7 @@ namespace Void {
                 }
             }
             // handle value from the stack
-            else if (arg == "-s") {
+            else if (arg == "-s" || arg == "-stack") {
                 if (firstVariable) {
                     firstTarget = Target::STACK;
                     firstVariable = false;
@@ -771,7 +795,7 @@ namespace Void {
                 }
             }
             // handle const value
-            else if (arg == "-c") {
+            else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
                     firstValue = stringToInt(args[++i]);
@@ -783,7 +807,7 @@ namespace Void {
                 }
             }
             // handle addition result
-            else if (arg == "-r") {
+            else if (arg == "-r" || arg == "-result") {
                 resultTarget = Target::LOCAL;
                 resultLocalIndex = executable->getLinker(args[++i]);
             }
@@ -796,25 +820,27 @@ namespace Void {
      */
     void IntegerModulo::execute(Context* context) {
         // get the first value to be added
+        int first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                firstValue = context->stack->ints.pull();
+                first = context->stack->ints.pull();
                 break;
             case Target::LOCAL:
-                firstValue = context->storage->ints.get(firstValue);
+                first = context->storage->ints.get(firstValue);
                 break;
         }
         // get the second value to be added
+        int second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                secondValue = context->stack->ints.pull();
+                second = context->stack->ints.pull();
                 break;
             case Target::LOCAL:
-                secondValue = context->storage->ints.get(secondValue);
+                second = context->storage->ints.get(secondValue);
                 break;
         }
         // add those two numbers
-        int result = firstValue % secondValue;
+        int result = first % second;
         switch (resultTarget) {
             case Target::STACK:
                 context->stack->ints.push(result);
@@ -833,24 +859,24 @@ namespace Void {
         String result = "imod";
         switch (firstTarget) {
             case Target::STACK:
-                result += " -s";
+                result += " -stack";
                 break;
             case Target::LOCAL:
-                result += " -l " + toString(firstValue);
+                result += " -local " + toString(firstValue);
                 break;
             case Target::CONSTANT:
-                result += " -c " + toString(firstValue);
+                result += " -const " + toString(firstValue);
                 break;
         }
         switch (secondTarget) {
             case Target::STACK:
-                result += " -s";
+                result += " -stack";
                 break;
             case Target::LOCAL:
-                result += " -l " + toString(secondValue);
+                result += " -local " + toString(secondValue);
                 break;
             case Target::CONSTANT:
-                result += " -c " + toString(secondValue);
+                result += " -const " + toString(secondValue);
                 break;
         }
         if (resultTarget == Target::LOCAL)
@@ -880,12 +906,12 @@ namespace Void {
             // get the current argument
             String arg = args[i];
             // handle value from local variable
-            if (arg == "-l") {
+            if (arg == "-l" || arg == "-local") {
                 source = Target::LOCAL;
                 sourceIndex = executable->getLinker(args[++i]);
             }
             // handle addition result
-            else if (arg == "-r") {
+            else if (arg == "-r" || arg == "-result") {
                 result = Target::LOCAL;
                 resultIndex = executable->getLinker(args[++i]);
             }
@@ -927,15 +953,15 @@ namespace Void {
         String debug = "iinc";
         switch (source) {
             case Target::STACK:
-                debug += " -s";
+                debug += " -stack";
                 break;
             case Target::LOCAL:
-                debug += " -l " + toString(sourceIndex);
+                debug += " -local " + toString(sourceIndex);
                 break;
         }
         switch (result) {
             case Target::LOCAL:
-                debug += " -r " + toString(resultIndex);
+                debug += " -result " + toString(resultIndex);
         }
         return debug;
     }
@@ -962,12 +988,12 @@ namespace Void {
             // get the current argument
             String arg = args[i];
             // handle value from local variable
-            if (arg == "-l") {
+            if (arg == "-l" || arg == "-local") {
                 source = Target::LOCAL;
                 sourceIndex = executable->getLinker(args[++i]);
             }
             // handle addition result
-            else if (arg == "-r") {
+            else if (arg == "-r" || arg == "-result") {
                 result = Target::LOCAL;
                 resultIndex = executable->getLinker(args[++i]);
             }
@@ -1009,15 +1035,15 @@ namespace Void {
         String debug = "idecr";
         switch (source) {
             case Target::STACK:
-                debug += " -s";
+                debug += " -stack";
                 break;
             case Target::LOCAL:
-                debug += " -l " + toString(sourceIndex);
+                debug += " -local " + toString(sourceIndex);
                 break;
         }
         switch (result) {
             case Target::LOCAL:
-                debug += " -r " + toString(resultIndex);
+                debug += " -result " + toString(resultIndex);
             }
         return debug;
     }
@@ -1044,12 +1070,12 @@ namespace Void {
             // get the current argument
             String arg = args[i];
             // handle value from local variable
-            if (arg == "-l") {
+            if (arg == "-l" || arg == "-local") {
                 source = Target::LOCAL;
                 sourceIndex = executable->getLinker(args[++i]);
             }
             // handle addition result
-            else if (arg == "-r") {
+            else if (arg == "-r" || arg == "-result") {
                 result = Target::LOCAL;
                 resultIndex = executable->getLinker(args[++i]);
             }
@@ -1091,15 +1117,15 @@ namespace Void {
         String debug = "ineg";
         switch (source) {
             case Target::STACK:
-                debug += " -s";
+                debug += " -stack";
                 break;
             case Target::LOCAL:
-                debug += " -l " + toString(sourceIndex);
+                debug += " -local " + toString(sourceIndex);
                 break;
         }
         switch (result) {
             case Target::LOCAL:
-                debug += " -r " + toString(resultIndex);
+                debug += " -result " + toString(resultIndex);
         }
         return debug;
     }
@@ -1125,10 +1151,10 @@ namespace Void {
         for (uint i = 0; i < args.size(); i++) {
             String flag = args[i];
             // check if the debug should insert a new line afterwards
-            if (flag == "-n")
+            if (flag == "-n" || flag == "-new" || flag == "-newline" || flag == "-nl")
                 newLine = true;
             // check if the value should be kept on the stack
-            else if (flag == "-k")
+            else if (flag == "-k" || flag == "-kep" || flag == "-keepstack")
                 keepStack = true;
         }
     }
@@ -1153,10 +1179,133 @@ namespace Void {
     String IntegerDebug::debug() {
         String result = "idebug";
         if (newLine)
-            result += " -n";
+            result += " -newline";
         if (keepStack)
-            result += " -k";
+            result += " -keepstack";
         return result;
+    }
+#pragma endregion
+
+#pragma region INTEGER_IF_EQUALS
+    /**
+        * Initialize the goto instruction.
+        */
+    IntegerEquals::IntegerEquals()
+        : Instruction(Instructions::INTEGER_IF_EQUAL)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void IntegerEquals::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        bool firstVariable = true;
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l" || arg == "-local") {
+                if (firstVariable) {
+                    firstTarget = Target::LOCAL;
+                    firstValue = executable->getLinker(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::LOCAL;
+                    secondValue = executable->getLinker(args[++i]);
+                }
+            }
+            // handle value from the stack
+            else if (arg == "-s" || arg == "-stack") {
+                if (firstVariable) {
+                    firstTarget = Target::STACK;
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::STACK;
+                }
+            }
+            // handle const value
+            else if (arg == "-c" || arg == "-const") {
+                if (firstVariable) {
+                    firstTarget = Target::CONSTANT;
+                    firstValue = stringToInt(args[++i]);
+                    firstVariable = false;
+                }
+                else {
+                    secondTarget = Target::CONSTANT;
+                    secondValue = stringToInt(args[++i]);
+                }
+            }
+            // handle addition result
+            else if (arg == "-j" || arg == "-jump")
+                index = executable->getSection(args[++i]);
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void IntegerEquals::execute(Context* context) {
+        // get the first value to be added
+        int first = firstValue;
+        switch (firstTarget) {
+            case Target::STACK:
+                first = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                first = context->storage->ints.get(firstValue);
+                break;
+        }
+        // get the second value to be added
+        int second = secondValue;
+        switch (secondTarget) {
+            case Target::STACK:
+                second = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                second = context->storage->ints.get(secondValue);
+                break;
+        }
+        // check if the two numbers equal
+        if (first == second)
+            context->cursor = index;
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String IntegerEquals::debug() {
+        String result = "ifieq";
+        switch (firstTarget) {
+            case Target::STACK:
+                result += " -stack";
+                break;
+            case Target::LOCAL:
+                result += " -local " + toString(firstValue);
+                break;
+            case Target::CONSTANT:
+                result += " -const " + toString(firstValue);
+                break;
+        }
+        switch (secondTarget) {
+            case Target::STACK:
+                result += " -stack";
+                break;
+            case Target::LOCAL:
+                result += " -local " + toString(secondValue);
+                break;
+            case Target::CONSTANT:
+                result += " -const " + toString(secondValue);
+                break;
+        }
+        return result + " -jump " + toString(index);
     }
 #pragma endregion
 }
