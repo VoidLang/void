@@ -1,6 +1,7 @@
 #include "Instruction.hpp"
 #include "../../util/Strings.hpp"
 #include "instructions/Integers.hpp"
+#include "instructions/Longs.hpp"
 #include "instructions/Sections.hpp"
 
 namespace Void {
@@ -116,9 +117,87 @@ namespace Void {
             return new IntegerNegate();
         else if (identifier == "idebug")
             return new IntegerDebug();
-        else if (identifier == "ifieq")
+        else if (identifier == "ifieq" || identifier == "ifi==")
             return new IntegerEquals();
+        else if (identifier == "ifineq" || identifier == "ifi!=")
+            return new IntegerNotEquals();
+        else if (identifier == "ifig" || identifier == "ifi>")
+            return new IntegerGreaterThan();
+        else if (identifier == "ifige" || identifier == "ifi>=")
+            return new IntegerGreaterThanOrEquals();
+        else if (identifier == "ifil" || identifier == "ifi<")
+            return new IntegerLessThan();
+        else if (identifier == "ifile" || identifier == "ifi<=")
+            return new IntegerLessThanOrEqual();
+        else if (identifier == "istacksize")
+            return new IntegerStackSize();
+        else if (identifier == "idumpstack")
+            return new IntegerDumpStack();
+        else if (identifier == "iclearstack")
+            return new IntegerClearStack();
+        else if (identifier == "ipop")
+            return new IntegerPopStack();
+        else if (identifier == "idup")
+            return new IntegerDuplicateStack();
 #pragma endregion
+
+#pragma region Longs
+        else if (identifier == "lpush")
+            return new LongPush();
+        else if (identifier == "lload")
+            return new LongLoad();
+        else if (identifier == "lstore")
+            return new LongStore();
+        else if (identifier == "lset")
+            return new LongSet();
+        else if (identifier == "lensure")
+            return new LongEnsure();
+        else if (identifier == "ladd")
+            return new LongAdd();
+        else if (identifier == "lsub")
+            return new LongSubtract();
+        else if (identifier == "lmul")
+            return new LongMultiply();
+        else if (identifier == "ldiv")
+            return new LongDivide();
+        else if (identifier == "lmod")
+            return new LongModulo();
+        else if (identifier == "linc")
+            return new LongIncrement();
+        else if (identifier == "ldecr")
+            return new LongDecrement();
+        else if (identifier == "lneg")
+            return new LongNegate();
+        else if (identifier == "ldebug")
+            return new LongDebug();
+        else if (identifier == "ifleq" || identifier == "ifl==")
+            return new LongEquals();
+        else if (identifier == "iflneq" || identifier == "ifl!=")
+            return new LongNotEquals();
+        else if (identifier == "iflg" || identifier == "ifl>")
+            return new LongGreaterThan();
+        else if (identifier == "iflge" || identifier == "ifl>=")
+            return new LongGreaterThanOrEquals();
+        else if (identifier == "ifll" || identifier == "ifl<")
+            return new LongLessThan();
+        else if (identifier == "iflle" || identifier == "ifl<=")
+            return new LongLessThanOrEqual();
+        else if (identifier == "lstacksize")
+            return new LongStackSize();
+        else if (identifier == "ldumpstack")
+            return new LongDumpStack();
+        else if (identifier == "lclearstack")
+            return new LongClearStack();
+        else if (identifier == "lpop")
+            return new LongPopStack();
+        else if (identifier == "ldup")
+            return new LongDuplicateStack();
+#pragma endregion
+
+        else if (identifier == "print")
+            return new Print();
+        else if (identifier == "println")
+            return new PrintLine();
 
         else
             return new EmptyInstruction();
@@ -174,5 +253,73 @@ namespace Void {
      */
     String Linker::debug() {
         return "#link " + variable + " " + toString(index);
+    }
+
+    /**
+     * Initialize the print instruction.
+     */
+    Print::Print()
+        : Instruction(Instructions::PRINT)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void Print::parse(String data, List<String> args, uint line, Executable* executable) {
+        text = data.substr(7, data.length() - 7 - 1);
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void Print::execute(Context* context) {
+        print(text);
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String Print::debug() {
+        return "print \"" + text + "\"";
+    }
+
+    /**
+     * Initialize the print instruction.
+     */
+    PrintLine::PrintLine()
+        : Instruction(Instructions::PRINT_LINE)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @aram executable bytecode executor
+     */
+    void PrintLine::parse(String data, List<String> args, uint line, Executable* executable) {
+        text = data.substr(9, data.length() - 9 - 1);
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void PrintLine::execute(Context* context) {
+        println(text);
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String PrintLine::debug() {
+        return "println \"" + text + "\"";
     }
 }

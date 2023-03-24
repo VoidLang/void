@@ -68,7 +68,7 @@ namespace Void {
         /**
          * The count of elements in the sun-stack.
          */
-        int count;
+        uint count;
 
     public:
         /**
@@ -143,10 +143,31 @@ namespace Void {
         }
 
         /**
+         * Get the sub-stack element at the given index.
+         * @param index sub-stack element index
+         * @return sub-stack element at the slot
+         */
+        T at(uint index) {
+            // recursively loop through the elements of the sub-stack
+            uint currentIndex = 0;
+            Node<T>* node = first;
+            while (node != NULL) {
+                // move to the next node
+                if (currentIndex++ < index)
+                    node = node->next;
+                // index matches, return node data
+                else
+                    return node->data;
+            }
+            // element not found
+            return {};
+        }
+
+        /**
          * Get the size of the sub-stack.
          * @return number of sub-stack elements
          */
-        int size() {
+        uint size() {
             return count;
         }
 

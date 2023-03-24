@@ -4,22 +4,22 @@
 
 #ifdef VOID_INSTRUCTION
 namespace Void {
-#pragma region INTEGER_PUSH
+#pragma region LONG_PUSH
     /**
-     * Represents an instruction that pushes an integer to the stack.
+     * Represents an instruction that pushes an long to the stack.
      */
-    class IntegerPush : public Instruction {
+    class LongPush : public Instruction {
     private:
         /**
          * The value to push to the stack.
          */
-        int value = 0;
+        lint value = 0;
 
     public:
         /**
-         * Initialize the integer push instruction.
+         * Initialize the long push instruction.
          */
-        IntegerPush();
+        LongPush();
 
         /**
          * Parse raw bytecode instruction.
@@ -35,7 +35,7 @@ namespace Void {
          * @param context bytecode execution context
          */
         void execute(Context* context) override;
-    
+
         /**
          * Get the string representation of the instruction.
          * @return instruction bytecode data
@@ -44,22 +44,22 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_LOAD
+#pragma region LONG_LOAD
     /**
-     * Represents an instruction that loads an integer from the storage.
+     * Represents an instruction that loads an long from the storage.
      */
-    class IntegerLoad : public Instruction {
+    class LongLoad : public Instruction {
     private:
         /**
-         * The storage index to load the integer from.
+         * The storage index to load the long from.
          */
         uint index = 0;
 
     public:
         /**
-         * Initialize the integer load instruction.
+         * Initialize the long load instruction.
          */
-        IntegerLoad();
+        LongLoad();
 
         /**
          * Parse raw bytecode instruction.
@@ -84,14 +84,14 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_STORE
+#pragma region LONG_STORE
     /**
-     * Represents an instruction that stores an integer in the storage.
+     * Represents an instruction that stores an long in the storage.
      */
-    class IntegerStore : public Instruction {
+    class LongStore : public Instruction {
     private:
         /**
-         * The storage index to store the integer into.
+         * The storage index to store the long linto.
          */
         uint index = 0;
 
@@ -102,9 +102,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer store instruction.
+         * Initialize the long store instruction.
          */
-        IntegerStore();
+        LongStore();
 
         /**
          * Parse raw bytecode instruction.
@@ -129,11 +129,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_SET
+#pragma region LONG_SET
     /**
      * Set the value of the given local variable.
      */
-    class IntegerSet : public Instruction {
+    class LongSet : public Instruction {
     private:
         /**
          * The local variable storage index to be assigned.
@@ -143,13 +143,13 @@ namespace Void {
         /**
          * The value to push to be assigned for the variable.
          */
-        int value = 0;
+        lint value = 0;
 
     public:
         /**
-         * Initialize the integer set instruction.
+         * Initialize the long set instruction.
          */
-        IntegerSet();
+        LongSet();
 
         /**
          * Parse raw bytecode instruction.
@@ -174,11 +174,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_ENSURE
+#pragma region LONG_ENSURE
     /**
-     * Ensure the capacity of the integer variable storage.
+     * Ensure the capacity of the long variable storage.
      */
-    class IntegerEnsure : public Instruction {
+    class LongEnsure : public Instruction {
     private:
         /**
          * The ensured size of the variable storage.
@@ -187,9 +187,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer ensure instruction.
+         * Initialize the long ensure instruction.
          */
-        IntegerEnsure();
+        LongEnsure();
 
         /**
          * Parse raw bytecode instruction.
@@ -214,11 +214,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_ADD
+#pragma region LONG_ADD
     /**
-     * Represents an instruction that adds two integer values.
+     * Represents an instruction that adds two long values.
      */
-    class IntegerAdd : public Instruction {
+    class LongAdd : public Instruction {
     private:
         /**
          * The target of te first number in the addition.
@@ -228,7 +228,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        int firstValue = 0;
+        lint firstValue = 0;
 
         /**
          * Determine if the second number should be loaded from the stack.
@@ -238,7 +238,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        int secondValue = 0;
+        lint secondValue = 0;
 
         /**
          * The target of the addition result.
@@ -252,9 +252,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer add instruction. 
+         * Initialize the long add instruction.
          */
-        IntegerAdd();
+        LongAdd();
 
         /**
          * Parse raw bytecode instruction.
@@ -279,11 +279,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_SUBTRACT
+#pragma region LONG_SUBTRACT
     /**
-     * Represents an instruction that subtracts two integer values.
+     * Represents an instruction that subtracts two long values.
      */
-    class IntegerSubtract : public Instruction {
+    class LongSubtract : public Instruction {
     private:
         /**
          * The target of te first number in the subtraction.
@@ -293,7 +293,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        int firstValue = 0;
+        lint firstValue = 0;
 
         /**
          * Determine if the second number should be loaded from the stack.
@@ -303,7 +303,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        int secondValue = 0;
+        lint secondValue = 0;
 
         /**
          * The target of the subtraction result.
@@ -317,9 +317,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer subtract instruction.
+         * Initialize the long subtract instruction.
          */
-        IntegerSubtract();
+        LongSubtract();
 
         /**
          * Parse raw bytecode instruction.
@@ -344,11 +344,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_MULTIPLY
+#pragma region LONG_MULTIPLY
     /**
-     * Represents an instruction that multiplies two integer values.
+     * Represents an instruction that multiplies two long values.
      */
-    class IntegerMultiply : public Instruction {
+    class LongMultiply : public Instruction {
     private:
         /**
          * The target of te first number in the multiplication.
@@ -358,7 +358,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        int firstValue = 0;
+        lint firstValue = 0;
 
         /**
          * Determine if the second number should be loaded from the stack.
@@ -368,7 +368,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        int secondValue = 0;
+        lint secondValue = 0;
 
         /**
          * The target of the multiplication result.
@@ -382,9 +382,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer multiply instruction.
+         * Initialize the long multiply instruction.
          */
-        IntegerMultiply();
+        LongMultiply();
 
         /**
          * Parse raw bytecode instruction.
@@ -409,11 +409,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_DIVIDE
+#pragma region LONG_DIVIDE
     /**
-     * Represents an instruction that divides two integer values.
+     * Represents an instruction that divides two long values.
      */
-    class IntegerDivide : public Instruction {
+    class LongDivide : public Instruction {
     private:
         /**
          * The target of te first number in the division.
@@ -423,7 +423,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        int firstValue = 0;
+        lint firstValue = 0;
 
         /**
          * Determine if the second number should be loaded from the stack.
@@ -433,7 +433,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        int secondValue = 0;
+        lint secondValue = 0;
 
         /**
          * The target of the division result.
@@ -447,9 +447,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer divide instruction.
+         * Initialize the long divide instruction.
          */
-        IntegerDivide();
+        LongDivide();
 
         /**
          * Parse raw bytecode instruction.
@@ -474,11 +474,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_MODULO
+#pragma region LONG_MODULO
     /**
-     * Represents an instruction that divides two integer values and results the remainder.
+     * Represents an instruction that divides two long values and results the remainder.
      */
-    class IntegerModulo : public Instruction {
+    class LongModulo : public Instruction {
     private:
         /**
          * The target of the first number in the remainder division.
@@ -488,7 +488,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        int firstValue = 0;
+        lint firstValue = 0;
 
         /**
          * Determine if the second number should be loaded from the stack.
@@ -498,7 +498,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        int secondValue = 0;
+        lint secondValue = 0;
 
         /**
          * The target of the remainder division result.
@@ -512,9 +512,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer modulo instruction.
+         * Initialize the long modulo instruction.
          */
-        IntegerModulo();
+        LongModulo();
 
         /**
          * Parse raw bytecode instruction.
@@ -539,11 +539,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_INCREMENT
+#pragma region LONG_INCREMENT
     /**
-     * Represents an instruction that increments an integer by one.
+     * Represents an instruction that increments an long by one.
      */
-    class IntegerIncrement : public Instruction {
+    class LongIncrement : public Instruction {
     private:
         /**
          * The target of the incremention source.
@@ -556,7 +556,7 @@ namespace Void {
         uint sourceIndex = 0;
 
         /**
-         * The target of the incremention result. 
+         * The target of the incremention result.
          */
         Target result = Target::STACK;
 
@@ -567,9 +567,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer increment instruction.
+         * Initialize the long increment instruction.
          */
-        IntegerIncrement();
+        LongIncrement();
 
         /**
          * Parse raw bytecode instruction.
@@ -594,11 +594,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_DECREMENT
+#pragma region LONG_DECREMENT
     /**
-     * Represents an instruction that decrements an integer by one.
+     * Represents an instruction that decrements an long by one.
      */
-    class IntegerDecrement : public Instruction {
+    class LongDecrement : public Instruction {
     private:
         /**
          * The target of the decremention source.
@@ -622,9 +622,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer decrement instruction.
+         * Initialize the long decrement instruction.
          */
-        IntegerDecrement();
+        LongDecrement();
 
         /**
          * Parse raw bytecode instruction.
@@ -649,11 +649,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_NEGATE
+#pragma region LONG_NEGATE
     /**
-     * Represents an instruction that negates an integer.
+     * Represents an instruction that negates an long.
      */
-    class IntegerNegate : public Instruction {
+    class LongNegate : public Instruction {
     private:
         /**
          * The target of the negation source.
@@ -677,9 +677,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer negate instruction.
+         * Initialize the long negate instruction.
          */
-        IntegerNegate();
+        LongNegate();
 
         /**
          * Parse raw bytecode instruction.
@@ -704,11 +704,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_DEBUG
+#pragma region LONG_DEBUG
     /**
-     * Represents an instruction that prints an integer value from the stack.
+     * Represents an instruction that prlints an long value from the stack.
      */
-    class IntegerDebug : public Instruction {
+    class LongDebug : public Instruction {
     private:
         /**
          * Determine if a new line should be inserted after the debug.
@@ -719,12 +719,12 @@ namespace Void {
          * Determine if the value should be kept on the stack.
          */
         bool keepStack = false;
-    
+
     public:
         /**
-         * Initailize the integer debug instruction.
+         * Initailize the long debug instruction.
          */
-        IntegerDebug();
+        LongDebug();
 
         /**
          * Parse raw bytecode instruction.
@@ -747,14 +747,14 @@ namespace Void {
          */
         String debug() override;
     };
-    
+
 #pragma endregion
 
-#pragma region INTEGER_IF_EQUALS
+#pragma region LONG_IF_EQUALS
     /**
-     * Represents an instruction that jumps to a given section if two integers are equal.
+     * Represents an instruction that jumps to a given section if two longs are equal.
      */
-    class IntegerEquals : public Instruction {
+    class LongEquals : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -764,7 +764,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        int firstValue = 0;
+        lint firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -774,7 +774,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        int secondValue = 0;
+        lint secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -783,9 +783,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer equals check instruction.
+         * Initialize the long equals check instruction.
          */
-        IntegerEquals();
+        LongEquals();
 
         /**
          * Parse raw bytecode instruction.
@@ -810,11 +810,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_IF_NOT_EQUALS
+#pragma region LONG_IF_NOT_EQUALS
     /**
-     * Represents an instruction that jumps to a given section if two integers are not equal.
+     * Represents an instruction that jumps to a given section if two longs are not equal.
      */
-    class IntegerNotEquals : public Instruction {
+    class LongNotEquals : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -824,7 +824,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        int firstValue = 0;
+        lint firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -834,7 +834,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        int secondValue = 0;
+        lint secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -843,9 +843,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer not equals instruction.
+         * Initialize the long not equals instruction.
          */
-        IntegerNotEquals();
+        LongNotEquals();
 
         /**
          * Parse raw bytecode instruction.
@@ -870,11 +870,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_IF_GREATER_THAN
+#pragma region LONG_IF_GREATER_THAN
     /**
-     * Represents an instruction that jumps to a given section if an integer is greater than another.
+     * Represents an instruction that jumps to a given section if an long is greater than another.
      */
-    class IntegerGreaterThan : public Instruction {
+    class LongGreaterThan : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -884,7 +884,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        int firstValue = 0;
+        lint firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -894,7 +894,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        int secondValue = 0;
+        lint secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -903,9 +903,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer greater than check instruction.
+         * Initialize the long greater than check instruction.
          */
-        IntegerGreaterThan();
+        LongGreaterThan();
 
         /**
          * Parse raw bytecode instruction.
@@ -930,11 +930,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_IF_GREATER_THAN_OR_EQUAL
+#pragma region LONG_IF_GREATER_THAN_OR_EQUAL
     /**
-     * Represents an instruction that jumps to a given section if an integer is greater than or is equal another.
+     * Represents an instruction that jumps to a given section if an long is greater than or is equal another.
      */
-    class IntegerGreaterThanOrEquals : public Instruction {
+    class LongGreaterThanOrEquals : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -944,7 +944,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        int firstValue = 0;
+        lint firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -954,7 +954,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        int secondValue = 0;
+        lint secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -963,9 +963,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer greater than or equal check instruction.
+         * Initialize the long greater than or equal check instruction.
          */
-        IntegerGreaterThanOrEquals();
+        LongGreaterThanOrEquals();
 
         /**
          * Parse raw bytecode instruction.
@@ -990,11 +990,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_IF_LESS_THAN
+#pragma region LONG_IF_LESS_THAN
     /**
-     * Represents an instruction that jumps to a given section if an integer is less than another.
+     * Represents an instruction that jumps to a given section if an long is less than another.
      */
-    class IntegerLessThan : public Instruction {
+    class LongLessThan : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -1004,7 +1004,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        int firstValue = 0;
+        lint firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -1014,7 +1014,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        int secondValue = 0;
+        lint secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -1023,9 +1023,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer less than check instruction.
+         * Initialize the long less than check instruction.
          */
-        IntegerLessThan();
+        LongLessThan();
 
         /**
          * Parse raw bytecode instruction.
@@ -1050,11 +1050,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_IF_LESS_THAN_OR_EQUAL
+#pragma region LONG_IF_LESS_THAN_OR_EQUAL
     /**
-     * Represents an instruction that jumps to a given section if an integer is less than or is equal another.
+     * Represents an instruction that jumps to a given section if an long is less than or is equal another.
      */
-    class IntegerLessThanOrEqual : public Instruction {
+    class LongLessThanOrEqual : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -1064,7 +1064,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        int firstValue = 0;
+        lint firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -1074,7 +1074,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        int secondValue = 0;
+        lint secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -1083,9 +1083,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the integer less than or equal check instruction.
+         * Initialize the long less than or equal check instruction.
          */
-        IntegerLessThanOrEqual();
+        LongLessThanOrEqual();
 
         /**
          * Parse raw bytecode instruction.
@@ -1110,16 +1110,16 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_STACK_SIZE
+#pragma region LONG_STACK_SIZE
     /**
-     * Represents an instruction that retrieves the size of the integer stack and pushes the count to the integer stack.
+     * Represents an instruction that retrieves the size of the long stack and pushes the count to the long stack.
      */
-    class IntegerStackSize : public Instruction {
+    class LongStackSize : public Instruction {
     public:
         /**
-         * Initailize the integer stack size instruction. 
+         * Initailize the long stack size instruction.
          */
-        IntegerStackSize();
+        LongStackSize();
 
         /**
          * Execute the instruction in the executable context.
@@ -1135,16 +1135,16 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_DUMP_STACK
+#pragma region LONG_DUMP_STACK
     /**
-     * Represents an instruction that dumps the elements of the integer stack.
+     * Represents an instruction that dumps the elements of the long stack.
      */
-    class IntegerDumpStack : public Instruction {
+    class LongDumpStack : public Instruction {
     public:
         /**
-         * Initialize the integer stack dump instruction.
+         * Initialize the long stack dump instruction.
          */
-        IntegerDumpStack();
+        LongDumpStack();
 
         /**
          * Execute the instruction in the executable context.
@@ -1160,16 +1160,16 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_CLEAR_STACK
+#pragma region LONG_CLEAR_STACK
     /**
-     * Represents an instruction that clears the integer stack.
+     * Represents an instruction that clears the long stack.
      */
-    class IntegerClearStack : public Instruction {
+    class LongClearStack : public Instruction {
     public:
         /**
-         * Initialize the integer stack clear instruction.
+         * Initialize the long stack clear instruction.
          */
-        IntegerClearStack();
+        LongClearStack();
 
         /**
          * Execute the instruction in the executable context.
@@ -1185,16 +1185,16 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_POP_STACK
+#pragma region LONG_POP_STACK
     /**
-     * Represents an instruction that removes an integer from the stack.
+     * Represents an instruction that removes an long from the stack.
      */
-    class IntegerPopStack : public Instruction {
+    class LongPopStack : public Instruction {
     public:
         /**
-         * Initialize the integer pop instruction.
+         * Initialize the long pop instruction.
          */
-        IntegerPopStack();
+        LongPopStack();
 
         /**
          * Execute the instruction in the executable context.
@@ -1210,22 +1210,22 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region INTEGER_DUPLICATE_STACK
+#pragma region LONG_DUPLICATE_STACK
     /**
-     * Represents an instruction that duplicates an integer on the stack.
+     * Represents an instruction that duplicates an long on the stack.
      */
-    class IntegerDuplicateStack : public Instruction {
+    class LongDuplicateStack : public Instruction {
     private:
         /**
-         * The number of times the integer should be duplicated.
+         * The number of times the long should be duplicated.
          */
         uint count = 1;
 
     public:
         /**
-         * Initialize the integer duplicate instruction.
+         * Initialize the long duplicate instruction.
          */
-        IntegerDuplicateStack();
+        LongDuplicateStack();
 
         /**
          * Parse raw bytecode instruction.

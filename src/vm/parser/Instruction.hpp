@@ -240,11 +240,6 @@ namespace Void {
         INTEGER_DUPLICATE_STACK,
 
         /**
-         * Duplicate the integer on the stack N times.
-         */
-        INTEGER_DUPLICATE_STACK_TIMES,
-
-        /**
          * Print the integer on the stack.
          */
         INTEGER_DEBUG,
@@ -253,6 +248,11 @@ namespace Void {
          * Get the count of integers on the stack and push the result back.
          */
         INTEGER_STACK_SIZE,
+
+        /**
+         * Dump the elements of the integer stack.
+         */
+        INTEGER_DUMP_STACK,
 
         /**
          * Clear the content of the integer stack.
@@ -587,32 +587,37 @@ namespace Void {
 #pragma region Longs
 
         /**
-         * Push a long to the stack.
+         * Push an long to the stack.
          */
         LONG_PUSH,
 
         /**
-         * Load a long from the storage to the stack.
+         * Load an long from the storage to the stack.
          */
         LONG_LOAD,
 
         /**
-         * Store a long from the stack to the storage.
+         * Store an long from the stack to the storage.
          */
         LONG_STORE,
 
         /**
-         * Store a long in the storage with keeping the value in the stack.
+         * Set the value of the given local variable.
          */
-        LONG_STORE_KEEP_STACK,
+        LONG_SET,
 
         /**
-         * Load a long value from an array.
+         * Ensure the capacity of the long variable storage.
+         */
+        LONG_ENSURE,
+
+        /**
+         * Load an long value from an array.
          */
         LONG_ARRAY_LOAD,
 
         /**
-         * Store a long value in an array.
+         * Store an long value in an array.
          */
         LONG_ARRAY_STORE,
 
@@ -657,7 +662,7 @@ namespace Void {
         LONG_NEGATE,
 
         /**
-         * Return a long value from the stack.
+         * Return an long value from the stack.
          */
         LONG_RETURN,
 
@@ -672,12 +677,7 @@ namespace Void {
         LONG_DUPLICATE_STACK,
 
         /**
-         * Duplicate the long on the stack N times.
-         */
-        LONG_DUPLICATE_STACK_TIMES,
-
-        /**
-         * PrLLONG the long on the stack.
+         * Prlint the long on the stack.
          */
         LONG_DEBUG,
 
@@ -685,6 +685,11 @@ namespace Void {
          * Get the count of longs on the stack and push the result back.
          */
         LONG_STACK_SIZE,
+
+        /**
+         * Dump the elements of the long stack.
+         */
+        LONG_DUMP_STACK,
 
         /**
          * Clear the content of the long stack.
@@ -707,22 +712,22 @@ namespace Void {
         LONG_IF_NOT_EQUAL,
 
         /**
-         * Check if a long is greater than another.
+         * Check if an long is greater than another.
          */
         LONG_IF_GREATER_THAN,
 
         /**
-         * Check if a long is either greater than or is equal to another.
+         * Check if an long is either greater than or is equal to another.
          */
         LONG_IF_GREATER_THAN_OR_EQUAL,
 
         /**
-         * Check if a long is less than another.
+         * Check if an long is less than another.
          */
         LONG_IF_LESS_THAN,
 
         /**
-         * Check if a long is either less than or is equal to another.
+         * Check if an long is either less than or is equal to another.
          */
         LONG_IF_LESS_THAN_OR_EQUAL,
 
@@ -783,13 +788,17 @@ namespace Void {
 
         INPUT,
 
+        PRINT,
+
+        PRINT_LINE,
+
         NONE
     };
 
     /**
      * The registry of the mapped instruction names.
      */
-    static const char* ELEMENT_INSTRUCTIONS_MAPPED[110] = {
+    static const char* ELEMENT_INSTRUCTIONS_MAPPED[142] = {
         "cdef",
         "cmod",
         "cext",
@@ -836,9 +845,9 @@ namespace Void {
         "ireturn",
         "ipop",
         "idup",
-        "idup_x",
         "idebug",
         "istacksize",
+        "idumpstack",
         "iclearstack",
         "ialloc",
         "ifieq",
@@ -847,6 +856,36 @@ namespace Void {
         "ifige",
         "ifil",
         "ifile",
+
+        "lpush",
+        "lload",
+        "lstore",
+        "lset",
+        "lensure",
+        "laload",
+        "lastore",
+        "ladd",
+        "lsub",
+        "lmul",
+        "ldiv",
+        "lmod",
+        "linc",
+        "ldecr",
+        "lneg",
+        "lreturn",
+        "lpop",
+        "ldup",
+        "ldebug",
+        "lstacksize",
+        "ldumpstack",
+        "lclearstack",
+        "lalloc",
+        "ifleq",
+        "iflneq",
+        "iflg",
+        "iflge",
+        "ifll",
+        "iflle",
 
         "fpush",
         "fload",
@@ -906,13 +945,17 @@ namespace Void {
         "ifdl",
         "ifdle",
 
-        "invokestatic"
+        "invokestatic",
+
+        "input",
+        "print",
+        "println"
     };
 
     /**
      * The registry of the unmapped raw instruction values.
      */
-    static const char* ELEMENT_INSTRUCTIONS_UNMAPPED[110] = {
+    static const char* ELEMENT_INSTRUCTIONS_UNMAPPED[142] = {
         "cdef",
         "cmod",
         "cext",
@@ -959,9 +1002,9 @@ namespace Void {
         "ireturn",
         "ipop",
         "idup",
-        "idup_x",
         "idebug",
         "istacksize",
+        "idumpstack",
         "iclearstack",
         "ialloc",
         "ifieq",
@@ -970,6 +1013,36 @@ namespace Void {
         "ifige",
         "ifil",
         "ifile",
+
+        "lpush",
+        "lload",
+        "lstore",
+        "lset",
+        "lensure",
+        "laload",
+        "lastore",
+        "ladd",
+        "lsub",
+        "lmul",
+        "ldiv",
+        "lmod",
+        "linc",
+        "ldecr",
+        "lneg",
+        "lreturn",
+        "lpop",
+        "ldup",
+        "ldebug",
+        "lstacksize",
+        "ldumpstack",
+        "lclearstack",
+        "lalloc",
+        "ifleq",
+        "iflneq",
+        "iflg",
+        "iflge",
+        "ifll",
+        "iflle",
 
         "fpush",
         "fload",
@@ -993,14 +1066,47 @@ namespace Void {
         "fstacksize",
         "fclearstack",
         "falloc",
-        "ffieq",
-        "ffineq",
-        "ffig",
-        "ffige",
-        "ffil",
-        "ffile",
+        "iffeq",
+        "iffneq",
+        "iffg",
+        "iffge",
+        "iffl",
+        "iffle",
 
-        "invokestatic"
+        "dpush",
+        "dload",
+        "dstore",
+        "dstorew",
+        "daload",
+        "dastore",
+        "dadd",
+        "dsub",
+        "dmul",
+        "ddiv",
+        "dmod",
+        "dinc",
+        "ddecr",
+        "dneg",
+        "dreturn",
+        "dpop",
+        "ddup",
+        "ddup_x",
+        "ddebug",
+        "dstacksize",
+        "dclearstack",
+        "dalloc",
+        "ifdeq",
+        "ifdneq",
+        "ifdg",
+        "ifdge",
+        "ifdl",
+        "ifdle",
+
+        "invokestatic",
+
+        "input",
+        "print",
+        "println"
     };
 
     /**
@@ -1160,7 +1266,7 @@ namespace Void {
         /**
          * The linked storage index of the variable.
          */
-        uint index;
+        uint index = 0;
 
         /**
          * Initialize the linker instruction.
@@ -1175,6 +1281,82 @@ namespace Void {
          * @aram executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+
+    /**
+     * Represents an instruction that prints the given text to the console.
+     */
+    class Print : public Instruction {
+    private:
+        /**
+         * The text to be printed.
+         */
+        String text;
+
+    public:
+        /**
+         * Initialize the print instruction.
+         */
+        Print();
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @aram executable bytecode executor
+         */
+        void parse(String data, List<String> args, uint line, Executable* executable) override;
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        void execute(Context* context) override;
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+
+    /**
+     * Represents an instruction that prints the given text to the console and inserts a new line.
+     */
+    class PrintLine : public Instruction {
+    private:
+        /**
+         * The text to be printed.
+         */
+        String text;
+
+    public:
+        /**
+         * Initialize the print instruction.
+         */
+        PrintLine();
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @aram executable bytecode executor
+         */
+        void parse(String data, List<String> args, uint line, Executable* executable) override;
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        void execute(Context* context) override;
 
         /**
          * Get the string representation of the instruction.

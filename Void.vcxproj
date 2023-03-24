@@ -31,7 +31,9 @@
     <ClInclude Include="src\vm\element\Field.hpp" />
     <ClInclude Include="src\vm\element\Method.hpp" />
     <ClInclude Include="src\vm\parser\Instruction.hpp" />
+    <ClInclude Include="src\vm\parser\instructions\Instances.hpp" />
     <ClInclude Include="src\vm\parser\instructions\Integers.hpp" />
+    <ClInclude Include="src\vm\parser\instructions\Longs.hpp" />
     <ClInclude Include="src\vm\parser\instructions\Sections.hpp" />
     <ClInclude Include="src\vm\parser\Program.hpp" />
     <ClInclude Include="src\vm\runtime\Instance.hpp" />
@@ -55,7 +57,9 @@
     <ClCompile Include="src\vm\element\Field.cpp" />
     <ClCompile Include="src\vm\element\Method.cpp" />
     <ClCompile Include="src\vm\parser\Instruction.cpp" />
+    <ClCompile Include="src\vm\parser\instructions\Instances.cpp" />
     <ClCompile Include="src\vm\parser\instructions\Integers.cpp" />
+    <ClCompile Include="src\vm\parser\instructions\Longs.cpp" />
     <ClCompile Include="src\vm\parser\instructions\Sections.cpp" />
     <ClCompile Include="src\vm\parser\Program.cpp" />
     <ClCompile Include="src\vm\runtime\Instance.cpp" />

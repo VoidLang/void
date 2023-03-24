@@ -63,6 +63,12 @@
     <ClInclude Include="src\vm\parser\instructions\Sections.hpp">
       <Filter>vm\parser\instructions</Filter>
     </ClInclude>
+    <ClInclude Include="src\vm\parser\instructions\Instances.hpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\parser\instructions\Longs.hpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -122,6 +128,12 @@
       <Filter>vm\parser\instructions</Filter>
     </ClCompile>
     <ClCompile Include="src\vm\parser\instructions\Sections.cpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\parser\instructions\Instances.cpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\parser\instructions\Longs.cpp">
       <Filter>vm\parser\instructions</Filter>
     </ClCompile>
   </ItemGroup>
