@@ -52,7 +52,10 @@ using List = std::vector<T>;
 
 // number conversion 
 
-#define stringToInt std::stoi
+#define stringToInt(x) \
+    std::stoi(x)
+#define stringToLong(x) \
+    std::stoll(x)
 
 // functions
 

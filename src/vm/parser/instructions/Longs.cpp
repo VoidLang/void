@@ -18,7 +18,7 @@ namespace Void {
      */
     void LongPush::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the long value to be pushed to the stack
-        value = stringToInt(args[0]);
+        value = stringToLong(args[0]);
     }
 
     /**
@@ -35,7 +35,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongPush::debug() {
-        return "ipush " + toString(value);
+        return "lpush " + toString(value);
     }
 #pragma endregion
 
@@ -74,7 +74,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongLoad::debug() {
-        return "iload " + toString(index);
+        return "lload " + toString(index);
     }
 #pragma endregion
 
@@ -126,7 +126,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongStore::debug() {
-        String result = "istore " + toString(index);
+        String result = "lstore " + toString(index);
         if (keepStack)
             result += " -k";
         return result;
@@ -158,7 +158,7 @@ namespace Void {
             index = executable->getLinker(args[0]);
         }
         // parse the long value to be pushed to the stack
-        value = stringToInt(args[1]);
+        value = stringToLong(args[1]);
     }
 
     /**
@@ -174,7 +174,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongSet::debug() {
-        return "iset " + toString(index) + " " + toString(value);
+        return "lset " + toString(index) + " " + toString(value);
     }
 #pragma endregion
 
@@ -211,7 +211,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongEnsure::debug() {
-        return "iensure " + toString(size);
+        return "lensure " + toString(size);
     }
 #pragma endregion
 
@@ -262,12 +262,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToLong(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToLong(args[++i]);
                 }
             }
             // handle addition result
@@ -320,7 +320,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongAdd::debug() {
-        String result = "iadd";
+        String result = "ladd";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -396,12 +396,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToLong(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToLong(args[++i]);
                 }
             }
             // handle addition result
@@ -454,7 +454,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongSubtract::debug() {
-        String result = "isub";
+        String result = "lsub";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -530,12 +530,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToLong(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToLong(args[++i]);
                 }
             }
             // handle addition result
@@ -588,7 +588,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongMultiply::debug() {
-        String result = "imul";
+        String result = "lmul";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -664,12 +664,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToLong(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToLong(args[++i]);
                 }
             }
             // handle addition result
@@ -722,7 +722,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongDivide::debug() {
-        String result = "idiv";
+        String result = "ldiv";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -798,12 +798,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToLong(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToLong(args[++i]);
                 }
             }
             // handle addition result
@@ -856,7 +856,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongModulo::debug() {
-        String result = "imod";
+        String result = "lmod";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -950,7 +950,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongIncrement::debug() {
-        String debug = "iinc";
+        String debug = "linc";
         switch (source) {
             case Target::STACK:
                 debug += " -stack";
@@ -1032,7 +1032,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongDecrement::debug() {
-        String debug = "idecr";
+        String debug = "ldecr";
         switch (source) {
             case Target::STACK:
                 debug += " -stack";
@@ -1114,7 +1114,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongNegate::debug() {
-        String debug = "ineg";
+        String debug = "lneg";
         switch (source) {
             case Target::STACK:
                 debug += " -stack";
@@ -1177,7 +1177,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongDebug::debug() {
-        String result = "idebug";
+        String result = "ldebug";
         if (newLine)
             result += " -newline";
         if (keepStack)
@@ -1233,12 +1233,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToLong(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToLong(args[++i]);
                 }
             }
             // handle addition result
@@ -1282,7 +1282,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongEquals::debug() {
-        String result = "ifi==";
+        String result = "ifl==";
             switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1356,12 +1356,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToLong(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToLong(args[++i]);
                 }
             }
             // handle addition result
@@ -1405,7 +1405,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongNotEquals::debug() {
-        String result = "ifi!=";
+        String result = "ifl!=";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1479,12 +1479,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToLong(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToLong(args[++i]);
                 }
             }
             // handle addition result
@@ -1528,7 +1528,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongGreaterThan::debug() {
-        String result = "ifi>";
+        String result = "ifl>";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1602,12 +1602,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToLong(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToLong(args[++i]);
                 }
             }
             // handle addition result
@@ -1651,7 +1651,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongGreaterThanOrEquals::debug() {
-        String result = "ifi>=";
+        String result = "ifl>=";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1725,12 +1725,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToLong(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToLong(args[++i]);
                 }
             }
             // handle addition result
@@ -1774,7 +1774,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongLessThan::debug() {
-        String result = "ifi<";
+        String result = "ifl<";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1848,12 +1848,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToLong(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToLong(args[++i]);
                 }
             }
             // handle addition result
@@ -1897,7 +1897,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongLessThanOrEqual::debug() {
-        String result = "ifi<=";
+        String result = "ifl<=";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1945,7 +1945,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongStackSize::debug() {
-        return "istacksize";
+        return "lstacksize";
     }
 #pragma endregion
 
@@ -1974,7 +1974,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongDumpStack::debug() {
-        return "idumpstack";
+        return "ldumpstack";
     }
 #pragma endregion
 
@@ -1999,7 +1999,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongClearStack::debug() {
-        return "iclearstack";
+        return "lclearstack";
     }
 #pragma endregion
 
@@ -2024,7 +2024,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongPopStack::debug() {
-        return "ipop";
+        return "lpop";
     }
 #pragma endregion
 
@@ -2066,7 +2066,7 @@ namespace Void {
      * @return instruction bytecode data
      */
     String LongDuplicateStack::debug() {
-        String result = "idup";
+        String result = "ldup";
         if (count > 1)
             result += " " + toString(count);
         return result;
