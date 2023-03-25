@@ -65,6 +65,13 @@ namespace Void {
         void copyArguments(Stack* callerStack, Storage* storage, Reference<Instance*>* instance);
 
         /**
+         * Handle the return value of the method execution.
+         * @param context method execution context
+         * @param callerStack stack of the method's call context
+         */
+        void handleReturn(Context* context, Stack* callerStack);
+
+        /**
          * Debug the parsed method and its content.
          */
         void debug();

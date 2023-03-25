@@ -14,7 +14,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongPush::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the long value to be pushed to the stack
@@ -52,7 +52,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongLoad::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -91,7 +91,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongStore::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -146,7 +146,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongSet::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -191,7 +191,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongEnsure::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the long storage required size
@@ -228,7 +228,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongAdd::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -362,7 +362,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongSubtract::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -496,7 +496,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongMultiply::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -630,7 +630,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongDivide::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -764,7 +764,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongModulo::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -898,7 +898,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongIncrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -980,7 +980,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongDecrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1062,7 +1062,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongNegate::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1144,7 +1144,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongDebug::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the debug flags
@@ -1199,7 +1199,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1322,7 +1322,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongNotEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1445,7 +1445,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongGreaterThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1568,7 +1568,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongGreaterThanOrEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1691,7 +1691,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongLessThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1814,7 +1814,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongLessThanOrEqual::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -2041,7 +2041,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void LongDuplicateStack::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the duplication count

@@ -1,6 +1,8 @@
 #include "Method.hpp"
 #include "../runtime/Modifier.hpp"
 #include "../../util/Strings.hpp"
+#include "../../util/Lists.hpp"
+#include "../parser/instructions/Invokes.hpp"
 
 namespace Void {
     /**
@@ -63,7 +65,8 @@ namespace Void {
             //println(name << " took " << (end - begin) << "ns" << " " << ((end - begin) / 1000000.0) << "ms");
         }
 
-        // TODO handle method return value
+        // handle the return value of the method call
+        handleReturn(context, callerStack);
     }
 
     /**
@@ -138,6 +141,58 @@ namespace Void {
     }
 
     /**
+     * Handle the return value of the method execution.
+     * @param context method execution context
+     * @param callerStack stack of the method's call context
+     */
+    void Method::handleReturn(Context* context, Stack* callerStack) {
+        // ignore the execution result if the return tpye is void
+        char prefix = returnType[0];
+        // void does not return anything, we don't care about the result
+        if (prefix == 'V') 
+            return;
+
+        // handle byte return type
+        if (prefix == 'B')
+            callerStack->bytes.push(object_cast<byte>(context->result));
+
+        // handle char return type
+        else if (prefix == 'C')
+            callerStack->chars.push(object_cast<cint>(context->result));
+
+        // handle short return type
+        else if (prefix == 'S')
+            callerStack->shorts.push(object_cast<short>(context->result));
+
+        // handle integer return type
+        else if (prefix == 'I')
+            callerStack->ints.push(object_cast<int>(context->result));
+
+        // handle long return type
+        else if (prefix == 'J')
+            callerStack->longs.push(object_cast<lint>(context->result));
+
+        // handle float return type
+        else if (prefix == 'F')
+            callerStack->floats.push(object_cast<float>(context->result));
+
+        // handle double return type
+        else if (prefix == 'D')
+            callerStack->doubles.push(object_cast<double>(context->result));
+
+        // handle boolean return type
+        else if (prefix == 'Z')
+            callerStack->booleans.push(object_cast<bool>(context->result));
+
+        // handle instance return type
+        // TODO maybe check instance type
+        else if (prefix == 'L')
+            callerStack->instances.push(object_cast<Reference<Instance*>*>(context->result));
+
+        // TODO handle array return type
+    }
+
+    /**
      * Debug the parsed method and its content.
      */
     void Method::debug() {
@@ -170,4 +225,90 @@ namespace Void {
         
         println("    }");
     }
+
+    // I know right, this is a tricky solution, however I couldn't come up with anything better.
+    // The problem is that InvokeStatic requires Instruction, Method and Class to be parsed.
+    // Therefore putting it in "Invokes.cpp" made Method undefined.
+
+#pragma region INVOKE_STATIC
+    /**
+     * Initialize static method invoke instruction.
+     */
+    InvokeStatic::InvokeStatic()
+        : Instruction(Instructions::INVOKE_STATIC)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @param executable bytecode executor
+     */
+    void InvokeStatic::parse(String data, List<String> args, uint line, Executable* executable) {
+        // parse the target class name
+        className = args[0];
+        // parse the target method name
+        methodName = args[1];
+        // parse the method parameters
+        methodParameters = Lists::subList(args, 2);
+    }
+
+    /**
+     * Initialize the references in the const pool after the whole program has been parsed.
+     * @param vm running virtual machine
+     * @param executable bytecode executor
+     */
+    void InvokeStatic::initialize(VirtualMachine* vm, Executable* executable) {
+        // get the class reference from the virtual machine
+        classRef = vm->getClass(className);
+        // we don't need to check if the class is actually found here, as 
+        // it might be loaded afterwards
+
+        // get the method reference if the class reference was found
+        if (classRef != nullptr) {
+            // get the method reference from the class
+            methodRef = classRef->getMethod(methodName, methodParameters);
+            // here again we don't care if the method reference is not found
+            // as there are chances this code will not be executed
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void InvokeStatic::execute(Context* context) {
+        // check if the class reference is missing
+        if (classRef == nullptr) {
+            // try to load the class reference again, as it was possibly lodaded
+            // after this instruction was initialized
+            classRef = context->executable->vm->getClass(className);
+            // check if the class is still missing
+            if (classRef == nullptr)
+                // TODO throw an error instead of panicing
+                error("NoSuchClassException: Trying to invoke static method of undefined class " << className);
+        }
+        // check if the method reference is missing
+        if (methodRef == nullptr) {
+            // get the method reference from the class
+            methodRef = classRef->getMethod(methodName, methodParameters);
+            // check if the method reference is still missing
+            if (methodRef == nullptr)
+                // TODO throw an error instead of panicing
+                error("NoSuchMethodException: Trying to invoke undefined static method " << methodName
+                    << "(" << Strings::join(methodParameters, " ") << ") of class " << className);
+        }
+        // statically invoke the class method
+        methodRef->invoke(context->executable->vm, context->stack, nullptr, context->executable);
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String InvokeStatic::debug() {
+        return "invokestatic " + className + " " + methodName + " " + Strings::join(methodParameters, " ");
+    }
+#pragma endregion
 }

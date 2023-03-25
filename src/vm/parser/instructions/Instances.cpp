@@ -14,7 +14,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void New::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the target class name
@@ -132,7 +132,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void InstanceDelete::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -198,7 +198,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void InstanceGetAddress::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -265,7 +265,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void InstanceSetAddress::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -315,7 +315,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void InstanceLoad::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -354,7 +354,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void InstanceStore::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -403,7 +403,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void InstanceDebug::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the debug flags

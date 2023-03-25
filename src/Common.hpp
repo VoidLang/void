@@ -19,7 +19,7 @@ typedef std::stringstream StringStream;
 #include <any>
 
 typedef std::any Object;
-#define object_cast std::any_cast;
+#define object_cast std::any_cast
 
 // maps
 

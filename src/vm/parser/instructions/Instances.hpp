@@ -41,7 +41,7 @@ namespace Void {
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
 
@@ -118,7 +118,7 @@ namespace Void {
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
 
@@ -173,7 +173,7 @@ namespace Void {
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
 
@@ -228,7 +228,7 @@ namespace Void {
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
 
@@ -268,7 +268,7 @@ namespace Void {
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
 
@@ -313,7 +313,7 @@ namespace Void {
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
 
@@ -358,7 +358,7 @@ namespace Void {
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
 

@@ -6,6 +6,7 @@
 #include "instructions/Doubles.hpp"
 #include "instructions/Sections.hpp"
 #include "instructions/Instances.hpp"
+#include "../element/Method.hpp"
 #include "instructions/Invokes.hpp"
 
 namespace Void {
@@ -29,7 +30,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void Instruction::parse(String data, List<String> args, uint line, Executable* executable)
     { }
@@ -143,6 +144,8 @@ namespace Void {
             return new IntegerPopStack();
         else if (identifier == "idup")
             return new IntegerDuplicateStack();
+        else if (identifier == "ireturn")
+            return new IntegerReturn();
 #pragma endregion
 
 #pragma region Longs
@@ -340,6 +343,22 @@ namespace Void {
     { }
 
     /**
+     * Terminate the execution context with a return value.
+     * @param value context return value
+     */
+    void Context::terminate(Object value) {
+        result = value;
+        cursor = length;
+    }
+
+    /**
+     * Terminate the execution context.
+     */
+    void Context::terminate() {
+        cursor = length;
+    }
+
+    /**
      * Initialize the instruction.
      */
     EmptyInstruction::EmptyInstruction()
@@ -366,7 +385,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void Linker::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the variable name of the linker
@@ -395,7 +414,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void Print::parse(String data, List<String> args, uint line, Executable* executable) {
         text = data.substr(7, data.length() - 7 - 1);
@@ -429,7 +448,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void PrintLine::parse(String data, List<String> args, uint line, Executable* executable) {
         text = data.substr(9, data.length() - 9 - 1);

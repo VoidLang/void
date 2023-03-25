@@ -14,7 +14,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerPush::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the integer value to be pushed to the stack
@@ -52,7 +52,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerLoad::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -91,7 +91,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerStore::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -140,7 +140,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerSet::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -179,7 +179,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerEnsure::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the integer storage required size
@@ -216,7 +216,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerAdd::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -350,7 +350,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerSubtract::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -484,7 +484,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerMultiply::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -618,7 +618,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerDivide::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -752,7 +752,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerModulo::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -886,7 +886,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerIncrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -968,7 +968,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerDecrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1050,7 +1050,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerNegate::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1119,6 +1119,79 @@ namespace Void {
     }
 #pragma endregion
 
+#pragma region INTEGER_RETURN
+    /**
+     * Initialize the integer return instruction.
+     */
+    IntegerReturn::IntegerReturn()
+        : Instruction(Instructions::INTEGER_RETURN)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @param executable bytecode executor
+     */
+    void IntegerReturn::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l" || arg == "-local") {
+                source = Target::LOCAL;
+                sourceValue = executable->getLinker(args[++i]);
+            }
+            // handle constant value
+            else if (arg == "-c" || arg == "-const") {
+                source = Target::CONSTANT;
+                sourceValue = stringToInt(args[++i]);
+            }
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void IntegerReturn::execute(Context* context) {
+        // get the value to be incremented
+        int value = sourceValue;
+        switch (source) {
+            case Target::STACK:
+                value = context->stack->ints.pull();
+                break;
+            case Target::LOCAL:
+                value = context->storage->ints.get((uint) sourceValue);
+                break;
+        }
+        // terminate the execution and set the return value
+        context->terminate(value);
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String IntegerReturn::debug() {
+        String result = "ireturn";
+        switch (source) {
+            case Target::STACK:
+                result += " -stack";
+                break;
+            case Target::LOCAL:
+                result += " -local " + toString(sourceValue);
+                break;
+            case Target::CONSTANT:
+                result += " -const " + toString(sourceValue);
+                break;
+        }
+        return result;
+    }
+#pragma endregion
+
 #pragma region INTEGER_DEBUG
     /**
      * Initailize the integer debug instruction.
@@ -1132,7 +1205,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerDebug::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the debug flags
@@ -1187,7 +1260,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1310,7 +1383,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerNotEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1433,7 +1506,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerGreaterThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1556,7 +1629,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerGreaterThanOrEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1679,7 +1752,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerLessThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1802,7 +1875,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerLessThanOrEqual::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -2029,7 +2102,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void IntegerDuplicateStack::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the duplication count

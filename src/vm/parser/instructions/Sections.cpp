@@ -14,7 +14,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void Section::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the name of the section
@@ -43,7 +43,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void Goto::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the bytecode index from string

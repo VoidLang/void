@@ -14,7 +14,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoublePush::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the double value to be pushed to the stack
@@ -52,7 +52,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleLoad::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -91,7 +91,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleStore::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -146,7 +146,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleSet::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -191,7 +191,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleEnsure::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the double storage required size
@@ -228,7 +228,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleAdd::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -362,7 +362,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleSubtract::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -496,7 +496,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleMultiply::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -630,7 +630,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleDivide::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -764,7 +764,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleModulo::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -898,7 +898,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleIncrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -980,7 +980,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleDecrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1062,7 +1062,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleNegate::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1144,7 +1144,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleDebug::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the debug flags
@@ -1199,7 +1199,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1322,7 +1322,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleNotEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1445,7 +1445,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleGreaterThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1568,7 +1568,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleGreaterThanOrEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1691,7 +1691,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleLessThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1814,7 +1814,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleLessThanOrEqual::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -2041,7 +2041,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void DoubleDuplicateStack::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the duplication count

@@ -14,7 +14,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatPush::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the float value to be pushed to the stack
@@ -52,7 +52,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatLoad::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -91,7 +91,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatStore::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -140,7 +140,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatSet::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
@@ -179,7 +179,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatEnsure::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the float storage required size
@@ -216,7 +216,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatAdd::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -350,7 +350,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatSubtract::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -484,7 +484,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatMultiply::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -618,7 +618,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatDivide::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -752,7 +752,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatModulo::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -886,7 +886,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatIncrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -968,7 +968,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatDecrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1050,7 +1050,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatNegate::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1132,7 +1132,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatDebug::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the debug flags
@@ -1187,7 +1187,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1310,7 +1310,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatNotEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1433,7 +1433,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatGreaterThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1556,7 +1556,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatGreaterThanOrEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1679,7 +1679,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatLessThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -1802,7 +1802,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatLessThanOrEqual::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
@@ -2029,7 +2029,7 @@ namespace Void {
      * @param raw bytecode data
      * @parma args split array of the data
      * @param line bytecode line index
-     * @aram executable bytecode executor
+     * @param executable bytecode executor
      */
     void FloatDuplicateStack::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the duplication count

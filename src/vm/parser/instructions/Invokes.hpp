@@ -5,8 +5,6 @@
 #ifdef VOID_INSTRUCTION
 namespace Void {
 #pragma region INVOKE_STATIC
-    class Method;
-
     /**
      * Represents an instruction that invokes a static class method.
      */
@@ -42,13 +40,13 @@ namespace Void {
          * Initialize static method invoke instruction.
          */
         InvokeStatic();
-    
+
         /**
          * Parse raw bytecode instruction.
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
 

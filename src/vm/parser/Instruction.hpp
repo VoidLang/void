@@ -1201,6 +1201,17 @@ namespace Void {
          * Initialize the execution context.
          */
         Context(Stack* stack, Storage* storage, ulong length, Executable* executable);
+
+        /**
+         * Terminate the execution context with a return value.
+         * @param value context return value
+         */
+        void terminate(Object value);
+
+        /**
+         * Terminate the execution context.
+         */
+        void terminate();
     };
 
     /**
@@ -1223,7 +1234,7 @@ namespace Void {
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         virtual void parse(String data, List<String> args, uint line, Executable* executable);
 
@@ -1306,7 +1317,7 @@ namespace Void {
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
 
@@ -1338,7 +1349,7 @@ namespace Void {
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
 
@@ -1376,7 +1387,7 @@ namespace Void {
          * @param raw bytecode data
          * @parma args split array of the data
          * @param line bytecode line index
-         * @aram executable bytecode executor
+         * @param executable bytecode executor
          */
         void parse(String data, List<String> args, uint line, Executable* executable) override;
 
