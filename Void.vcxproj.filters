@@ -78,6 +78,12 @@
     <ClInclude Include="src\vm\parser\instructions\Invokes.hpp">
       <Filter>vm\parser\instructions</Filter>
     </ClInclude>
+    <ClInclude Include="src\compiler\token\Token.hpp">
+      <Filter>compiler\token</Filter>
+    </ClInclude>
+    <ClInclude Include="src\compiler\token\Tokenizer.hpp">
+      <Filter>compiler\token</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -154,6 +160,12 @@
     <ClCompile Include="src\vm\parser\instructions\Invokes.cpp">
       <Filter>vm\parser\instructions</Filter>
     </ClCompile>
+    <ClCompile Include="src\compiler\token\Token.cpp">
+      <Filter>compiler\token</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\token\Tokenizer.cpp">
+      <Filter>compiler\token</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="util">
@@ -173,6 +185,12 @@
     </Filter>
     <Filter Include="vm\parser\instructions">
       <UniqueIdentifier>{56840ae4-b2c9-4c5a-a1e1-c92ca4de9ca6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compiler">
+      <UniqueIdentifier>{06e5fd0c-5a92-4333-8258-1ff6f0ed0e8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compiler\token">
+      <UniqueIdentifier>{d334c149-0670-47fd-b23c-865a56953ea5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

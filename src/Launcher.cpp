@@ -1,10 +1,16 @@
 #include "Launcher.hpp"
+
 #include "vm/parser/Program.hpp"
 #include "vm/VirtualMachine.hpp"
 #include "vm/element/Executable.hpp"
 #include "vm/runtime/Stack.hpp"
 #include "vm/element/Method.hpp"
 #include "vm/element/Field.hpp"
+
+#include "compiler/token/Token.hpp"
+#include "compiler/token/Tokenizer.hpp"
+
+using namespace Compiler;
 
 namespace Void {
     /**
@@ -44,6 +50,7 @@ namespace Void {
         println("	-run <executable file>		Execute a compiled vertex program.");
         println("	-compile <project folder>	Compile vertex source files.");
         println("	-header <source file>		Create a c++ header for the given source file.");
+        println("   -new <project name>         Create a new Void project.");
         println("");
     }
 
@@ -111,6 +118,22 @@ namespace Void {
      */
     void Launcher::compileSources(Options& options) {
         println("Compiling sources " << options.get("compile"));
+
+        // check for correct command usage
+        if (!options.has("compile"))
+            error("Usage: void -compile <project folder> -out <output file path>");
+
+        // get the input and output of the compiling
+        String inputDir = options.get("compile");
+        String outputFile = options.get("out");
+        println("Compiling " << inputDir << " to " << outputFile);
+
+        Tokenizer tokenizer("let i = 100");
+
+        List<Token> tokens;
+        for (Token token = tokenizer.next(); token.hasNext(); token = tokenizer.next()) {
+            println(std::setw(12) << token);
+        }
     }
 
     /**

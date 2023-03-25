@@ -10,6 +10,7 @@
 
 typedef std::string String;
 typedef std::stringstream StringStream;
+typedef std::ostream OutputStream;
 
 #define toString(x) \
     std::to_string(x)
