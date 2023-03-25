@@ -704,6 +704,51 @@ namespace Void {
     };
 #pragma endregion
 
+#pragma region DOUBLE_RETURN
+    /**
+     * Represents an instruction that terminates the method execution and puts the return value to the caller stack.
+     */
+    class DoubleReturn : public Instruction {
+    private:
+        /**
+         * The target of the return value source.
+         */
+        Target source = Target::STACK;
+
+        /**
+         * The storage index of the return value source or the storage index.
+         */
+        double sourceValue = 0;
+
+    public:
+        /**
+         * Initialize the double return instruction.
+         */
+        DoubleReturn();
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @param executable bytecode executor
+         */
+        void parse(String data, List<String> args, uint line, Executable* executable) override;
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        void execute(Context* context) override;
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+#pragma endregion
+
 #pragma region DOUBLE_DEBUG
     /**
      * Represents an instruction that double:prs an double value from the stack.

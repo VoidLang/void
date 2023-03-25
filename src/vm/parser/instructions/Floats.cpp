@@ -1119,6 +1119,79 @@ namespace Void {
     }
 #pragma endregion
 
+#pragma region FLOAT_RETURN
+    /**
+     * Initialize the integer return instruction.
+     */
+    FloatReturn::FloatReturn()
+        : Instruction(Instructions::FLOAT_RETURN)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @param executable bytecode executor
+     */
+    void FloatReturn::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l" || arg == "-local") {
+                source = Target::LOCAL;
+                sourceValue = (float) executable->getLinker(args[++i]);
+            }
+            // handle constant value
+            else if (arg == "-c" || arg == "-const") {
+                source = Target::CONSTANT;
+                sourceValue = (float) stringToFloat(args[++i]);
+            }
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void FloatReturn::execute(Context* context) {
+        // get the value to be incremented
+        float value = sourceValue;
+        switch (source) {
+            case Target::STACK:
+                value = context->stack->floats.pull();
+                break;
+            case Target::LOCAL:
+                value = context->storage->floats.get((uint) sourceValue);
+                break;
+        }
+        // terminate the execution and set the return value
+        context->terminate(value);
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String FloatReturn::debug() {
+        String result = "freturn";
+        switch (source) {
+            case Target::STACK:
+                result += " -stack";
+                break;
+            case Target::LOCAL:
+                result += " -local " + toString(sourceValue);
+                break;
+            case Target::CONSTANT:
+                result += " -const " + toString(sourceValue);
+                break;
+        }
+        return result;
+    }
+#pragma endregion
+
 #pragma region FLOAT_DEBUG
     /**
      * Initailize the float debug instruction.

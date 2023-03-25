@@ -704,6 +704,51 @@ namespace Void {
     };
 #pragma endregion
 
+#pragma region FLOAT_RETURN
+    /**
+     * Represents an instruction that terminates the method execution and puts the return value to the caller stack.
+     */
+    class FloatReturn : public Instruction {
+    private:
+        /**
+         * The target of the return value source.
+         */
+        Target source = Target::STACK;
+
+        /**
+         * The storage index of the return value source or the storage index.
+         */
+        float sourceValue = 0;
+
+    public:
+        /**
+         * Initialize the float return instruction.
+         */
+        FloatReturn();
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @param executable bytecode executor
+         */
+        void parse(String data, List<String> args, uint line, Executable* executable) override;
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        void execute(Context* context) override;
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+#pragma endregion
+
 #pragma region FLOAT_DEBUG
     /**
      * Represents an instruction that float:prs an float value from the stack.

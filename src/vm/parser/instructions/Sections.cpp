@@ -66,4 +66,29 @@ namespace Void {
         return "goto " + toString(index);
     }
 #pragma endregion
+
+#pragma region RETURN
+    /**
+     * Initialize the return instruction.
+     */
+    Return::Return() 
+        : Instruction(Instructions::RETURN)
+    { }
+    
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void Return::execute(Context* context) {
+        context->terminate();
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+        */
+    String Return::debug() {
+        return "return";
+    }
+#pragma endregion
 }

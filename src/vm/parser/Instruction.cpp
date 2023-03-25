@@ -90,6 +90,8 @@ namespace Void {
             return new Section();
         else if (identifier == "goto")
             return new Goto();
+        else if (identifier == "return")
+            return new Return();
         else if (identifier == "#link")
             return new Linker();
 
@@ -199,6 +201,8 @@ namespace Void {
             return new LongPopStack();
         else if (identifier == "ldup")
             return new LongDuplicateStack();
+        else if (identifier == "lreturn")
+            return new LongReturn();
 #pragma endregion
 
 #pragma region Floats
@@ -252,6 +256,8 @@ namespace Void {
             return new FloatPopStack();
         else if (identifier == "fdup")
             return new FloatDuplicateStack();
+        else if (identifier == "freturn")
+            return new FloatReturn();
 #pragma endregion
 
 #pragma region Doubles
@@ -305,6 +311,8 @@ namespace Void {
             return new DoublePopStack();
         else if (identifier == "ddup")
             return new DoubleDuplicateStack();
+        else if (identifier == "dreturn")
+            return new DoubleReturn();
 #pragma endregion
 
 #pragma region Instances

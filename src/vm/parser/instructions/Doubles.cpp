@@ -1131,6 +1131,79 @@ namespace Void {
     }
 #pragma endregion
 
+#pragma region DOUBLE_RETURN
+    /**
+     * Initialize the integer return instruction.
+     */
+    DoubleReturn::DoubleReturn()
+        : Instruction(Instructions::DOUBLE_RETURN)
+    { }
+
+    /**
+     * Parse raw bytecode instruction.
+     * @param raw bytecode data
+     * @parma args split array of the data
+     * @param line bytecode line index
+     * @param executable bytecode executor
+     */
+    void DoubleReturn::parse(String data, List<String> args, uint line, Executable* executable) {
+        // loop through the instruction data
+        for (uint i = 0; i < args.size(); i++) {
+            // get the current argument
+            String arg = args[i];
+            // handle value from local variable
+            if (arg == "-l" || arg == "-local") {
+                source = Target::LOCAL;
+                sourceValue = executable->getLinker(args[++i]);
+            }
+            // handle constant value
+            else if (arg == "-c" || arg == "-const") {
+                source = Target::CONSTANT;
+                sourceValue = stringToDouble(args[++i]);
+            }
+        }
+    }
+
+    /**
+     * Execute the instruction in the executable context.
+     * @param context bytecode execution context
+     */
+    void DoubleReturn::execute(Context* context) {
+        // get the value to be incremented
+        double value = sourceValue;
+        switch (source) {
+            case Target::STACK:
+                value = context->stack->doubles.pull();
+                break;
+            case Target::LOCAL:
+                value = context->storage->doubles.get((uint) sourceValue);
+                break;
+        }
+        // terminate the execution and set the return value
+        context->terminate(value);
+    }
+
+    /**
+     * Get the string representation of the instruction.
+     * @return instruction bytecode data
+     */
+    String DoubleReturn::debug() {
+        String result = "dreturn";
+        switch (source) {
+            case Target::STACK:
+                result += " -stack";
+                break;
+            case Target::LOCAL:
+                result += " -local " + toString(sourceValue);
+                break;
+            case Target::CONSTANT:
+                result += " -const " + toString(sourceValue);
+                break;
+        }
+        return result;
+    }
+#pragma endregion
+
 #pragma region DOUBLE_DEBUG
     /**
      * Initailize the double debug instruction.

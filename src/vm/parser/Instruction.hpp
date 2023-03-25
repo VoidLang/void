@@ -792,6 +792,8 @@ namespace Void {
          */
         INSTANCE_SWAP_ADDRESS,
 
+        RETURN,
+
 #pragma endregion
 
         INVOKE_STATIC,

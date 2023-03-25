@@ -77,5 +77,30 @@ namespace Void {
         String debug() override;
     };
 #pragma endregion
+
+#pragma region RETURN
+    /**
+     * Represents an instruction that terminates the method execution context.
+     */
+    class Return : public Instruction {
+    public:
+        /**
+         * Initialize the return instruction.
+         */
+        Return();
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        void execute(Context* context) override;
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+#pragma endregion
 }
 #endif
