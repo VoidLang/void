@@ -1,12 +1,12 @@
-#include "Integers.hpp"
+#include "Floats.hpp"
 
 namespace Void {
-#pragma region INTEGER_PUSH
+#pragma region FLOAT_PUSH
     /**
-     * Initialize the integer push instruction.
+     * Initialize the float push instruction.
      */
-    IntegerPush::IntegerPush()
-        : Instruction(Instructions::INTEGER_PUSH)
+    FloatPush::FloatPush()
+        : Instruction(Instructions::FLOAT_PUSH)
     { }
 
     /**
@@ -16,35 +16,35 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerPush::parse(String data, List<String> args, uint line, Executable* executable) {
-        // parse the integer value to be pushed to the stack
-        value = stringToInt(args[0]);
+    void FloatPush::parse(String data, List<String> args, uint line, Executable* executable) {
+        // parse the float value to be pushed to the stack
+        value = stringToFloat(args[0]);
     }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerPush::execute(Context* context) {
-        // pust the integer value to the stack
-        context->stack->ints.push(value);
+    void FloatPush::execute(Context* context) {
+        // pust the float value to the stack
+        context->stack->floats.push(value);
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerPush::debug() {
-        return "ipush " + toString(value);
+    String FloatPush::debug() {
+        return "fpush " + toString(value);
     }
 #pragma endregion
 
-#pragma region INTEGER_LOAD
+#pragma region FLOAT_LOAD
     /**
-     * Initialize the integer load instruction.
+     * Initialize the float load instruction.
      */
-    IntegerLoad::IntegerLoad()
-        : Instruction(Instructions::INTEGER_LOAD)
+    FloatLoad::FloatLoad()
+        : Instruction(Instructions::FLOAT_LOAD)
     { }
 
     /**
@@ -54,7 +54,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerLoad::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatLoad::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
         index = executable->getLinker(args[0]);
     }
@@ -63,27 +63,27 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerLoad::execute(Context* context) {
+    void FloatLoad::execute(Context* context) {
         // load the value from the given storage slot
         // and push it to the stack
-        context->stack->ints.push(context->storage->ints.get(index));
+        context->stack->floats.push(context->storage->floats.get(index));
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerLoad::debug() {
-        return "iload " + toString(index);
+    String FloatLoad::debug() {
+        return "fload " + toString(index);
     }
 #pragma endregion
 
-#pragma region INTEGER_STORE
+#pragma region FLOAT_STORE
     /**
-     * Initialize the integer store instruction.
+     * Initialize the float store instruction.
      */
-    IntegerStore::IntegerStore()
-        : Instruction(Instructions::INTEGER_STORE)
+    FloatStore::FloatStore()
+        : Instruction(Instructions::FLOAT_STORE)
     { }
 
     /**
@@ -93,7 +93,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerStore::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatStore::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
         index = executable->getLinker(args[0]);
         // loop through the instruction flags
@@ -109,30 +109,30 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerStore::execute(Context* context) {
+    void FloatStore::execute(Context* context) {
         // load the value from the stack
         // and store it in the storage
-        context->storage->ints.set(index, context->stack->ints.pull(keepStack));
+        context->storage->floats.set(index, context->stack->floats.pull(keepStack));
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerStore::debug() {
-        String result = "istore " + toString(index);
+    String FloatStore::debug() {
+        String result = "fstore " + toString(index);
         if (keepStack)
             result += " -k";
         return result;
     }
 #pragma endregion
 
-#pragma region INTEGER_SET
+#pragma region FLOAT_SET
     /**
-     * Initialize the integer set instruction.
+     * Initialize the float set instruction.
      */
-    IntegerSet::IntegerSet()
-        : Instruction(Instructions::INTEGER_SET)
+    FloatSet::FloatSet()
+        : Instruction(Instructions::FLOAT_SET)
     { }
 
     /**
@@ -142,36 +142,36 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerSet::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatSet::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
         index = executable->getLinker(args[0]);
-        // parse the integer value to be pushed to the stack
-        value = stringToInt(args[1]);
+        // parse the float value to be pushed to the stack
+        value = stringToFloat(args[1]);
     }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerSet::execute(Context* context) {
-        context->storage->ints.set(index, value);
+    void FloatSet::execute(Context* context) {
+        context->storage->floats.set(index, value);
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerSet::debug() {
-        return "iset " + toString(index) + " " + toString(value);
+    String FloatSet::debug() {
+        return "fset " + toString(index) + " " + toString(value);
     }
 #pragma endregion
 
-#pragma region INTEGER_ENSURE
+#pragma region FLOAT_ENSURE
     /**
-     * Initialize the integer ensure instruction.
+     * Initialize the float ensure instruction.
      */
-    IntegerEnsure::IntegerEnsure()
-        : Instruction(Instructions::INTEGER_ENSURE)
+    FloatEnsure::FloatEnsure()
+        : Instruction(Instructions::FLOAT_ENSURE)
     { }
 
     /**
@@ -181,8 +181,8 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerEnsure::parse(String data, List<String> args, uint line, Executable* executable) {
-        // parse the integer storage required size
+    void FloatEnsure::parse(String data, List<String> args, uint line, Executable* executable) {
+        // parse the float storage required size
         size = stringToInt(args[0]);
     }
 
@@ -190,7 +190,7 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerEnsure::execute(Context* context) {
+    void FloatEnsure::execute(Context* context) {
         context->storage->ensure(StorageUnit::INT, size);
     }
 
@@ -198,17 +198,17 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerEnsure::debug() {
-        return "iensure " + toString(size);
+    String FloatEnsure::debug() {
+        return "fensure " + toString(size);
     }
 #pragma endregion
 
-#pragma region INTEGER_ADD
+#pragma region FLOAT_ADD
     /**
-     * Initialize the integer add instruction.
+     * Initialize the float add instruction.
      */
-    IntegerAdd::IntegerAdd() 
-        : Instruction(Instructions::INTEGER_ADD)
+    FloatAdd::FloatAdd()
+        : Instruction(Instructions::FLOAT_ADD)
     { }
 
     /**
@@ -218,7 +218,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerAdd::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatAdd::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -228,12 +228,12 @@ namespace Void {
             if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
-                    firstValue = executable->getLinker(args[++i]);
+                    firstValue = (float) executable->getLinker(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::LOCAL;
-                    secondValue = executable->getLinker(args[++i]);
+                    secondValue = (float) executable->getLinker(args[++i]);
                 }
             }
             // handle value from the stack
@@ -250,12 +250,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToFloat(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToFloat(args[++i]);
                 }
             }
             // handle addition result
@@ -270,35 +270,35 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerAdd::execute(Context* context) {
+    void FloatAdd::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        float first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->floats.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        float second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->floats.get((uint) secondValue);
                 break;
         }
         // add those two numbers
-        int result = first + second;
+        float result = first + second;
         switch (resultTarget) {
             case Target::STACK:
-                context->stack->ints.push(result);
+                context->stack->floats.push(result);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultLocalIndex, result);
+                context->storage->floats.set(resultLocalIndex, result);
                 break;
         }
     }
@@ -307,8 +307,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerAdd::debug() {
-        String result = "iadd";
+    String FloatAdd::debug() {
+        String result = "fadd";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -337,12 +337,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_SUBTRACT
+#pragma region FLOAT_SUBTRACT
     /**
-     * Initialize the integer subtract instruction.
+     * Initialize the float subtract instruction.
      */
-    IntegerSubtract::IntegerSubtract()
-        : Instruction(Instructions::INTEGER_SUBTRACT)
+    FloatSubtract::FloatSubtract()
+        : Instruction(Instructions::FLOAT_SUBTRACT)
     { }
 
     /**
@@ -352,7 +352,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerSubtract::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatSubtract::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -362,12 +362,12 @@ namespace Void {
             if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
-                    firstValue = executable->getLinker(args[++i]);
+                    firstValue = (float) executable->getLinker(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::LOCAL;
-                    secondValue = executable->getLinker(args[++i]);
+                    secondValue = (float) executable->getLinker(args[++i]);
                 }
             }
             // handle value from the stack
@@ -384,12 +384,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToFloat(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToFloat(args[++i]);
                 }
             }
             // handle addition result
@@ -404,35 +404,35 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerSubtract::execute(Context* context) {
+    void FloatSubtract::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        float first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->floats.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        float second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->floats.get((uint) secondValue);
                 break;
         }
         // add those two numbers
-        int result = first - second;
+        float result = first - second;
         switch (resultTarget) {
             case Target::STACK:
-                context->stack->ints.push(result);
+                context->stack->floats.push(result);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultLocalIndex, result);
+                context->storage->floats.set(resultLocalIndex, result);
                 break;
         }
     }
@@ -441,8 +441,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerSubtract::debug() {
-        String result = "isub";
+    String FloatSubtract::debug() {
+        String result = "fsub";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -471,12 +471,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_MULTIPLY
+#pragma region FLOAT_MULTIPLY
     /**
-     * Initialize the integer subtract instruction.
+     * Initialize the float subtract instruction.
      */
-    IntegerMultiply::IntegerMultiply()
-        : Instruction(Instructions::INTEGER_MULTIPLY)
+    FloatMultiply::FloatMultiply()
+        : Instruction(Instructions::FLOAT_MULTIPLY)
     { }
 
     /**
@@ -486,7 +486,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerMultiply::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatMultiply::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -496,12 +496,12 @@ namespace Void {
             if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
-                    firstValue = executable->getLinker(args[++i]);
+                    firstValue = (float) executable->getLinker(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::LOCAL;
-                    secondValue = executable->getLinker(args[++i]);
+                    secondValue = (float) executable->getLinker(args[++i]);
                 }
             }
             // handle value from the stack
@@ -518,12 +518,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToFloat(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToFloat(args[++i]);
                 }
             }
             // handle addition result
@@ -538,35 +538,35 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerMultiply::execute(Context* context) {
+    void FloatMultiply::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
-        switch (firstTarget) {
+        float first = firstValue;
+            switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->floats.get((uint) firstValue);
                 break;
-            }
+        }
         // get the second value to be added
-        int second = secondValue;
+        float second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->floats.get((uint) secondValue);
                 break;
-            }
+        }
         // add those two numbers
-        int result = first * second;
+        float result = first * second;
         switch (resultTarget) {
             case Target::STACK:
-                context->stack->ints.push(result);
+                context->stack->floats.push(result);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultLocalIndex, result);
+                context->storage->floats.set(resultLocalIndex, result);
                 break;
         }
     }
@@ -575,8 +575,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerMultiply::debug() {
-        String result = "imul";
+    String FloatMultiply::debug() {
+        String result = "fmul";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -605,12 +605,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_DIVIDE
+#pragma region FLOAT_DIVIDE
     /**
-     * Initialize the integer divide instruction.
+     * Initialize the float divide instruction.
      */
-    IntegerDivide::IntegerDivide()
-        : Instruction(Instructions::INTEGER_DIVIDE)
+    FloatDivide::FloatDivide()
+        : Instruction(Instructions::FLOAT_DIVIDE)
     { }
 
     /**
@@ -620,7 +620,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerDivide::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatDivide::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -630,12 +630,12 @@ namespace Void {
             if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
-                    firstValue = executable->getLinker(args[++i]);
+                    firstValue = (float) executable->getLinker(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::LOCAL;
-                    secondValue = executable->getLinker(args[++i]);
+                    secondValue = (float) executable->getLinker(args[++i]);
                 }
             }
             // handle value from the stack
@@ -652,12 +652,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToFloat(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToFloat(args[++i]);
                 }
             }
             // handle addition result
@@ -672,35 +672,35 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerDivide::execute(Context* context) {
+    void FloatDivide::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        float first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->floats.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        float second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->floats.get((uint) secondValue);
                 break;
         }
         // add those two numbers
-        int result = first / second;
+        float result = first / second;
         switch (resultTarget) {
             case Target::STACK:
-                context->stack->ints.push(result);
+                context->stack->floats.push(result);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultLocalIndex, result);
+                context->storage->floats.set(resultLocalIndex, result);
                 break;
         }
     }
@@ -709,8 +709,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerDivide::debug() {
-        String result = "idiv";
+    String FloatDivide::debug() {
+        String result = "fdiv";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -739,12 +739,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_MODULO
+#pragma region FLOAT_MODULO
     /**
-     * Initialize the integer modulo instruction.
+     * Initialize the float modulo instruction.
      */
-    IntegerModulo::IntegerModulo()
-        : Instruction(Instructions::INTEGER_MODULO)
+    FloatModulo::FloatModulo()
+        : Instruction(Instructions::FLOAT_MODULO)
     { }
 
     /**
@@ -754,7 +754,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerModulo::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatModulo::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -764,12 +764,12 @@ namespace Void {
             if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
-                    firstValue = executable->getLinker(args[++i]);
+                    firstValue = (float) executable->getLinker(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::LOCAL;
-                    secondValue = executable->getLinker(args[++i]);
+                    secondValue = (float) executable->getLinker(args[++i]);
                 }
             }
             // handle value from the stack
@@ -786,12 +786,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToFloat(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToFloat(args[++i]);
                 }
             }
             // handle addition result
@@ -806,35 +806,35 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerModulo::execute(Context* context) {
+    void FloatModulo::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        float first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->floats.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        float second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->floats.get((uint) secondValue);
                 break;
         }
         // add those two numbers
-        int result = first % second;
+        float result = fmodf(first, second);
         switch (resultTarget) {
             case Target::STACK:
-                context->stack->ints.push(result);
+                context->stack->floats.push(result);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultLocalIndex, result);
+                context->storage->floats.set(resultLocalIndex, result);
                 break;
         }
     }
@@ -843,8 +843,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerModulo::debug() {
-        String result = "imod";
+    String FloatModulo::debug() {
+        String result = "fmod";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -873,12 +873,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_INCREMENT
+#pragma region FLOAT_INCREMENT
     /**
-     * Initialize the integer increment instruction.
+     * Initialize the float increment instruction.
      */
-    IntegerIncrement::IntegerIncrement()
-        : Instruction(Instructions::INTEGER_INCREMENT)
+    FloatIncrement::FloatIncrement()
+        : Instruction(Instructions::FLOAT_INCREMENT)
     { }
 
     /**
@@ -888,7 +888,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerIncrement::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatIncrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         for (uint i = 0; i < args.size(); i++) {
             // get the current argument
@@ -910,25 +910,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerIncrement::execute(Context* context) {
+    void FloatIncrement::execute(Context* context) {
         // get the value to be incremented
-        int value = 0;
+        float value = 0;
         switch (source) {
             case Target::STACK:
-                value = context->stack->ints.pull();
+                value = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                value = context->storage->ints.get(sourceIndex);
+                value = context->storage->floats.get(sourceIndex);
                 break;
         }
         // increment the value
         value++;
         switch (result) {
             case Target::STACK:
-                context->stack->ints.push(value);
+                context->stack->floats.push(value);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultIndex, value);
+                context->storage->floats.set(resultIndex, value);
                 break;
         }
     }
@@ -937,8 +937,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerIncrement::debug() {
-        String debug = "iinc";
+    String FloatIncrement::debug() {
+        String debug = "finc";
         switch (source) {
             case Target::STACK:
                 debug += " -stack";
@@ -955,12 +955,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_DECREMENT
+#pragma region FLOAT_DECREMENT
     /**
-     * Initialize the integer decrement instruction.
+     * Initialize the float decrement instruction.
      */
-    IntegerDecrement::IntegerDecrement()
-        : Instruction(Instructions::INTEGER_DECREMENT)
+    FloatDecrement::FloatDecrement()
+        : Instruction(Instructions::FLOAT_DECREMENT)
     { }
 
     /**
@@ -970,7 +970,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerDecrement::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatDecrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         for (uint i = 0; i < args.size(); i++) {
             // get the current argument
@@ -992,25 +992,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerDecrement::execute(Context* context) {
+    void FloatDecrement::execute(Context* context) {
         // get the value to be incremented
-        int value = 0;
+        float value = 0;
         switch (source) {
             case Target::STACK:
-                value = context->stack->ints.pull();
+                value = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                value = context->storage->ints.get(sourceIndex);
+                value = context->storage->floats.get(sourceIndex);
                 break;
         }
         // increment the value
         value--;
         switch (result) {
             case Target::STACK:
-                context->stack->ints.push(value);
+                context->stack->floats.push(value);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultIndex, value);
+                context->storage->floats.set(resultIndex, value);
                 break;
         }
     }
@@ -1019,8 +1019,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerDecrement::debug() {
-        String debug = "idecr";
+    String FloatDecrement::debug() {
+        String debug = "fdecr";
         switch (source) {
             case Target::STACK:
                 debug += " -stack";
@@ -1032,17 +1032,17 @@ namespace Void {
         switch (result) {
             case Target::LOCAL:
                 debug += " -result " + toString(resultIndex);
-            }
+        }
         return debug;
     }
 #pragma endregion
 
-#pragma region INTEGER_NEGATE
+#pragma region FLOAT_NEGATE
     /**
-     * Initialize the integer negate instruction.
+     * Initialize the float negate instruction.
      */
-    IntegerNegate::IntegerNegate()
-        : Instruction(Instructions::INTEGER_NEGATE)
+    FloatNegate::FloatNegate()
+        : Instruction(Instructions::FLOAT_NEGATE)
     { }
 
     /**
@@ -1052,7 +1052,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerNegate::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatNegate::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         for (uint i = 0; i < args.size(); i++) {
             // get the current argument
@@ -1074,25 +1074,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerNegate::execute(Context* context) {
+    void FloatNegate::execute(Context* context) {
         // get the value to be incremented
-        int value = 0;
+        float value = 0;
         switch (source) {
             case Target::STACK:
-                value = context->stack->ints.pull();
+                value = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                value = context->storage->ints.get(sourceIndex);
+                value = context->storage->floats.get(sourceIndex);
                 break;
         }
         // negate the value
         value = -value;
         switch (result) {
             case Target::STACK:
-                context->stack->ints.push(value);
+                context->stack->floats.push(value);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultIndex, value);
+                context->storage->floats.set(resultIndex, value);
                 break;
         }
     }
@@ -1101,8 +1101,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerNegate::debug() {
-        String debug = "ineg";
+    String FloatNegate::debug() {
+        String debug = "fneg";
         switch (source) {
             case Target::STACK:
                 debug += " -stack";
@@ -1119,12 +1119,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_DEBUG
+#pragma region FLOAT_DEBUG
     /**
-     * Initailize the integer debug instruction.
+     * Initailize the float debug instruction.
      */
-    IntegerDebug::IntegerDebug()
-        : Instruction(Instructions::INTEGER_DEBUG)
+    FloatDebug::FloatDebug()
+        : Instruction(Instructions::FLOAT_DEBUG)
     { }
 
     /**
@@ -1134,7 +1134,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerDebug::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatDebug::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the debug flags
         for (uint i = 0; i < args.size(); i++) {
             String flag = args[i];
@@ -1151,10 +1151,10 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerDebug::execute(Context* context) {
+    void FloatDebug::execute(Context* context) {
         // get the value from the stack
-        int value =context->stack->ints.pull(keepStack);
-        // print the value and insert a new line if the flag is set
+        float value = context->stack->floats.pull(keepStack);
+        // float:pr the value and insert a new line if the flag is set
         print(value);
         if (newLine)
             println("");
@@ -1164,8 +1164,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerDebug::debug() {
-        String result = "idebug";
+    String FloatDebug::debug() {
+        String result = "fdebug";
         if (newLine)
             result += " -newline";
         if (keepStack)
@@ -1174,12 +1174,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_EQUALS
+#pragma region FLOAT_IF_EQUALS
     /**
-         * Initialize the integer equals check instruction.
+         * Initialize the float equals check instruction.
          */
-    IntegerEquals::IntegerEquals()
-        : Instruction(Instructions::INTEGER_IF_EQUAL)
+    FloatEquals::FloatEquals()
+        : Instruction(Instructions::FLOAT_IF_EQUAL)
     { }
 
     /**
@@ -1189,7 +1189,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerEquals::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1199,12 +1199,12 @@ namespace Void {
             if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
-                    firstValue = executable->getLinker(args[++i]);
+                    firstValue = (float) executable->getLinker(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::LOCAL;
-                    secondValue = executable->getLinker(args[++i]);
+                    secondValue = (float) executable->getLinker(args[++i]);
                 }
             }
             // handle value from the stack
@@ -1221,12 +1221,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToFloat(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToFloat(args[++i]);
                 }
             }
             // handle addition result
@@ -1239,25 +1239,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerEquals::execute(Context* context) {
+    void FloatEquals::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        float first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->floats.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        float second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->floats.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1269,8 +1269,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerEquals::debug() {
-        String result = "ifi==";
+    String FloatEquals::debug() {
+        String result = "iff==";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1297,12 +1297,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_NOT_EQUALS
+#pragma region FLOAT_IF_NOT_EQUALS
     /**
-     * Initialize the integer not equals instruction.
+     * Initialize the float not equals instruction.
      */
-    IntegerNotEquals::IntegerNotEquals()
-        : Instruction(Instructions::INTEGER_IF_NOT_EQUAL)
+    FloatNotEquals::FloatNotEquals()
+        : Instruction(Instructions::FLOAT_IF_NOT_EQUAL)
     { }
 
     /**
@@ -1312,7 +1312,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerNotEquals::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatNotEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1322,12 +1322,12 @@ namespace Void {
             if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
-                    firstValue = executable->getLinker(args[++i]);
+                    firstValue = (float) executable->getLinker(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::LOCAL;
-                    secondValue = executable->getLinker(args[++i]);
+                    secondValue = (float) executable->getLinker(args[++i]);
                 }
             }
             // handle value from the stack
@@ -1344,12 +1344,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToFloat(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToFloat(args[++i]);
                 }
             }
             // handle addition result
@@ -1362,25 +1362,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerNotEquals::execute(Context* context) {
+    void FloatNotEquals::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        float first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->floats.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        float second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->floats.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1392,8 +1392,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerNotEquals::debug() {
-        String result = "ifi!=";
+    String FloatNotEquals::debug() {
+        String result = "iff!=";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1420,12 +1420,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_GREATER_THAN
+#pragma region FLOAT_IF_GREATER_THAN
     /**
-     * Initialize the integer greater than check instruction.
+     * Initialize the float greater than check instruction.
      */
-    IntegerGreaterThan::IntegerGreaterThan()
-        : Instruction(Instructions::INTEGER_IF_GREATER_THAN)
+    FloatGreaterThan::FloatGreaterThan()
+        : Instruction(Instructions::FLOAT_IF_GREATER_THAN)
     { }
 
     /**
@@ -1435,7 +1435,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerGreaterThan::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatGreaterThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1445,12 +1445,12 @@ namespace Void {
             if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
-                    firstValue = executable->getLinker(args[++i]);
+                    firstValue = (float) executable->getLinker(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::LOCAL;
-                    secondValue = executable->getLinker(args[++i]);
+                    secondValue = (float) executable->getLinker(args[++i]);
                 }
             }
             // handle value from the stack
@@ -1467,12 +1467,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToFloat(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToFloat(args[++i]);
                 }
             }
             // handle addition result
@@ -1485,25 +1485,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerGreaterThan::execute(Context* context) {
+    void FloatGreaterThan::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        float first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->floats.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        float second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->floats.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1515,8 +1515,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerGreaterThan::debug() {
-        String result = "ifi>";
+    String FloatGreaterThan::debug() {
+        String result = "iff>";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1543,12 +1543,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_GREATER_THAN_OR_EQUAL
+#pragma region FLOAT_IF_GREATER_THAN_OR_EQUAL
     /**
-     * Initialize the integer greater than check instruction.
+     * Initialize the float greater than check instruction.
      */
-    IntegerGreaterThanOrEquals::IntegerGreaterThanOrEquals()
-        : Instruction(Instructions::INTEGER_IF_GREATER_THAN_OR_EQUAL)
+    FloatGreaterThanOrEquals::FloatGreaterThanOrEquals()
+        : Instruction(Instructions::FLOAT_IF_GREATER_THAN_OR_EQUAL)
     { }
 
     /**
@@ -1558,7 +1558,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerGreaterThanOrEquals::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatGreaterThanOrEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1568,12 +1568,12 @@ namespace Void {
             if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
-                    firstValue = executable->getLinker(args[++i]);
+                    firstValue = (float) executable->getLinker(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::LOCAL;
-                    secondValue = executable->getLinker(args[++i]);
+                    secondValue = (float) executable->getLinker(args[++i]);
                 }
             }
             // handle value from the stack
@@ -1590,12 +1590,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToFloat(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToFloat(args[++i]);
                 }
             }
             // handle addition result
@@ -1608,25 +1608,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerGreaterThanOrEquals::execute(Context* context) {
+    void FloatGreaterThanOrEquals::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        float first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->floats.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        float second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->floats.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1638,8 +1638,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerGreaterThanOrEquals::debug() {
-        String result = "ifi>=";
+    String FloatGreaterThanOrEquals::debug() {
+        String result = "iff>=";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1666,12 +1666,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_LESS_THAN
+#pragma region FLOAT_IF_LESS_THAN
     /**
-     * Initialize the integer less than check instruction.
+     * Initialize the float less than check instruction.
      */
-    IntegerLessThan::IntegerLessThan()
-        : Instruction(Instructions::INTEGER_IF_LESS_THAN)
+    FloatLessThan::FloatLessThan()
+        : Instruction(Instructions::FLOAT_IF_LESS_THAN)
     { }
 
     /**
@@ -1681,7 +1681,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerLessThan::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatLessThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1691,12 +1691,12 @@ namespace Void {
             if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
-                    firstValue = executable->getLinker(args[++i]);
+                    firstValue = (float) executable->getLinker(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::LOCAL;
-                    secondValue = executable->getLinker(args[++i]);
+                    secondValue = (float) executable->getLinker(args[++i]);
                 }
             }
             // handle value from the stack
@@ -1713,12 +1713,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToFloat(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToFloat(args[++i]);
                 }
             }
             // handle addition result
@@ -1731,25 +1731,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerLessThan::execute(Context* context) {
+    void FloatLessThan::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        float first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->floats.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        float second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->floats.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1761,8 +1761,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerLessThan::debug() {
-        String result = "ifi<";
+    String FloatLessThan::debug() {
+        String result = "iff<";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1789,12 +1789,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_LESS_THAN_OR_EQUAL
+#pragma region FLOAT_IF_LESS_THAN_OR_EQUAL
     /**
-     * Initialize the integer less than check instruction.
+     * Initialize the float less than check instruction.
      */
-    IntegerLessThanOrEqual::IntegerLessThanOrEqual()
-        : Instruction(Instructions::INTEGER_IF_LESS_THAN_OR_EQUAL)
+    FloatLessThanOrEqual::FloatLessThanOrEqual()
+        : Instruction(Instructions::FLOAT_IF_LESS_THAN_OR_EQUAL)
     { }
 
     /**
@@ -1804,7 +1804,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerLessThanOrEqual::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatLessThanOrEqual::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1814,12 +1814,12 @@ namespace Void {
             if (arg == "-l" || arg == "-local") {
                 if (firstVariable) {
                     firstTarget = Target::LOCAL;
-                    firstValue = executable->getLinker(args[++i]);
+                    firstValue = (float) executable->getLinker(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::LOCAL;
-                    secondValue = executable->getLinker(args[++i]);
+                    secondValue = (float) executable->getLinker(args[++i]);
                 }
             }
             // handle value from the stack
@@ -1836,12 +1836,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToFloat(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToFloat(args[++i]);
                 }
             }
             // handle addition result
@@ -1854,25 +1854,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerLessThanOrEqual::execute(Context* context) {
+    void FloatLessThanOrEqual::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        float first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->floats.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
-            switch (secondTarget) {
+        float second = secondValue;
+        switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->floats.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->floats.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1884,8 +1884,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerLessThanOrEqual::debug() {
-        String result = "ifi<=";
+    String FloatLessThanOrEqual::debug() {
+        String result = "iff<=";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1912,48 +1912,48 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_STACK_SIZE
+#pragma region FLOAT_STACK_SIZE
     /**
-     * Initailize the integer stack size instruction.
+     * Initailize the float stack size instruction.
      */
-    IntegerStackSize::IntegerStackSize() 
-        : Instruction(Instructions::INTEGER_STACK_SIZE) 
+    FloatStackSize::FloatStackSize()
+        : Instruction(Instructions::FLOAT_STACK_SIZE)
     { }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerStackSize::execute(Context* context) {
-        context->stack->ints.push(context->stack->ints.size());
+    void FloatStackSize::execute(Context* context) {
+        context->stack->ints.push(context->stack->floats.size());
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerStackSize::debug() {
-        return "istacksize";
+    String FloatStackSize::debug() {
+        return "fstacksize";
     }
 #pragma endregion
 
-#pragma region INTEGER_DUMP_STACK
+#pragma region FLOAT_DUMP_STACK
     /**
-     * Initialize the integer stack dump instruction.
+     * Initialize the float stack dump instruction.
      */
-    IntegerDumpStack::IntegerDumpStack()
-        : Instruction(Instructions::INTEGER_DUMP_STACK)
+    FloatDumpStack::FloatDumpStack()
+        : Instruction(Instructions::FLOAT_DUMP_STACK)
     { }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerDumpStack::execute(Context* context) {
-        uint size = context->stack->ints.size();;
-        println("[log] int stack dump (" << size << ")");
+    void FloatDumpStack::execute(Context* context) {
+        uint size = context->stack->floats.size();;
+        println("[log] float stack dump (" << size << ")");
         for (uint i = 0; i < size; i++) {
-            println("- " << context->stack->ints.at(i) << " [" << i << "]");
+            println("- " << context->stack->floats.at(i) << " [" << i << "]");
         }
     }
 
@@ -1961,67 +1961,67 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerDumpStack::debug() {
-        return "idumpstack";
+    String FloatDumpStack::debug() {
+        return "fdumpstack";
     }
 #pragma endregion
 
-#pragma region INTEGER_CLEAR_STACK
+#pragma region FLOAT_CLEAR_STACK
     /**
-     * Initialize the integer stack clear instruction.
+     * Initialize the float stack clear instruction.
      */
-    IntegerClearStack::IntegerClearStack()
-        : Instruction(Instructions::INTEGER_CLEAR_STACK)
+    FloatClearStack::FloatClearStack()
+        : Instruction(Instructions::FLOAT_CLEAR_STACK)
     { }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerClearStack::execute(Context* context) {
-        context->stack->ints.clear();
+    void FloatClearStack::execute(Context* context) {
+        context->stack->floats.clear();
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerClearStack::debug() {
-        return "iclearstack";
+    String FloatClearStack::debug() {
+        return "fclearstack";
     }
 #pragma endregion
 
-#pragma region INTEGER_POP_STACK
+#pragma region FLOAT_POP_STACK
     /**
-     * Initialize the integer pop instruction.
+     * Initialize the float pop instruction.
      */
-    IntegerPopStack::IntegerPopStack()
-        : Instruction(Instructions::INTEGER_POP_STACK)
+    FloatPopStack::FloatPopStack()
+        : Instruction(Instructions::FLOAT_POP_STACK)
     { }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerPopStack::execute(Context* context) {
-        context->stack->ints.pull();
+    void FloatPopStack::execute(Context* context) {
+        context->stack->floats.pull();
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerPopStack::debug() {
-        return "ipop";
+    String FloatPopStack::debug() {
+        return "fpop";
     }
 #pragma endregion
 
-#pragma region INTEGER_DUPLICATE_STACK
+#pragma region FLOAT_DUPLICATE_STACK
     /**
-     * Initialize the integer duplicate instruction.
+     * Initialize the float duplicate instruction.
      */
-    IntegerDuplicateStack::IntegerDuplicateStack()
-        : Instruction(Instructions::INTEGER_DUPLICATE_STACK)
+    FloatDuplicateStack::FloatDuplicateStack()
+        : Instruction(Instructions::FLOAT_DUPLICATE_STACK)
     { }
 
     /**
@@ -2031,7 +2031,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerDuplicateStack::parse(String data, List<String> args, uint line, Executable* executable) {
+    void FloatDuplicateStack::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the duplication count
         if (!args.empty())
             count = stringToInt(args[0]);
@@ -2041,20 +2041,20 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerDuplicateStack::execute(Context* context) {
+    void FloatDuplicateStack::execute(Context* context) {
         // get the value to be duplicated without being removed
-        int value = context->stack->ints.get();
+        float value = context->stack->floats.get();
         // push the value to the stack the given times
         for (uint i = 0; i < count; i++)
-            context->stack->ints.push(value);
+            context->stack->floats.push(value);
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerDuplicateStack::debug() {
-        String result = "idup";
+    String FloatDuplicateStack::debug() {
+        String result = "fdup";
         if (count > 1)
             result += " " + toString(count);
         return result;

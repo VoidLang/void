@@ -1154,7 +1154,7 @@ namespace Void {
             if (flag == "-n" || flag == "-new" || flag == "-newline" || flag == "-nl")
                 newLine = true;
             // check if the value should be kept on the stack
-            else if (flag == "-k" || flag == "-kep" || flag == "-keepstack")
+            else if (flag == "-k" || flag == "-keep" || flag == "-keepstack")
                 keepStack = true;
         }
     }
@@ -1937,7 +1937,7 @@ namespace Void {
      * @param context bytecode execution context
      */
     void LongStackSize::execute(Context* context) {
-        context->stack->longs.push(context->stack->longs.size());
+        context->stack->ints.push(context->stack->longs.size());
     }
 
     /**

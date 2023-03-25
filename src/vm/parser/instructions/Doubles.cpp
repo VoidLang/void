@@ -1,12 +1,12 @@
-#include "Integers.hpp"
+#include "Doubles.hpp"
 
 namespace Void {
-#pragma region INTEGER_PUSH
+#pragma region DOUBLE_PUSH
     /**
-     * Initialize the integer push instruction.
+     * Initialize the double push instruction.
      */
-    IntegerPush::IntegerPush()
-        : Instruction(Instructions::INTEGER_PUSH)
+    DoublePush::DoublePush()
+        : Instruction(Instructions::DOUBLE_PUSH)
     { }
 
     /**
@@ -16,35 +16,35 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerPush::parse(String data, List<String> args, uint line, Executable* executable) {
-        // parse the integer value to be pushed to the stack
-        value = stringToInt(args[0]);
+    void DoublePush::parse(String data, List<String> args, uint line, Executable* executable) {
+        // parse the double value to be pushed to the stack
+        value = stringToDouble(args[0]);
     }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerPush::execute(Context* context) {
-        // pust the integer value to the stack
-        context->stack->ints.push(value);
+    void DoublePush::execute(Context* context) {
+        // pust the double value to the stack
+        context->stack->doubles.push(value);
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerPush::debug() {
-        return "ipush " + toString(value);
+    String DoublePush::debug() {
+        return "dpush " + toString(value);
     }
 #pragma endregion
 
-#pragma region INTEGER_LOAD
+#pragma region DOUBLE_LOAD
     /**
-     * Initialize the integer load instruction.
+     * Initialize the double load instruction.
      */
-    IntegerLoad::IntegerLoad()
-        : Instruction(Instructions::INTEGER_LOAD)
+    DoubleLoad::DoubleLoad()
+        : Instruction(Instructions::DOUBLE_LOAD)
     { }
 
     /**
@@ -54,7 +54,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerLoad::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleLoad::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
         index = executable->getLinker(args[0]);
     }
@@ -63,27 +63,27 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerLoad::execute(Context* context) {
+    void DoubleLoad::execute(Context* context) {
         // load the value from the given storage slot
         // and push it to the stack
-        context->stack->ints.push(context->storage->ints.get(index));
+        context->stack->doubles.push(context->storage->doubles.get(index));
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerLoad::debug() {
-        return "iload " + toString(index);
+    String DoubleLoad::debug() {
+        return "dload " + toString(index);
     }
 #pragma endregion
 
-#pragma region INTEGER_STORE
+#pragma region DOUBLE_STORE
     /**
-     * Initialize the integer store instruction.
+     * Initialize the double store instruction.
      */
-    IntegerStore::IntegerStore()
-        : Instruction(Instructions::INTEGER_STORE)
+    DoubleStore::DoubleStore()
+        : Instruction(Instructions::DOUBLE_STORE)
     { }
 
     /**
@@ -93,9 +93,15 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerStore::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleStore::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
-        index = executable->getLinker(args[0]);
+        try {
+            index = stringToInt(args[0]);
+        }
+        // get the section index from variable name 
+        catch (...) {
+            index = executable->getLinker(args[0]);
+        }
         // loop through the instruction flags
         for (uint i = 1; i < args.size(); i++) {
             String flag = args[i];
@@ -109,30 +115,30 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerStore::execute(Context* context) {
+    void DoubleStore::execute(Context* context) {
         // load the value from the stack
         // and store it in the storage
-        context->storage->ints.set(index, context->stack->ints.pull(keepStack));
+        context->storage->doubles.set(index, context->stack->doubles.pull(keepStack));
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerStore::debug() {
-        String result = "istore " + toString(index);
+    String DoubleStore::debug() {
+        String result = "dstore " + toString(index);
         if (keepStack)
             result += " -k";
         return result;
     }
 #pragma endregion
 
-#pragma region INTEGER_SET
+#pragma region DOUBLE_SET
     /**
-     * Initialize the integer set instruction.
+     * Initialize the double set instruction.
      */
-    IntegerSet::IntegerSet()
-        : Instruction(Instructions::INTEGER_SET)
+    DoubleSet::DoubleSet()
+        : Instruction(Instructions::DOUBLE_SET)
     { }
 
     /**
@@ -142,36 +148,42 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerSet::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleSet::parse(String data, List<String> args, uint line, Executable* executable) {
         // try to parse the storage index from string
-        index = executable->getLinker(args[0]);
-        // parse the integer value to be pushed to the stack
-        value = stringToInt(args[1]);
+        try {
+            index = stringToInt(args[0]);
+        }
+        // get the section index from variable name 
+        catch (...) {
+            index = executable->getLinker(args[0]);
+        }
+        // parse the double value to be pushed to the stack
+        value = stringToDouble(args[1]);
     }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerSet::execute(Context* context) {
-        context->storage->ints.set(index, value);
+    void DoubleSet::execute(Context* context) {
+        context->storage->doubles.set(index, value);
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerSet::debug() {
-        return "iset " + toString(index) + " " + toString(value);
+    String DoubleSet::debug() {
+        return "dset " + toString(index) + " " + toString(value);
     }
 #pragma endregion
 
-#pragma region INTEGER_ENSURE
+#pragma region DOUBLE_ENSURE
     /**
-     * Initialize the integer ensure instruction.
+     * Initialize the double ensure instruction.
      */
-    IntegerEnsure::IntegerEnsure()
-        : Instruction(Instructions::INTEGER_ENSURE)
+    DoubleEnsure::DoubleEnsure()
+        : Instruction(Instructions::DOUBLE_ENSURE)
     { }
 
     /**
@@ -181,8 +193,8 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerEnsure::parse(String data, List<String> args, uint line, Executable* executable) {
-        // parse the integer storage required size
+    void DoubleEnsure::parse(String data, List<String> args, uint line, Executable* executable) {
+        // parse the double storage required size
         size = stringToInt(args[0]);
     }
 
@@ -190,7 +202,7 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerEnsure::execute(Context* context) {
+    void DoubleEnsure::execute(Context* context) {
         context->storage->ensure(StorageUnit::INT, size);
     }
 
@@ -198,17 +210,17 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerEnsure::debug() {
-        return "iensure " + toString(size);
+    String DoubleEnsure::debug() {
+        return "densure " + toString(size);
     }
 #pragma endregion
 
-#pragma region INTEGER_ADD
+#pragma region DOUBLE_ADD
     /**
-     * Initialize the integer add instruction.
+     * Initialize the double add instruction.
      */
-    IntegerAdd::IntegerAdd() 
-        : Instruction(Instructions::INTEGER_ADD)
+    DoubleAdd::DoubleAdd()
+        : Instruction(Instructions::DOUBLE_ADD)
     { }
 
     /**
@@ -218,7 +230,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerAdd::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleAdd::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -250,12 +262,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToDouble(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToDouble(args[++i]);
                 }
             }
             // handle addition result
@@ -270,35 +282,35 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerAdd::execute(Context* context) {
+    void DoubleAdd::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        double first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->doubles.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        double second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->doubles.get((uint) secondValue);
                 break;
         }
         // add those two numbers
-        int result = first + second;
+        double result = first + second;
         switch (resultTarget) {
             case Target::STACK:
-                context->stack->ints.push(result);
+                context->stack->doubles.push(result);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultLocalIndex, result);
+                context->storage->doubles.set(resultLocalIndex, result);
                 break;
         }
     }
@@ -307,8 +319,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerAdd::debug() {
-        String result = "iadd";
+    String DoubleAdd::debug() {
+        String result = "dadd";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -337,12 +349,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_SUBTRACT
+#pragma region DOUBLE_SUBTRACT
     /**
-     * Initialize the integer subtract instruction.
+     * Initialize the double subtract instruction.
      */
-    IntegerSubtract::IntegerSubtract()
-        : Instruction(Instructions::INTEGER_SUBTRACT)
+    DoubleSubtract::DoubleSubtract()
+        : Instruction(Instructions::DOUBLE_SUBTRACT)
     { }
 
     /**
@@ -352,7 +364,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerSubtract::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleSubtract::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -384,12 +396,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToDouble(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToDouble(args[++i]);
                 }
             }
             // handle addition result
@@ -404,35 +416,35 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerSubtract::execute(Context* context) {
+    void DoubleSubtract::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        double first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->doubles.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        double second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->doubles.get((uint) secondValue);
                 break;
         }
         // add those two numbers
-        int result = first - second;
+        double result = first - second;
         switch (resultTarget) {
             case Target::STACK:
-                context->stack->ints.push(result);
+                context->stack->doubles.push(result);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultLocalIndex, result);
+                context->storage->doubles.set(resultLocalIndex, result);
                 break;
         }
     }
@@ -441,8 +453,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerSubtract::debug() {
-        String result = "isub";
+    String DoubleSubtract::debug() {
+        String result = "dsub";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -471,12 +483,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_MULTIPLY
+#pragma region DOUBLE_MULTIPLY
     /**
-     * Initialize the integer subtract instruction.
+     * Initialize the double subtract instruction.
      */
-    IntegerMultiply::IntegerMultiply()
-        : Instruction(Instructions::INTEGER_MULTIPLY)
+    DoubleMultiply::DoubleMultiply()
+        : Instruction(Instructions::DOUBLE_MULTIPLY)
     { }
 
     /**
@@ -486,7 +498,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerMultiply::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleMultiply::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -518,12 +530,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToDouble(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToDouble(args[++i]);
                 }
             }
             // handle addition result
@@ -538,35 +550,35 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerMultiply::execute(Context* context) {
+    void DoubleMultiply::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        double first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->doubles.get((uint) firstValue);
                 break;
-            }
+        }
         // get the second value to be added
-        int second = secondValue;
+        double second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->doubles.get((uint) secondValue);
                 break;
-            }
+        }
         // add those two numbers
-        int result = first * second;
+        double result = first * second;
         switch (resultTarget) {
             case Target::STACK:
-                context->stack->ints.push(result);
+                context->stack->doubles.push(result);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultLocalIndex, result);
+                context->storage->doubles.set(resultLocalIndex, result);
                 break;
         }
     }
@@ -575,8 +587,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerMultiply::debug() {
-        String result = "imul";
+    String DoubleMultiply::debug() {
+        String result = "dmul";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -605,12 +617,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_DIVIDE
+#pragma region DOUBLE_DIVIDE
     /**
-     * Initialize the integer divide instruction.
+     * Initialize the double divide instruction.
      */
-    IntegerDivide::IntegerDivide()
-        : Instruction(Instructions::INTEGER_DIVIDE)
+    DoubleDivide::DoubleDivide()
+        : Instruction(Instructions::DOUBLE_DIVIDE)
     { }
 
     /**
@@ -620,7 +632,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerDivide::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleDivide::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -652,12 +664,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToDouble(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToDouble(args[++i]);
                 }
             }
             // handle addition result
@@ -672,35 +684,35 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerDivide::execute(Context* context) {
+    void DoubleDivide::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        double first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->doubles.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        double second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->doubles.get((uint) secondValue);
                 break;
         }
         // add those two numbers
-        int result = first / second;
+        double result = first / second;
         switch (resultTarget) {
             case Target::STACK:
-                context->stack->ints.push(result);
+                context->stack->doubles.push(result);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultLocalIndex, result);
+                context->storage->doubles.set(resultLocalIndex, result);
                 break;
         }
     }
@@ -709,8 +721,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerDivide::debug() {
-        String result = "idiv";
+    String DoubleDivide::debug() {
+        String result = "ddiv";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -739,12 +751,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_MODULO
+#pragma region DOUBLE_MODULO
     /**
-     * Initialize the integer modulo instruction.
+     * Initialize the double modulo instruction.
      */
-    IntegerModulo::IntegerModulo()
-        : Instruction(Instructions::INTEGER_MODULO)
+    DoubleModulo::DoubleModulo()
+        : Instruction(Instructions::DOUBLE_MODULO)
     { }
 
     /**
@@ -754,7 +766,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerModulo::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleModulo::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -786,12 +798,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToDouble(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToDouble(args[++i]);
                 }
             }
             // handle addition result
@@ -806,35 +818,35 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerModulo::execute(Context* context) {
+    void DoubleModulo::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        double first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->doubles.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
-        switch (secondTarget) {
+        double second = secondValue;
+            switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->doubles.get((uint) secondValue);
                 break;
         }
         // add those two numbers
-        int result = first % second;
+        double result = fmod(first, second);
         switch (resultTarget) {
             case Target::STACK:
-                context->stack->ints.push(result);
+                context->stack->doubles.push(result);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultLocalIndex, result);
+                context->storage->doubles.set(resultLocalIndex, result);
                 break;
         }
     }
@@ -843,8 +855,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerModulo::debug() {
-        String result = "imod";
+    String DoubleModulo::debug() {
+        String result = "dmod";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -873,12 +885,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_INCREMENT
+#pragma region DOUBLE_INCREMENT
     /**
-     * Initialize the integer increment instruction.
+     * Initialize the double increment instruction.
      */
-    IntegerIncrement::IntegerIncrement()
-        : Instruction(Instructions::INTEGER_INCREMENT)
+    DoubleIncrement::DoubleIncrement()
+        : Instruction(Instructions::DOUBLE_INCREMENT)
     { }
 
     /**
@@ -888,7 +900,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerIncrement::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleIncrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         for (uint i = 0; i < args.size(); i++) {
             // get the current argument
@@ -910,25 +922,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerIncrement::execute(Context* context) {
+    void DoubleIncrement::execute(Context* context) {
         // get the value to be incremented
-        int value = 0;
+        double value = 0;
         switch (source) {
             case Target::STACK:
-                value = context->stack->ints.pull();
+                value = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                value = context->storage->ints.get(sourceIndex);
+                value = context->storage->doubles.get(sourceIndex);
                 break;
         }
         // increment the value
         value++;
         switch (result) {
-            case Target::STACK:
-                context->stack->ints.push(value);
+        case Target::STACK:
+                context->stack->doubles.push(value);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultIndex, value);
+                context->storage->doubles.set(resultIndex, value);
                 break;
         }
     }
@@ -937,10 +949,10 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerIncrement::debug() {
-        String debug = "iinc";
+    String DoubleIncrement::debug() {
+        String debug = "dinc";
         switch (source) {
-            case Target::STACK:
+        case Target::STACK:
                 debug += " -stack";
                 break;
             case Target::LOCAL:
@@ -955,12 +967,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_DECREMENT
+#pragma region DOUBLE_DECREMENT
     /**
-     * Initialize the integer decrement instruction.
+     * Initialize the double decrement instruction.
      */
-    IntegerDecrement::IntegerDecrement()
-        : Instruction(Instructions::INTEGER_DECREMENT)
+    DoubleDecrement::DoubleDecrement()
+        : Instruction(Instructions::DOUBLE_DECREMENT)
     { }
 
     /**
@@ -970,7 +982,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerDecrement::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleDecrement::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         for (uint i = 0; i < args.size(); i++) {
             // get the current argument
@@ -992,25 +1004,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerDecrement::execute(Context* context) {
+    void DoubleDecrement::execute(Context* context) {
         // get the value to be incremented
-        int value = 0;
+        double value = 0;
         switch (source) {
             case Target::STACK:
-                value = context->stack->ints.pull();
+                value = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                value = context->storage->ints.get(sourceIndex);
+                value = context->storage->doubles.get(sourceIndex);
                 break;
         }
         // increment the value
         value--;
         switch (result) {
             case Target::STACK:
-                context->stack->ints.push(value);
+                context->stack->doubles.push(value);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultIndex, value);
+                context->storage->doubles.set(resultIndex, value);
                 break;
         }
     }
@@ -1019,8 +1031,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerDecrement::debug() {
-        String debug = "idecr";
+    String DoubleDecrement::debug() {
+        String debug = "ddecr";
         switch (source) {
             case Target::STACK:
                 debug += " -stack";
@@ -1032,17 +1044,17 @@ namespace Void {
         switch (result) {
             case Target::LOCAL:
                 debug += " -result " + toString(resultIndex);
-            }
+        }
         return debug;
     }
 #pragma endregion
 
-#pragma region INTEGER_NEGATE
+#pragma region DOUBLE_NEGATE
     /**
-     * Initialize the integer negate instruction.
+     * Initialize the double negate instruction.
      */
-    IntegerNegate::IntegerNegate()
-        : Instruction(Instructions::INTEGER_NEGATE)
+    DoubleNegate::DoubleNegate()
+        : Instruction(Instructions::DOUBLE_NEGATE)
     { }
 
     /**
@@ -1052,7 +1064,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerNegate::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleNegate::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         for (uint i = 0; i < args.size(); i++) {
             // get the current argument
@@ -1074,25 +1086,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerNegate::execute(Context* context) {
+    void DoubleNegate::execute(Context* context) {
         // get the value to be incremented
-        int value = 0;
+        double value = 0;
         switch (source) {
             case Target::STACK:
-                value = context->stack->ints.pull();
+                value = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                value = context->storage->ints.get(sourceIndex);
+                value = context->storage->doubles.get(sourceIndex);
                 break;
         }
         // negate the value
         value = -value;
         switch (result) {
             case Target::STACK:
-                context->stack->ints.push(value);
+                context->stack->doubles.push(value);
                 break;
             case Target::LOCAL:
-                context->storage->ints.set(resultIndex, value);
+                context->storage->doubles.set(resultIndex, value);
                 break;
         }
     }
@@ -1101,8 +1113,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerNegate::debug() {
-        String debug = "ineg";
+    String DoubleNegate::debug() {
+        String debug = "dneg";
         switch (source) {
             case Target::STACK:
                 debug += " -stack";
@@ -1119,12 +1131,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_DEBUG
+#pragma region DOUBLE_DEBUG
     /**
-     * Initailize the integer debug instruction.
+     * Initailize the double debug instruction.
      */
-    IntegerDebug::IntegerDebug()
-        : Instruction(Instructions::INTEGER_DEBUG)
+    DoubleDebug::DoubleDebug()
+        : Instruction(Instructions::DOUBLE_DEBUG)
     { }
 
     /**
@@ -1134,7 +1146,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerDebug::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleDebug::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the debug flags
         for (uint i = 0; i < args.size(); i++) {
             String flag = args[i];
@@ -1151,10 +1163,10 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerDebug::execute(Context* context) {
+    void DoubleDebug::execute(Context* context) {
         // get the value from the stack
-        int value =context->stack->ints.pull(keepStack);
-        // print the value and insert a new line if the flag is set
+        double value = context->stack->doubles.pull(keepStack);
+        // double:pr the value and insert a new line if the flag is set
         print(value);
         if (newLine)
             println("");
@@ -1164,8 +1176,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerDebug::debug() {
-        String result = "idebug";
+    String DoubleDebug::debug() {
+        String result = "ddebug";
         if (newLine)
             result += " -newline";
         if (keepStack)
@@ -1174,12 +1186,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_EQUALS
+#pragma region DOUBLE_IF_EQUALS
     /**
-         * Initialize the integer equals check instruction.
+         * Initialize the double equals check instruction.
          */
-    IntegerEquals::IntegerEquals()
-        : Instruction(Instructions::INTEGER_IF_EQUAL)
+    DoubleEquals::DoubleEquals()
+        : Instruction(Instructions::DOUBLE_IF_EQUAL)
     { }
 
     /**
@@ -1189,7 +1201,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerEquals::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1221,12 +1233,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToDouble(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToDouble(args[++i]);
                 }
             }
             // handle addition result
@@ -1239,25 +1251,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerEquals::execute(Context* context) {
+    void DoubleEquals::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        double first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->doubles.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        double second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->doubles.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1269,8 +1281,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerEquals::debug() {
-        String result = "ifi==";
+    String DoubleEquals::debug() {
+        String result = "ifd==";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1297,12 +1309,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_NOT_EQUALS
+#pragma region DOUBLE_IF_NOT_EQUALS
     /**
-     * Initialize the integer not equals instruction.
+     * Initialize the double not equals instruction.
      */
-    IntegerNotEquals::IntegerNotEquals()
-        : Instruction(Instructions::INTEGER_IF_NOT_EQUAL)
+    DoubleNotEquals::DoubleNotEquals()
+        : Instruction(Instructions::DOUBLE_IF_NOT_EQUAL)
     { }
 
     /**
@@ -1312,7 +1324,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerNotEquals::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleNotEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1344,12 +1356,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToDouble(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToDouble(args[++i]);
                 }
             }
             // handle addition result
@@ -1362,25 +1374,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerNotEquals::execute(Context* context) {
+    void DoubleNotEquals::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        double first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->doubles.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        double second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->doubles.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1392,8 +1404,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerNotEquals::debug() {
-        String result = "ifi!=";
+    String DoubleNotEquals::debug() {
+        String result = "ifd!=";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1420,12 +1432,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_GREATER_THAN
+#pragma region DOUBLE_IF_GREATER_THAN
     /**
-     * Initialize the integer greater than check instruction.
+     * Initialize the double greater than check instruction.
      */
-    IntegerGreaterThan::IntegerGreaterThan()
-        : Instruction(Instructions::INTEGER_IF_GREATER_THAN)
+    DoubleGreaterThan::DoubleGreaterThan()
+        : Instruction(Instructions::DOUBLE_IF_GREATER_THAN)
     { }
 
     /**
@@ -1435,7 +1447,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerGreaterThan::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleGreaterThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1467,12 +1479,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToDouble(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToDouble(args[++i]);
                 }
             }
             // handle addition result
@@ -1485,25 +1497,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerGreaterThan::execute(Context* context) {
+    void DoubleGreaterThan::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        double first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->doubles.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        double second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->doubles.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1515,8 +1527,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerGreaterThan::debug() {
-        String result = "ifi>";
+    String DoubleGreaterThan::debug() {
+        String result = "ifd>";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1543,12 +1555,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_GREATER_THAN_OR_EQUAL
+#pragma region DOUBLE_IF_GREATER_THAN_OR_EQUAL
     /**
-     * Initialize the integer greater than check instruction.
+     * Initialize the double greater than check instruction.
      */
-    IntegerGreaterThanOrEquals::IntegerGreaterThanOrEquals()
-        : Instruction(Instructions::INTEGER_IF_GREATER_THAN_OR_EQUAL)
+    DoubleGreaterThanOrEquals::DoubleGreaterThanOrEquals()
+        : Instruction(Instructions::DOUBLE_IF_GREATER_THAN_OR_EQUAL)
     { }
 
     /**
@@ -1558,7 +1570,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerGreaterThanOrEquals::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleGreaterThanOrEquals::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1590,12 +1602,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToDouble(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToDouble(args[++i]);
                 }
             }
             // handle addition result
@@ -1608,25 +1620,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerGreaterThanOrEquals::execute(Context* context) {
+    void DoubleGreaterThanOrEquals::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        double first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->doubles.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        double second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->doubles.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1638,8 +1650,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerGreaterThanOrEquals::debug() {
-        String result = "ifi>=";
+    String DoubleGreaterThanOrEquals::debug() {
+        String result = "ifd>=";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1666,12 +1678,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_LESS_THAN
+#pragma region DOUBLE_IF_LESS_THAN
     /**
-     * Initialize the integer less than check instruction.
+     * Initialize the double less than check instruction.
      */
-    IntegerLessThan::IntegerLessThan()
-        : Instruction(Instructions::INTEGER_IF_LESS_THAN)
+    DoubleLessThan::DoubleLessThan()
+        : Instruction(Instructions::DOUBLE_IF_LESS_THAN)
     { }
 
     /**
@@ -1681,7 +1693,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerLessThan::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleLessThan::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1713,12 +1725,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToDouble(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToDouble(args[++i]);
                 }
             }
             // handle addition result
@@ -1731,25 +1743,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerLessThan::execute(Context* context) {
+    void DoubleLessThan::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        double first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->doubles.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
+        double second = secondValue;
         switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->doubles.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1761,8 +1773,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerLessThan::debug() {
-        String result = "ifi<";
+    String DoubleLessThan::debug() {
+        String result = "ifd<";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1789,12 +1801,12 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_IF_LESS_THAN_OR_EQUAL
+#pragma region DOUBLE_IF_LESS_THAN_OR_EQUAL
     /**
-     * Initialize the integer less than check instruction.
+     * Initialize the double less than check instruction.
      */
-    IntegerLessThanOrEqual::IntegerLessThanOrEqual()
-        : Instruction(Instructions::INTEGER_IF_LESS_THAN_OR_EQUAL)
+    DoubleLessThanOrEqual::DoubleLessThanOrEqual()
+        : Instruction(Instructions::DOUBLE_IF_LESS_THAN_OR_EQUAL)
     { }
 
     /**
@@ -1804,7 +1816,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerLessThanOrEqual::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleLessThanOrEqual::parse(String data, List<String> args, uint line, Executable* executable) {
         // loop through the instruction data
         bool firstVariable = true;
         for (uint i = 0; i < args.size(); i++) {
@@ -1836,12 +1848,12 @@ namespace Void {
             else if (arg == "-c" || arg == "-const") {
                 if (firstVariable) {
                     firstTarget = Target::CONSTANT;
-                    firstValue = stringToInt(args[++i]);
+                    firstValue = stringToDouble(args[++i]);
                     firstVariable = false;
                 }
                 else {
                     secondTarget = Target::CONSTANT;
-                    secondValue = stringToInt(args[++i]);
+                    secondValue = stringToDouble(args[++i]);
                 }
             }
             // handle addition result
@@ -1854,25 +1866,25 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerLessThanOrEqual::execute(Context* context) {
+    void DoubleLessThanOrEqual::execute(Context* context) {
         // get the first value to be added
-        int first = firstValue;
+        double first = firstValue;
         switch (firstTarget) {
             case Target::STACK:
-                first = context->stack->ints.pull();
+                first = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                first = context->storage->ints.get(firstValue);
+                first = context->storage->doubles.get((uint) firstValue);
                 break;
         }
         // get the second value to be added
-        int second = secondValue;
-            switch (secondTarget) {
+        double second = secondValue;
+        switch (secondTarget) {
             case Target::STACK:
-                second = context->stack->ints.pull();
+                second = context->stack->doubles.pull();
                 break;
             case Target::LOCAL:
-                second = context->storage->ints.get(secondValue);
+                second = context->storage->doubles.get((uint) secondValue);
                 break;
         }
         // check if the two numbers equal
@@ -1884,8 +1896,8 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerLessThanOrEqual::debug() {
-        String result = "ifi<=";
+    String DoubleLessThanOrEqual::debug() {
+        String result = "ifd<=";
         switch (firstTarget) {
             case Target::STACK:
                 result += " -stack";
@@ -1912,48 +1924,48 @@ namespace Void {
     }
 #pragma endregion
 
-#pragma region INTEGER_STACK_SIZE
+#pragma region DOUBLE_STACK_SIZE
     /**
-     * Initailize the integer stack size instruction.
+     * Initailize the double stack size instruction.
      */
-    IntegerStackSize::IntegerStackSize() 
-        : Instruction(Instructions::INTEGER_STACK_SIZE) 
+    DoubleStackSize::DoubleStackSize()
+        : Instruction(Instructions::DOUBLE_STACK_SIZE)
     { }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerStackSize::execute(Context* context) {
-        context->stack->ints.push(context->stack->ints.size());
+    void DoubleStackSize::execute(Context* context) {
+        context->stack->doubles.push(context->stack->doubles.size());
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerStackSize::debug() {
-        return "istacksize";
+    String DoubleStackSize::debug() {
+        return "dstacksize";
     }
 #pragma endregion
 
-#pragma region INTEGER_DUMP_STACK
+#pragma region DOUBLE_DUMP_STACK
     /**
-     * Initialize the integer stack dump instruction.
+     * Initialize the double stack dump instruction.
      */
-    IntegerDumpStack::IntegerDumpStack()
-        : Instruction(Instructions::INTEGER_DUMP_STACK)
+    DoubleDumpStack::DoubleDumpStack()
+        : Instruction(Instructions::DOUBLE_DUMP_STACK)
     { }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerDumpStack::execute(Context* context) {
-        uint size = context->stack->ints.size();;
-        println("[log] int stack dump (" << size << ")");
+    void DoubleDumpStack::execute(Context* context) {
+        uint size = context->stack->doubles.size();;
+        println("[log] double stack dump (" << size << ")");
         for (uint i = 0; i < size; i++) {
-            println("- " << context->stack->ints.at(i) << " [" << i << "]");
+            println("- " << context->stack->doubles.at(i) << " [" << i << "]");
         }
     }
 
@@ -1961,67 +1973,67 @@ namespace Void {
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerDumpStack::debug() {
-        return "idumpstack";
+    String DoubleDumpStack::debug() {
+        return "ddumpstack";
     }
 #pragma endregion
 
-#pragma region INTEGER_CLEAR_STACK
+#pragma region DOUBLE_CLEAR_STACK
     /**
-     * Initialize the integer stack clear instruction.
+     * Initialize the double stack clear instruction.
      */
-    IntegerClearStack::IntegerClearStack()
-        : Instruction(Instructions::INTEGER_CLEAR_STACK)
+    DoubleClearStack::DoubleClearStack()
+        : Instruction(Instructions::DOUBLE_CLEAR_STACK)
     { }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerClearStack::execute(Context* context) {
-        context->stack->ints.clear();
+    void DoubleClearStack::execute(Context* context) {
+        context->stack->doubles.clear();
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerClearStack::debug() {
-        return "iclearstack";
+    String DoubleClearStack::debug() {
+        return "dclearstack";
     }
 #pragma endregion
 
-#pragma region INTEGER_POP_STACK
+#pragma region DOUBLE_POP_STACK
     /**
-     * Initialize the integer pop instruction.
+     * Initialize the double pop instruction.
      */
-    IntegerPopStack::IntegerPopStack()
-        : Instruction(Instructions::INTEGER_POP_STACK)
+    DoublePopStack::DoublePopStack()
+        : Instruction(Instructions::DOUBLE_POP_STACK)
     { }
 
     /**
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerPopStack::execute(Context* context) {
-        context->stack->ints.pull();
+    void DoublePopStack::execute(Context* context) {
+        context->stack->doubles.pull();
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerPopStack::debug() {
-        return "ipop";
+    String DoublePopStack::debug() {
+        return "dpop";
     }
 #pragma endregion
 
-#pragma region INTEGER_DUPLICATE_STACK
+#pragma region DOUBLE_DUPLICATE_STACK
     /**
-     * Initialize the integer duplicate instruction.
+     * Initialize the double duplicate instruction.
      */
-    IntegerDuplicateStack::IntegerDuplicateStack()
-        : Instruction(Instructions::INTEGER_DUPLICATE_STACK)
+    DoubleDuplicateStack::DoubleDuplicateStack()
+        : Instruction(Instructions::DOUBLE_DUPLICATE_STACK)
     { }
 
     /**
@@ -2031,7 +2043,7 @@ namespace Void {
      * @param line bytecode line index
      * @aram executable bytecode executor
      */
-    void IntegerDuplicateStack::parse(String data, List<String> args, uint line, Executable* executable) {
+    void DoubleDuplicateStack::parse(String data, List<String> args, uint line, Executable* executable) {
         // parse the duplication count
         if (!args.empty())
             count = stringToInt(args[0]);
@@ -2041,20 +2053,20 @@ namespace Void {
      * Execute the instruction in the executable context.
      * @param context bytecode execution context
      */
-    void IntegerDuplicateStack::execute(Context* context) {
+    void DoubleDuplicateStack::execute(Context* context) {
         // get the value to be duplicated without being removed
-        int value = context->stack->ints.get();
+        double value = context->stack->doubles.get();
         // push the value to the stack the given times
         for (uint i = 0; i < count; i++)
-            context->stack->ints.push(value);
+            context->stack->doubles.push(value);
     }
 
     /**
      * Get the string representation of the instruction.
      * @return instruction bytecode data
      */
-    String IntegerDuplicateStack::debug() {
-        String result = "idup";
+    String DoubleDuplicateStack::debug() {
+        String result = "ddup";
         if (count > 1)
             result += " " + toString(count);
         return result;

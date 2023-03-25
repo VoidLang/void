@@ -4,22 +4,22 @@
 
 #ifdef VOID_INSTRUCTION
 namespace Void {
-#pragma region LONG_PUSH
+#pragma region FLOAT_PUSH
     /**
-     * Represents an instruction that pushes an long to the stack.
+     * Represents an instruction that pushes an float to the stack.
      */
-    class LongPush : public Instruction {
+    class FloatPush : public Instruction {
     private:
         /**
          * The value to push to the stack.
          */
-        lint value = 0;
+        float value = 0;
 
     public:
         /**
-         * Initialize the long push instruction.
+         * Initialize the float push instruction.
          */
-        LongPush();
+        FloatPush();
 
         /**
          * Parse raw bytecode instruction.
@@ -44,22 +44,22 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_LOAD
+#pragma region FLOAT_LOAD
     /**
-     * Represents an instruction that loads an long from the storage.
+     * Represents an instruction that loads an float from the storage.
      */
-    class LongLoad : public Instruction {
+    class FloatLoad : public Instruction {
     private:
         /**
-         * The storage index to load the long from.
+         * The storage index to load the float from.
          */
         uint index = 0;
 
     public:
         /**
-         * Initialize the long load instruction.
+         * Initialize the float load instruction.
          */
-        LongLoad();
+        FloatLoad();
 
         /**
          * Parse raw bytecode instruction.
@@ -84,14 +84,14 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_STORE
+#pragma region FLOAT_STORE
     /**
-     * Represents an instruction that stores an long in the storage.
+     * Represents an instruction that stores an float in the storage.
      */
-    class LongStore : public Instruction {
+    class FloatStore : public Instruction {
     private:
         /**
-         * The storage index to store the long linto.
+         * The storage index to store the float floato.
          */
         uint index = 0;
 
@@ -102,9 +102,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long store instruction.
+         * Initialize the float store instruction.
          */
-        LongStore();
+        FloatStore();
 
         /**
          * Parse raw bytecode instruction.
@@ -129,11 +129,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_SET
+#pragma region FLOAT_SET
     /**
      * Set the value of the given local variable.
      */
-    class LongSet : public Instruction {
+    class FloatSet : public Instruction {
     private:
         /**
          * The local variable storage index to be assigned.
@@ -143,13 +143,13 @@ namespace Void {
         /**
          * The value to push to be assigned for the variable.
          */
-        lint value = 0;
+        float value = 0;
 
     public:
         /**
-         * Initialize the long set instruction.
+         * Initialize the float set instruction.
          */
-        LongSet();
+        FloatSet();
 
         /**
          * Parse raw bytecode instruction.
@@ -174,11 +174,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_ENSURE
+#pragma region FLOAT_ENSURE
     /**
-     * Ensure the capacity of the long variable storage.
+     * Ensure the capacity of the float variable storage.
      */
-    class LongEnsure : public Instruction {
+    class FloatEnsure : public Instruction {
     private:
         /**
          * The ensured size of the variable storage.
@@ -187,9 +187,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long ensure instruction.
+         * Initialize the float ensure instruction.
          */
-        LongEnsure();
+        FloatEnsure();
 
         /**
          * Parse raw bytecode instruction.
@@ -214,11 +214,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_ADD
+#pragma region FLOAT_ADD
     /**
-     * Represents an instruction that adds two long values.
+     * Represents an instruction that adds two float values.
      */
-    class LongAdd : public Instruction {
+    class FloatAdd : public Instruction {
     private:
         /**
          * The target of te first number in the addition.
@@ -228,7 +228,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        lint firstValue = 0;
+        float firstValue = 0;
 
         /**
          * Determine if the second number should be loaded from the stack.
@@ -238,7 +238,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        lint secondValue = 0;
+        float secondValue = 0;
 
         /**
          * The target of the addition result.
@@ -252,9 +252,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long add instruction.
+         * Initialize the float add instruction.
          */
-        LongAdd();
+        FloatAdd();
 
         /**
          * Parse raw bytecode instruction.
@@ -279,11 +279,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_SUBTRACT
+#pragma region FLOAT_SUBTRACT
     /**
-     * Represents an instruction that subtracts two long values.
+     * Represents an instruction that subtracts two float values.
      */
-    class LongSubtract : public Instruction {
+    class FloatSubtract : public Instruction {
     private:
         /**
          * The target of te first number in the subtraction.
@@ -293,7 +293,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        lint firstValue = 0;
+        float firstValue = 0;
 
         /**
          * Determine if the second number should be loaded from the stack.
@@ -303,7 +303,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        lint secondValue = 0;
+        float secondValue = 0;
 
         /**
          * The target of the subtraction result.
@@ -317,9 +317,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long subtract instruction.
+         * Initialize the float subtract instruction.
          */
-        LongSubtract();
+        FloatSubtract();
 
         /**
          * Parse raw bytecode instruction.
@@ -344,11 +344,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_MULTIPLY
+#pragma region FLOAT_MULTIPLY
     /**
-     * Represents an instruction that multiplies two long values.
+     * Represents an instruction that multiplies two float values.
      */
-    class LongMultiply : public Instruction {
+    class FloatMultiply : public Instruction {
     private:
         /**
          * The target of te first number in the multiplication.
@@ -358,7 +358,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        lint firstValue = 0;
+        float firstValue = 0;
 
         /**
          * Determine if the second number should be loaded from the stack.
@@ -368,7 +368,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        lint secondValue = 0;
+        float secondValue = 0;
 
         /**
          * The target of the multiplication result.
@@ -382,9 +382,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long multiply instruction.
+         * Initialize the float multiply instruction.
          */
-        LongMultiply();
+        FloatMultiply();
 
         /**
          * Parse raw bytecode instruction.
@@ -409,11 +409,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_DIVIDE
+#pragma region FLOAT_DIVIDE
     /**
-     * Represents an instruction that divides two long values.
+     * Represents an instruction that divides two float values.
      */
-    class LongDivide : public Instruction {
+    class FloatDivide : public Instruction {
     private:
         /**
          * The target of te first number in the division.
@@ -423,7 +423,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        lint firstValue = 0;
+        float firstValue = 0;
 
         /**
          * Determine if the second number should be loaded from the stack.
@@ -433,7 +433,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        lint secondValue = 0;
+        float secondValue = 0;
 
         /**
          * The target of the division result.
@@ -447,9 +447,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long divide instruction.
+         * Initialize the float divide instruction.
          */
-        LongDivide();
+        FloatDivide();
 
         /**
          * Parse raw bytecode instruction.
@@ -474,11 +474,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_MODULO
+#pragma region FLOAT_MODULO
     /**
-     * Represents an instruction that divides two long values and results the remainder.
+     * Represents an instruction that divides two float values and results the remainder.
      */
-    class LongModulo : public Instruction {
+    class FloatModulo : public Instruction {
     private:
         /**
          * The target of the first number in the remainder division.
@@ -488,7 +488,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        lint firstValue = 0;
+        float firstValue = 0;
 
         /**
          * Determine if the second number should be loaded from the stack.
@@ -498,7 +498,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        lint secondValue = 0;
+        float secondValue = 0;
 
         /**
          * The target of the remainder division result.
@@ -512,9 +512,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long modulo instruction.
+         * Initialize the float modulo instruction.
          */
-        LongModulo();
+        FloatModulo();
 
         /**
          * Parse raw bytecode instruction.
@@ -539,11 +539,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_INCREMENT
+#pragma region FLOAT_INCREMENT
     /**
-     * Represents an instruction that increments an long by one.
+     * Represents an instruction that increments an float by one.
      */
-    class LongIncrement : public Instruction {
+    class FloatIncrement : public Instruction {
     private:
         /**
          * The target of the incremention source.
@@ -567,9 +567,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long increment instruction.
+         * Initialize the float increment instruction.
          */
-        LongIncrement();
+        FloatIncrement();
 
         /**
          * Parse raw bytecode instruction.
@@ -594,11 +594,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_DECREMENT
+#pragma region FLOAT_DECREMENT
     /**
-     * Represents an instruction that decrements an long by one.
+     * Represents an instruction that decrements an float by one.
      */
-    class LongDecrement : public Instruction {
+    class FloatDecrement : public Instruction {
     private:
         /**
          * The target of the decremention source.
@@ -622,9 +622,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long decrement instruction.
+         * Initialize the float decrement instruction.
          */
-        LongDecrement();
+        FloatDecrement();
 
         /**
          * Parse raw bytecode instruction.
@@ -649,11 +649,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_NEGATE
+#pragma region FLOAT_NEGATE
     /**
-     * Represents an instruction that negates an long.
+     * Represents an instruction that negates an float.
      */
-    class LongNegate : public Instruction {
+    class FloatNegate : public Instruction {
     private:
         /**
          * The target of the negation source.
@@ -677,9 +677,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long negate instruction.
+         * Initialize the float negate instruction.
          */
-        LongNegate();
+        FloatNegate();
 
         /**
          * Parse raw bytecode instruction.
@@ -704,11 +704,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_DEBUG
+#pragma region FLOAT_DEBUG
     /**
-     * Represents an instruction that prlints an long value from the stack.
+     * Represents an instruction that float:prs an float value from the stack.
      */
-    class LongDebug : public Instruction {
+    class FloatDebug : public Instruction {
     private:
         /**
          * Determine if a new line should be inserted after the debug.
@@ -722,9 +722,9 @@ namespace Void {
 
     public:
         /**
-         * Initailize the long debug instruction.
+         * Initailize the float debug instruction.
          */
-        LongDebug();
+        FloatDebug();
 
         /**
          * Parse raw bytecode instruction.
@@ -750,11 +750,11 @@ namespace Void {
 
 #pragma endregion
 
-#pragma region LONG_IF_EQUALS
+#pragma region FLOAT_IF_EQUALS
     /**
-     * Represents an instruction that jumps to a given section if two longs are equal.
+     * Represents an instruction that jumps to a given section if two floats are equal.
      */
-    class LongEquals : public Instruction {
+    class FloatEquals : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -764,7 +764,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        lint firstValue = 0;
+        float firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -774,7 +774,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        lint secondValue = 0;
+        float secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -783,9 +783,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long equals check instruction.
+         * Initialize the float equals check instruction.
          */
-        LongEquals();
+        FloatEquals();
 
         /**
          * Parse raw bytecode instruction.
@@ -810,11 +810,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_IF_NOT_EQUALS
+#pragma region FLOAT_IF_NOT_EQUALS
     /**
-     * Represents an instruction that jumps to a given section if two longs are not equal.
+     * Represents an instruction that jumps to a given section if two floats are not equal.
      */
-    class LongNotEquals : public Instruction {
+    class FloatNotEquals : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -824,7 +824,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        lint firstValue = 0;
+        float firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -834,7 +834,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        lint secondValue = 0;
+        float secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -843,9 +843,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long not equals instruction.
+         * Initialize the float not equals instruction.
          */
-        LongNotEquals();
+        FloatNotEquals();
 
         /**
          * Parse raw bytecode instruction.
@@ -870,11 +870,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_IF_GREATER_THAN
+#pragma region FLOAT_IF_GREATER_THAN
     /**
-     * Represents an instruction that jumps to a given section if an long is greater than another.
+     * Represents an instruction that jumps to a given section if an float is greater than another.
      */
-    class LongGreaterThan : public Instruction {
+    class FloatGreaterThan : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -884,7 +884,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        lint firstValue = 0;
+        float firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -894,7 +894,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        lint secondValue = 0;
+        float secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -903,9 +903,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long greater than check instruction.
+         * Initialize the float greater than check instruction.
          */
-        LongGreaterThan();
+        FloatGreaterThan();
 
         /**
          * Parse raw bytecode instruction.
@@ -930,11 +930,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_IF_GREATER_THAN_OR_EQUAL
+#pragma region FLOAT_IF_GREATER_THAN_OR_EQUAL
     /**
-     * Represents an instruction that jumps to a given section if an long is greater than or is equal another.
+     * Represents an instruction that jumps to a given section if an float is greater than or is equal another.
      */
-    class LongGreaterThanOrEquals : public Instruction {
+    class FloatGreaterThanOrEquals : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -944,7 +944,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        lint firstValue = 0;
+        float firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -954,7 +954,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        lint secondValue = 0;
+        float secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -963,9 +963,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long greater than or equal check instruction.
+         * Initialize the float greater than or equal check instruction.
          */
-        LongGreaterThanOrEquals();
+        FloatGreaterThanOrEquals();
 
         /**
          * Parse raw bytecode instruction.
@@ -990,11 +990,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_IF_LESS_THAN
+#pragma region FLOAT_IF_LESS_THAN
     /**
-     * Represents an instruction that jumps to a given section if an long is less than another.
+     * Represents an instruction that jumps to a given section if an float is less than another.
      */
-    class LongLessThan : public Instruction {
+    class FloatLessThan : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -1004,7 +1004,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        lint firstValue = 0;
+        float firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -1014,7 +1014,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        lint secondValue = 0;
+        float secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -1023,9 +1023,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long less than check instruction.
+         * Initialize the float less than check instruction.
          */
-        LongLessThan();
+        FloatLessThan();
 
         /**
          * Parse raw bytecode instruction.
@@ -1050,11 +1050,11 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_IF_LESS_THAN_OR_EQUAL
+#pragma region FLOAT_IF_LESS_THAN_OR_EQUAL
     /**
-     * Represents an instruction that jumps to a given section if an long is less than or is equal another.
+     * Represents an instruction that jumps to a given section if an float is less than or is equal another.
      */
-    class LongLessThanOrEqual : public Instruction {
+    class FloatLessThanOrEqual : public Instruction {
     private:
         /**
          * The target of the first number in the check.
@@ -1064,7 +1064,7 @@ namespace Void {
         /**
          * The storage index or the value of the first number.
          */
-        lint firstValue = 0;
+        float firstValue = 0;
 
         /**
          * The target of the second elemnet in the check.
@@ -1074,7 +1074,7 @@ namespace Void {
         /**
          * The storage index or the value of the second number.
          */
-        lint secondValue = 0;
+        float secondValue = 0;
 
         /**
          * The bytecode instruction index to jump to.
@@ -1083,9 +1083,9 @@ namespace Void {
 
     public:
         /**
-         * Initialize the long less than or equal check instruction.
+         * Initialize the float less than or equal check instruction.
          */
-        LongLessThanOrEqual();
+        FloatLessThanOrEqual();
 
         /**
          * Parse raw bytecode instruction.
@@ -1110,16 +1110,16 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_STACK_SIZE
+#pragma region FLOAT_STACK_SIZE
     /**
-     * Represents an instruction that retrieves the size of the long stack and pushes the count to the long stack.
+     * Represents an instruction that retrieves the size of the float stack and pushes the count to the float stack.
      */
-    class LongStackSize : public Instruction {
+    class FloatStackSize : public Instruction {
     public:
         /**
-         * Initailize the long stack size instruction.
+         * Initailize the float stack size instruction.
          */
-        LongStackSize();
+        FloatStackSize();
 
         /**
          * Execute the instruction in the executable context.
@@ -1135,16 +1135,16 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_DUMP_STACK
+#pragma region FLOAT_DUMP_STACK
     /**
-     * Represents an instruction that dumps the elements of the long stack.
+     * Represents an instruction that dumps the elements of the float stack.
      */
-    class LongDumpStack : public Instruction {
+    class FloatDumpStack : public Instruction {
     public:
         /**
-         * Initialize the long stack dump instruction.
+         * Initialize the float stack dump instruction.
          */
-        LongDumpStack();
+        FloatDumpStack();
 
         /**
          * Execute the instruction in the executable context.
@@ -1160,16 +1160,16 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_CLEAR_STACK
+#pragma region FLOAT_CLEAR_STACK
     /**
-     * Represents an instruction that clears the long stack.
+     * Represents an instruction that clears the float stack.
      */
-    class LongClearStack : public Instruction {
+    class FloatClearStack : public Instruction {
     public:
         /**
-         * Initialize the long stack clear instruction.
+         * Initialize the float stack clear instruction.
          */
-        LongClearStack();
+        FloatClearStack();
 
         /**
          * Execute the instruction in the executable context.
@@ -1185,16 +1185,16 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_POP_STACK
+#pragma region FLOAT_POP_STACK
     /**
-     * Represents an instruction that removes an long from the stack.
+     * Represents an instruction that removes an float from the stack.
      */
-    class LongPopStack : public Instruction {
+    class FloatPopStack : public Instruction {
     public:
         /**
-         * Initialize the long pop instruction.
+         * Initialize the float pop instruction.
          */
-        LongPopStack();
+        FloatPopStack();
 
         /**
          * Execute the instruction in the executable context.
@@ -1210,22 +1210,22 @@ namespace Void {
     };
 #pragma endregion
 
-#pragma region LONG_DUPLICATE_STACK
+#pragma region FLOAT_DUPLICATE_STACK
     /**
-     * Represents an instruction that duplicates an long on the stack.
+     * Represents an instruction that duplicates an float on the stack.
      */
-    class LongDuplicateStack : public Instruction {
+    class FloatDuplicateStack : public Instruction {
     private:
         /**
-         * The number of times the long should be duplicated.
+         * The number of times the float should be duplicated.
          */
         uint count = 1;
 
     public:
         /**
-         * Initialize the long duplicate instruction.
+         * Initialize the float duplicate instruction.
          */
-        LongDuplicateStack();
+        FloatDuplicateStack();
 
         /**
          * Parse raw bytecode instruction.

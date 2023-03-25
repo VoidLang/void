@@ -69,6 +69,15 @@
     <ClInclude Include="src\vm\parser\instructions\Longs.hpp">
       <Filter>vm\parser\instructions</Filter>
     </ClInclude>
+    <ClInclude Include="src\vm\parser\instructions\Floats.hpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\parser\instructions\Doubles.hpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vm\parser\instructions\Invokes.hpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -134,6 +143,15 @@
       <Filter>vm\parser\instructions</Filter>
     </ClCompile>
     <ClCompile Include="src\vm\parser\instructions\Longs.cpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\parser\instructions\Floats.cpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\parser\instructions\Doubles.cpp">
+      <Filter>vm\parser\instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\vm\parser\instructions\Invokes.cpp">
       <Filter>vm\parser\instructions</Filter>
     </ClCompile>
   </ItemGroup>

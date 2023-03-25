@@ -190,5 +190,190 @@ namespace Void {
         String debug() override;
     };
 #pragma endregion
+
+#pragma region INSTANCE_SET_ADDRESS
+    /**
+     * Rpresents an instruction that sets the instruction pointer value at the given long address.
+     */
+    class InstanceSetAddress : public Instruction {
+    private:
+        /**
+         * The target of the instance address source.
+         */
+        Target source = Target::STACK;
+
+        /**
+         * The storage index of the instance address source.
+         */
+        uint sourceIndex = 0;
+
+        /**
+         * The target of the instance reference result.
+         */
+        Target result = Target::STACK;
+
+        /**
+         * The storage index of the instance reference result.
+         */
+        uint resultIndex = 0;
+
+    public:
+        /**
+         * Initialize the instance reference set instruction..
+         */
+        InstanceSetAddress();
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @aram executable bytecode executor
+         */
+        void parse(String data, List<String> args, uint line, Executable* executable) override;
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        void execute(Context* context) override;
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+#pragma endregion
+
+#pragma region INSTANCE_LOAD
+    /**
+     * Represents an instruction that loads an instance from the storage and puts the value on the stack.
+     */
+    class InstanceLoad : public Instruction {
+    private:
+        /**
+         * The storage index to load the instance from.
+         */
+        uint index = 0;
+
+    public:
+        /**
+         * Initialize the instance load instruction.
+         */
+        InstanceLoad();
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @aram executable bytecode executor
+         */
+        void parse(String data, List<String> args, uint line, Executable* executable) override;
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        void execute(Context* context) override;
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+#pragma endregion
+
+#pragma region INSTANCE_STORE
+    /**
+     * Represents an instruction that stores an instance value in the storage from the stack.
+     */
+    class InstanceStore : public Instruction {
+    private:
+        /**
+         * The storage index to store the instance into.
+         */
+        uint index = 0;
+
+        /**
+        * Determine if the value should be kept on the stack.
+        */
+        bool keepStack = false;
+
+    public:
+        /**
+         * Initialize the instance 
+         */
+        InstanceStore();
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @aram executable bytecode executor
+         */
+        void parse(String data, List<String> args, uint line, Executable* executable) override;
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        void execute(Context* context) override;
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+#pragma endregion
+
+#pragma region INSTANCE_DEBUG
+    /**
+     * Represents an instruction that debugs an instance value from the stack.
+     */
+    class InstanceDebug : public Instruction {
+    private:
+        /**
+         * Determine if a new line should be inserted after the debug.
+         */
+        bool newLine = false;
+
+        /**
+         * Determine if the value should be kept on the stack.
+         */
+        bool keepStack = false;
+
+    public:
+        /**
+         * Initialize the instance debug instruction.
+         */
+        InstanceDebug();
+
+        /**
+         * Parse raw bytecode instruction.
+         * @param raw bytecode data
+         * @parma args split array of the data
+         * @param line bytecode line index
+         * @aram executable bytecode executor
+         */
+        void parse(String data, List<String> args, uint line, Executable* executable) override;
+
+        /**
+         * Execute the instruction in the executable context.
+         * @param context bytecode execution context
+         */
+        void execute(Context* context) override;
+
+        /**
+         * Get the string representation of the instruction.
+         * @return instruction bytecode data
+         */
+        String debug() override;
+    };
+#pragma endregion
 }
 #endif

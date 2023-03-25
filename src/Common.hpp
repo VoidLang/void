@@ -56,6 +56,10 @@ using List = std::vector<T>;
     std::stoi(x)
 #define stringToLong(x) \
     std::stoll(x)
+#define stringToFloat(x) \
+    std::stof(x)
+#define stringToDouble(x) \
+    std::stod(x)
 
 // functions
 

@@ -299,32 +299,37 @@ namespace Void {
 #pragma region Floats
 
         /**
-         * Push a float to the stack.
+         * Push an float to the stack.
          */
         FLOAT_PUSH,
 
         /**
-         * Load a float from the storage to the stack.
+         * Load an float from the storage to the stack.
          */
         FLOAT_LOAD,
 
         /**
-          * Store a float from the stack to the storage.
-          */
+         * Store an float from the stack to the storage.
+         */
         FLOAT_STORE,
 
         /**
-         * Store a float in the storage with keeping the value in the stack.
+         * Set the value of the given local variable.
          */
-        FLOAT_STORE_KEEP_STACK,
+        FLOAT_SET,
 
         /**
-         * Load a float value from an array.
+         * Ensure the capacity of the float variable storage.
+         */
+        FLOAT_ENSURE,
+
+        /**
+         * Load an float value from an array.
          */
         FLOAT_ARRAY_LOAD,
 
         /**
-         * Store a float value in an array.
+         * Store an float value in an array.
          */
         FLOAT_ARRAY_STORE,
 
@@ -369,7 +374,7 @@ namespace Void {
         FLOAT_NEGATE,
 
         /**
-         * Return a float value from the stack.
+         * Return an float value from the stack.
          */
         FLOAT_RETURN,
 
@@ -384,11 +389,6 @@ namespace Void {
         FLOAT_DUPLICATE_STACK,
 
         /**
-         * Duplicate the float on the stack N times.
-         */
-        FLOAT_DUPLICATE_STACK_TIMES,
-
-        /**
          * Prfloat the float on the stack.
          */
         FLOAT_DEBUG,
@@ -397,6 +397,11 @@ namespace Void {
          * Get the count of floats on the stack and push the result back.
          */
         FLOAT_STACK_SIZE,
+
+        /**
+         * Dump the elements of the float stack.
+         */
+        FLOAT_DUMP_STACK,
 
         /**
          * Clear the content of the float stack.
@@ -419,22 +424,22 @@ namespace Void {
         FLOAT_IF_NOT_EQUAL,
 
         /**
-         * Check if a float is greater than another.
+         * Check if an float is greater than another.
          */
         FLOAT_IF_GREATER_THAN,
 
         /**
-         * Check if a float is either greater than or is equal to another.
+         * Check if an float is either greater than or is equal to another.
          */
         FLOAT_IF_GREATER_THAN_OR_EQUAL,
 
         /**
-         * Check if a float is less than another.
+         * Check if an float is less than another.
          */
         FLOAT_IF_LESS_THAN,
 
         /**
-         * Check if a float is either less than or is equal to another.
+         * Check if an float is either less than or is equal to another.
          */
         FLOAT_IF_LESS_THAN_OR_EQUAL,
 
@@ -443,32 +448,37 @@ namespace Void {
 #pragma region Doubles
 
         /**
-         * Push a double to the stack.
+         * Push an double to the stack.
          */
         DOUBLE_PUSH,
 
         /**
-         * Load a double from the storage to the stack.
+         * Load an double from the storage to the stack.
          */
         DOUBLE_LOAD,
 
         /**
-         * Store a double from the stack to the storage.
+         * Store an double from the stack to the storage.
          */
         DOUBLE_STORE,
 
         /**
-         * Store a double in the storage with keeping the value in the stack.
+         * Set the value of the given local variable.
          */
-        DOUBLE_STORE_KEEP_STACK,
+        DOUBLE_SET,
 
         /**
-         * Load a double value from an array.
+         * Ensure the capacity of the double variable storage.
+         */
+        DOUBLE_ENSURE,
+
+        /**
+         * Load an double value from an array.
          */
         DOUBLE_ARRAY_LOAD,
 
         /**
-         * Store a double value in an array.
+         * Store an double value in an array.
          */
         DOUBLE_ARRAY_STORE,
 
@@ -513,7 +523,7 @@ namespace Void {
         DOUBLE_NEGATE,
 
         /**
-         * Return a double value from the stack.
+         * Return an double value from the stack.
          */
         DOUBLE_RETURN,
 
@@ -528,11 +538,6 @@ namespace Void {
         DOUBLE_DUPLICATE_STACK,
 
         /**
-         * Duplicate the double on the stack N times.
-         */
-        DOUBLE_DUPLICATE_STACK_TIMES,
-
-        /**
          * Prdouble the double on the stack.
          */
         DOUBLE_DEBUG,
@@ -541,6 +546,11 @@ namespace Void {
          * Get the count of doubles on the stack and push the result back.
          */
         DOUBLE_STACK_SIZE,
+
+        /**
+         * Dump the elements of the double stack.
+         */
+        DOUBLE_DUMP_STACK,
 
         /**
          * Clear the content of the double stack.
@@ -563,22 +573,22 @@ namespace Void {
         DOUBLE_IF_NOT_EQUAL,
 
         /**
-         * Check if a double is greater than another.
+         * Check if an double is greater than another.
          */
         DOUBLE_IF_GREATER_THAN,
 
         /**
-         * Check if a double is either greater than or is equal to another.
+         * Check if an double is either greater than or is equal to another.
          */
         DOUBLE_IF_GREATER_THAN_OR_EQUAL,
 
         /**
-         * Check if a double is less than another.
+         * Check if an double is less than another.
          */
         DOUBLE_IF_LESS_THAN,
 
         /**
-         * Check if a double is either less than or is equal to another.
+         * Check if an double is either less than or is equal to another.
          */
         DOUBLE_IF_LESS_THAN_OR_EQUAL,
 
@@ -786,6 +796,14 @@ namespace Void {
 
         INVOKE_STATIC,
 
+        INVOKE_VIRTUAL,
+
+        INVOKE_DYNAMIC,
+
+        INVOKE_SPECIAL,
+
+        INVOKE_INTERFACE,
+
         INPUT,
 
         PRINT,
@@ -798,7 +816,7 @@ namespace Void {
     /**
      * The registry of the mapped instruction names.
      */
-    static const char* ELEMENT_INSTRUCTIONS_MAPPED[142] = {
+    static const char* ELEMENT_INSTRUCTIONS_MAPPED[148] = {
         "cdef",
         "cmod",
         "cext",
@@ -890,7 +908,8 @@ namespace Void {
         "fpush",
         "fload",
         "fstore",
-        "fstorew",
+        "fset",
+        "fensure",
         "faload",
         "fastore",
         "fadd",
@@ -904,9 +923,9 @@ namespace Void {
         "freturn",
         "fpop",
         "fdup",
-        "fdup_x",
         "fdebug",
         "fstacksize",
+        "fdumpstack",
         "fclearstack",
         "falloc",
         "iffeq",
@@ -919,7 +938,8 @@ namespace Void {
         "dpush",
         "dload",
         "dstore",
-        "dstorew",
+        "dset",
+        "densure",
         "daload",
         "dastore",
         "dadd",
@@ -933,9 +953,9 @@ namespace Void {
         "dreturn",
         "dpop",
         "ddup",
-        "ddup_x",
         "ddebug",
         "dstacksize",
+        "ddumpstack",
         "dclearstack",
         "dalloc",
         "ifdeq",
@@ -946,6 +966,10 @@ namespace Void {
         "ifdle",
 
         "invokestatic",
+        "invokevirtual",
+        "invokedynamic",
+        "invokespecial",
+        "invokeinterface",
 
         "input",
         "print",
@@ -955,7 +979,7 @@ namespace Void {
     /**
      * The registry of the unmapped raw instruction values.
      */
-    static const char* ELEMENT_INSTRUCTIONS_UNMAPPED[142] = {
+    static const char* ELEMENT_INSTRUCTIONS_UNMAPPED[148] = {
         "cdef",
         "cmod",
         "cext",
@@ -1103,6 +1127,10 @@ namespace Void {
         "ifdle",
 
         "invokestatic",
+        "invokevirtual",
+        "invokedynamic",
+        "invokespecial",
+        "invokeinterface",
 
         "input",
         "print",

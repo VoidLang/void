@@ -31,6 +31,12 @@ namespace Void {
                 // put the value in the instance cache
                 values[field] = field->value;
             }
+            // return if the class does not have a custom superclass
+            if (clazz->superclass.empty() || clazz->superclass == "Object")
+                return;
+
+            // get the superclass of the class
+            clazz = vm->getClass(clazz->superclass);
         }
     }
 
@@ -84,7 +90,7 @@ namespace Void {
 
         // create the instance debug message
         StringStream stream;
-        stream << "<class " << clazz->name << " at 0x " << address << " id " << instanceId << ">";
+        stream << "<class " << clazz->name << " at 0x" << address << " id " << instanceId << ">";
 
         return stream.str();
     }

@@ -2,7 +2,11 @@
 #include "../../util/Strings.hpp"
 #include "instructions/Integers.hpp"
 #include "instructions/Longs.hpp"
+#include "instructions/Floats.hpp"
+#include "instructions/Doubles.hpp"
 #include "instructions/Sections.hpp"
+#include "instructions/Instances.hpp"
+#include "instructions/Invokes.hpp"
 
 namespace Void {
     /**
@@ -192,6 +196,130 @@ namespace Void {
             return new LongPopStack();
         else if (identifier == "ldup")
             return new LongDuplicateStack();
+#pragma endregion
+
+#pragma region Floats
+        else if (identifier == "fpush")
+            return new FloatPush();
+        else if (identifier == "fload")
+            return new FloatLoad();
+        else if (identifier == "fstore")
+            return new FloatStore();
+        else if (identifier == "fset")
+            return new FloatSet();
+        else if (identifier == "fensure")
+            return new FloatEnsure();
+        else if (identifier == "fadd")
+            return new FloatAdd();
+        else if (identifier == "fsub")
+            return new FloatSubtract();
+        else if (identifier == "fmul")
+            return new FloatMultiply();
+        else if (identifier == "fdiv")
+            return new FloatDivide();
+        else if (identifier == "fmod")
+            return new FloatModulo();
+        else if (identifier == "finc")
+            return new FloatIncrement();
+        else if (identifier == "fdecr")
+            return new FloatDecrement();
+        else if (identifier == "fneg")
+            return new FloatNegate();
+        else if (identifier == "fdebug")
+            return new FloatDebug();
+        else if (identifier == "iffeq" || identifier == "iff==")
+            return new FloatEquals();
+        else if (identifier == "iffneq" || identifier == "iff!=")
+            return new FloatNotEquals();
+        else if (identifier == "iffg" || identifier == "iff>")
+            return new FloatGreaterThan();
+        else if (identifier == "iffge" || identifier == "iff>=")
+            return new FloatGreaterThanOrEquals();
+        else if (identifier == "iffl" || identifier == "iff<")
+            return new FloatLessThan();
+        else if (identifier == "iffle" || identifier == "iff<=")
+            return new FloatLessThanOrEqual();
+        else if (identifier == "fstacksize")
+            return new FloatStackSize();
+        else if (identifier == "fdumpstack")
+            return new FloatDumpStack();
+        else if (identifier == "fclearstack")
+            return new FloatClearStack();
+        else if (identifier == "fpop")
+            return new FloatPopStack();
+        else if (identifier == "fdup")
+            return new FloatDuplicateStack();
+#pragma endregion
+
+#pragma region Doubles
+        else if (identifier == "dpush")
+            return new DoublePush();
+        else if (identifier == "dload")
+            return new DoubleLoad();
+        else if (identifier == "dstore")
+            return new DoubleStore();
+        else if (identifier == "dset")
+            return new DoubleSet();
+        else if (identifier == "densure")
+            return new DoubleEnsure();
+        else if (identifier == "dadd")
+            return new DoubleAdd();
+        else if (identifier == "dsub")
+            return new DoubleSubtract();
+        else if (identifier == "dmul")
+            return new DoubleMultiply();
+        else if (identifier == "ddiv")
+            return new DoubleDivide();
+        else if (identifier == "dmod")
+            return new DoubleModulo();
+        else if (identifier == "dinc")
+            return new DoubleIncrement();
+        else if (identifier == "ddecr")
+            return new DoubleDecrement();
+        else if (identifier == "dneg")
+            return new DoubleNegate();
+        else if (identifier == "ddebug")
+            return new DoubleDebug();
+        else if (identifier == "ifdeq" || identifier == "ifd==")
+            return new DoubleEquals();
+        else if (identifier == "ifdneq" || identifier == "ifd!=")
+            return new DoubleNotEquals();
+        else if (identifier == "ifdg" || identifier == "ifd>")
+            return new DoubleGreaterThan();
+        else if (identifier == "ifdge" || identifier == "ifd>=")
+            return new DoubleGreaterThanOrEquals();
+        else if (identifier == "ifdl" || identifier == "ifd<")
+            return new DoubleLessThan();
+        else if (identifier == "ifdle" || identifier == "ifd<=")
+            return new DoubleLessThanOrEqual();
+        else if (identifier == "dstacksize")
+            return new DoubleStackSize();
+        else if (identifier == "ddumpstack")
+            return new DoubleDumpStack();
+        else if (identifier == "dclearstack")
+            return new DoubleClearStack();
+        else if (identifier == "dpop")
+            return new DoublePopStack();
+        else if (identifier == "ddup")
+            return new DoubleDuplicateStack();
+#pragma endregion
+
+#pragma region Instances
+        else if (identifier == "new")
+            return new New();
+        else if (identifier == "aload")
+            return new InstanceLoad();
+        else if (identifier == "astore")
+            return new InstanceStore();
+        else if (identifier == "adebug")
+            return new InstanceDebug();
+        else if (identifier == "delete")
+            return new InstanceDelete();
+#pragma endregion
+
+#pragma region Invokes
+        else if (identifier == "invokestatic")
+            return new InvokeStatic();
 #pragma endregion
 
         else if (identifier == "print")
