@@ -22,12 +22,12 @@ namespace Compiler {
         /**
          * The index of the current character in the line being processed.
          */
-        uint lineIndex;
+        uint lineIndex = 0;
 
         /**
          * The number of the current line being processed.
          */
-        uint lineNumber;
+        uint lineNumber = 0;
 
     public:
         /**
@@ -65,6 +65,31 @@ namespace Compiler {
          * @return new number token
          */
         Token nextNumber();
+
+        /**
+         * Parse the next string literal token.
+         * @return new string token
+         */
+        Token nextString();
+
+        /**
+         * Parse the next char literal token.
+         * @return new char token
+         */
+        Token nextChar();
+
+        /**
+         * Parse the next annotation token.
+         * @return new annotation token
+         */
+        Token nextAnnotation();
+
+        /**
+         * Parse the next string or char literal token.
+         * @param string true for string, false for char
+         * @return new string or char token
+         */
+        Token nextLiteral(bool string);
 
         /**
          * Get the character at the current index.
@@ -145,6 +170,27 @@ namespace Compiler {
          * @return true if the character is numeric
          */
         bool isNumber(char c);
+
+        /**
+         * Check if the given character is the beginning of a string.
+         * @param c target character to test
+         * @return true if the character is a string beginning
+         */
+        bool isString(char c);
+
+        /**
+         * Check if the given character is the beginning of a chat.
+         * @param c target character to test
+         * @return true if the character is a char beginning
+         */
+        bool isChar(char c);
+
+        /**
+         * Check if the given character is the beginning of an annotaion.
+         * @param c target character to test
+         * @return true if the character is an annotation beginning
+         */
+        bool isAnnotation(char c);
 
         /**
          * Check if the given character is the ending of a number.

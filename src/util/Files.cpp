@@ -87,4 +87,16 @@ namespace Void {
         // finished file reading
         return content;
     }
+
+    /**
+     * Combine the given directory with a file.
+     * @param directory target directory
+     * @param file target file
+     * @return combined directory and file
+     */
+    String Files::combine(String directory, String file) {
+        Path path = directory;
+        path /= file;
+        return path.generic_string();
+    }
 }

@@ -20,8 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common.hpp" />
+    <ClInclude Include="src\compiler\Project.hpp" />
     <ClInclude Include="src\compiler\token\Token.hpp" />
     <ClInclude Include="src\compiler\token\Tokenizer.hpp" />
+    <ClInclude Include="src\compiler\xml\PugiConfig.hpp" />
+    <ClInclude Include="src\compiler\xml\PugiXml.hpp" />
     <ClInclude Include="src\Launcher.hpp" />
     <ClInclude Include="src\util\Exceptions.hpp" />
     <ClInclude Include="src\util\Files.hpp" />
@@ -50,8 +53,10 @@
     <ClInclude Include="src\vm\VirtualMachine.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\compiler\Project.cpp" />
     <ClCompile Include="src\compiler\token\Token.cpp" />
     <ClCompile Include="src\compiler\token\Tokenizer.cpp" />
+    <ClCompile Include="src\compiler\xml\PugiXml.cpp" />
     <ClCompile Include="src\Launcher.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\util\Exceptions.cpp" />

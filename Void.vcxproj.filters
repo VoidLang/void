@@ -84,6 +84,15 @@
     <ClInclude Include="src\compiler\token\Tokenizer.hpp">
       <Filter>compiler\token</Filter>
     </ClInclude>
+    <ClInclude Include="src\compiler\xml\PugiConfig.hpp">
+      <Filter>compiler\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\compiler\xml\PugiXml.hpp">
+      <Filter>compiler\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="src\compiler\Project.hpp">
+      <Filter>compiler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -166,6 +175,12 @@
     <ClCompile Include="src\compiler\token\Tokenizer.cpp">
       <Filter>compiler\token</Filter>
     </ClCompile>
+    <ClCompile Include="src\compiler\xml\PugiXml.cpp">
+      <Filter>compiler\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\Project.cpp">
+      <Filter>compiler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="util">
@@ -191,6 +206,9 @@
     </Filter>
     <Filter Include="compiler\token">
       <UniqueIdentifier>{d334c149-0670-47fd-b23c-865a56953ea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compiler\xml">
+      <UniqueIdentifier>{032043ac-28c4-4d6c-bd86-e19034bf9de3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

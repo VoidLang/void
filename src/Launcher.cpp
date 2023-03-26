@@ -7,8 +7,11 @@
 #include "vm/element/Method.hpp"
 #include "vm/element/Field.hpp"
 
+#include "util/Files.hpp"
+
 #include "compiler/token/Token.hpp"
 #include "compiler/token/Tokenizer.hpp"
+#include "compiler/Project.hpp"
 
 using namespace Compiler;
 
@@ -123,15 +126,27 @@ namespace Void {
         if (!options.has("compile"))
             error("Usage: void -compile <project folder> -out <output file path>");
 
-        // get the input and output of the compiling
+        // get the input root directory of the project
         String inputDir = options.get("compile");
-        String outputFile = options.get("out");
-        println("Compiling " << inputDir << " to " << outputFile);
+        println("Compiling project root " << inputDir);
 
-        Tokenizer tokenizer("let i = 100");
+        // create the void application wrapper
+        Project project(inputDir);
+        // validate that the project files are exist
+        // project.validate();
+
+        Tokenizer tokenizer(Files::readAll(inputDir));
 
         List<Token> tokens;
-        for (Token token = tokenizer.next(); token.hasNext(); token = tokenizer.next()) {
+
+        while (true) {
+            Token token = tokenizer.next();
+            if (!token.hasNext()) {
+                if (token.is(TokenType::Unexpected)) 
+                    println("syntax error");
+                break;
+            }
+            tokens.push_back(token);
             println(std::setw(12) << token);
         }
     }

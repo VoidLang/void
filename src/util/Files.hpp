@@ -49,5 +49,13 @@ namespace Void {
          * @return file content
          */
         String readAll(String file);
+
+        /**
+         * Combine the given directory with a file.
+         * @param directory target directory
+         * @param file target file
+         * @return combined directory and file
+         */
+        String combine(String directory, String file);
     }
 }

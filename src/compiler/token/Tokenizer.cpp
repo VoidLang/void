@@ -18,9 +18,11 @@ namespace Compiler {
         while (isWhitespace(peek())) {
             // handle new line
             if (get() == '\n') {
+                // TODO line numbers are removed for now for keeping thins simple
+                //  this might be implemented in further releases
                 // reset the line index
-                lineIndex = 0;
-                return Token::of(TokenType::LineNumber, toString(++lineNumber));
+                // lineIndex = 0;
+                // return Token::of(TokenType::LineNumber, toString(++lineNumber));
             }
         }
         // handle content endxing
@@ -38,6 +40,15 @@ namespace Compiler {
         // handle numbers
         else if (isNumber(peek()))
             return nextNumber();
+        // handle string literals
+        else if (isString(peek()))
+            return nextString();
+        // handle char literals
+        else if (isChar(peek()))
+            return nextChar();
+        // handle annotations
+        else if (isAnnotation(peek()))
+            return nextAnnotation();
         // handle invalid syntax
         return Token::of(TokenType::Unexpected);
     }
@@ -191,6 +202,94 @@ namespace Compiler {
     }
 
     /**
+     * Parse the next string literal token.
+     * @return new string token
+     */
+    Token Tokenizer::nextString() {
+        return nextLiteral(true);
+    }
+
+    /**
+     * Parse the next char literal token.
+     * @return new char token
+     */
+    Token Tokenizer::nextChar() {
+        return nextLiteral(false);
+    }
+
+    /**
+     * Parse the next string or char literal token.
+     * @param string true for string, false for char
+     * @return new string or char token
+     */
+    Token Tokenizer::nextLiteral(bool string) {
+        // declare the string literal content
+        String content;
+        // skip the quotation mark
+        move(1);
+        bool escapeNext = false;
+        // loop until the string literal is terminated or the end of file has been reached
+        while (has(cursor)) {
+            // handle escaped characters
+            if (escapeNext) {
+                switch (peek()) {
+                    case 'n':
+                        content += '\n';
+                        break;
+                    case 'r':
+                        content += '\r';
+                        break;
+                    case 't':
+                        content += '\t';
+                        break;
+                    case '\\':
+                        content += '\\';
+                        break;
+                        // TODO handle \u character code
+                    default:
+                        if ((string && peek() == '"') || (!string && peek() == '\''))
+                            content += peek();
+                        else
+                            error("Invalid escape sequance: \\" << peek());
+                }
+                escapeNext = false;
+            }
+            // handle escaping the nex tcharacter
+            else if (peek() == '\\')
+                escapeNext = true;
+            // handle the ending of the string literal
+            else if ((peek() == '"' && string) || (peek() == '\'' && !string)) {
+                // skip the end of the string
+                move(1);
+                return Token::of(string ? TokenType::String : TokenType::Character, content);
+            }
+            // handle string literal content
+            else
+                content += peek();
+            // move to the next string character
+            move(1);
+        }
+        error("Missing trailing `" << (string ? '"' : '\'') << "` symbol to terminate the " << (string ? "string" : "char") << " literal.");
+    }
+
+    /**
+     * Parse the next annotation token.
+     * @return new annotation token
+     */
+    Token Tokenizer::nextAnnotation() {
+        // skip the @ symbol
+        move(1);
+        // parse the name of the annotation
+        Token token = nextIdentifier();
+        // check for errors
+        if (!token.is(TokenType::Identifier))
+            return token;
+        // create the annotation token
+        return Token::of(TokenType::Annotation, token.value);
+    }
+
+
+    /**
      * Get the character at the current index.
      * @return currently parsed data index
      */
@@ -306,6 +405,33 @@ namespace Compiler {
     }
 
     /**
+     * Check if the given character is the beginning of a string.
+     * @param c target character to test
+     * @return true if the character is a string beginning
+     */
+    bool Tokenizer::isString(char c) {
+        return c == '"';
+    }
+
+    /**
+     * Check if the given character is the beginning of a char.
+     * @param c target character to test
+     * @return true if the character is a char beginning
+     */
+    bool Tokenizer::isChar(char c) {
+        return c == '\'';
+    }
+
+    /**
+     * Check if the given character is the beginning of an annotaion.
+     * @param c target character to test
+     * @return true if the character is an annotation beginning
+     */
+    bool Tokenizer::isAnnotation(char c) {
+        return c == '@';
+    }
+
+    /**
      * Check if the given character is the ending of a number.
      * @param c target character to test
      * @return true if the character is a number suffix
@@ -378,6 +504,7 @@ namespace Compiler {
             case '^':
             case '&':
             case '~':
+            case '$':
                 return true;
             default:
                 return false;
