@@ -52,14 +52,14 @@ namespace Compiler {
         /**
          * The value of the token.
          */
-        String value;
+        UString value;
 
         /**
          * Initialize the parsed token.
          * @param type token type
          * @param value token value
          */
-        Token(TokenType type, String value);
+        Token(TokenType type, UString value);
 
         /**
          * Create a new token with the given type and value.
@@ -67,7 +67,7 @@ namespace Compiler {
          * @param value token value
          * @return new parsed token
          */
-        static Token of(TokenType type, String value);
+        static Token of(TokenType type, UString value);
 
         /**
          * Create a new token with the given type.
@@ -81,7 +81,7 @@ namespace Compiler {
          * @param type target token type
          * @return token type name
          */
-        static String getTokenName(TokenType type);
+        static UString getTokenName(TokenType type);
 
         /**
          * Determine if this token is not a finish token.
@@ -109,7 +109,7 @@ namespace Compiler {
          * @param value token value
          * @return true if the token has the value
          */
-        bool val(String value);
+        bool val(UString value);
     };
 
     /**

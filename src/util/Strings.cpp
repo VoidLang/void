@@ -1,4 +1,7 @@
 #include "Strings.hpp"
+#include <codecvt>
+
+#pragma warning(disable : 4996)
 
 namespace Void {
     /**
@@ -45,5 +48,52 @@ namespace Void {
         result.push_back(source.substr(initPos, std::min(pos, source.size()) - initPos + 1));
 
         return result;
+    }
+
+    /**
+     * Split the string to parts using a delimiter.
+     * @param source target string
+     * @param seperator character to split at
+     */
+    List<UString> Strings::split(UString& source, char separator) {
+        // declare the split result
+        List<UString> result;
+
+        // find the first position
+        ulong pos = source.find(separator);
+        ulong initPos = 0;
+
+        // decompose the statement
+        while (pos != String::npos) {
+            result.push_back(source.substr(initPos, pos - initPos));
+            initPos = pos + 1;
+
+            pos = source.find(separator, initPos);
+        }
+
+        // add the last one
+        result.push_back(source.substr(initPos, std::min(pos, source.size()) - initPos + 1));
+
+        return result;
+    }
+
+    /**
+     * Convert an utf-32 char to string.
+     * @return string representation of the char
+     */
+    String Strings::fromUTF(char32_t c) {
+        // convert to std::string
+        std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+        return converter.to_bytes(c);
+    }
+
+    /**
+     * Convert an utf-32 string to an utf-8 string.
+     * @return utf-8 string
+     */
+    String Strings::fromUTF(UString utf) {
+        // create a UTF-8 codecvt facet
+        std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+        return converter.to_bytes(utf);
     }
 }

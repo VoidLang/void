@@ -1,5 +1,11 @@
 #include "Files.hpp"
 
+#include <fstream>
+#include <string>
+#include <codecvt>
+
+#pragma warning(disable : 4996)
+
 namespace Void {
     /**
      * Check if the givn path is a directory.
@@ -86,6 +92,35 @@ namespace Void {
 
         // finished file reading
         return content;
+    }
+
+    /**
+     * Read the content of the file as utf-8.
+     * @param file file path
+     * @return utf-8 file content
+     */
+    UString Files::readUTF(String file) {
+        // create a new file reader
+        FileReader reader(file, std::ios_base::binary);
+        // check if the file is not accessible
+        
+        if (!reader)
+            error("Unable to read file: " << file);
+
+        // Get the file size
+        reader.seekg(0, std::ios_base::end);
+        std::streampos fileSize = reader.tellg();
+        reader.seekg(0, std::ios_base::beg);
+
+        // Read the file contents into a string
+        std::string utf8String(fileSize, '\0');
+        reader.read(utf8String.data(), fileSize);
+
+        // Convert the string to a u32string
+        std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+        std::u32string utf32String = converter.from_bytes(utf8String);
+
+        return utf32String;
     }
 
     /**

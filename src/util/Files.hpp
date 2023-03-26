@@ -51,6 +51,13 @@ namespace Void {
         String readAll(String file);
 
         /**
+         * Read the content of the file as utf-8.
+         * @param file file path
+         * @return utf-8 file content
+         */
+        UString readUTF(String file);
+
+        /**
          * Combine the given directory with a file.
          * @param directory target directory
          * @param file target file

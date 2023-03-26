@@ -13,6 +13,17 @@
 #include "compiler/token/Tokenizer.hpp"
 #include "compiler/Project.hpp"
 
+#include <iostream>
+#include <string>
+#include <locale>
+
+#include <fstream>
+#include <string>
+#include <codecvt>
+
+#pragma warning(disable : 4996)
+
+
 using namespace Compiler;
 
 namespace Void {
@@ -135,17 +146,14 @@ namespace Void {
         // validate that the project files are exist
         // project.validate();
 
-        Tokenizer tokenizer(Files::readAll(inputDir));
+        Tokenizer tokenizer(Files::readUTF(inputDir));
 
         List<Token> tokens;
 
         while (true) {
             Token token = tokenizer.next();
-            if (!token.hasNext()) {
-                if (token.is(TokenType::Unexpected)) 
-                    println("syntax error");
+            if (!token.hasNext()) 
                 break;
-            }
             tokens.push_back(token);
             println(std::setw(12) << token);
         }

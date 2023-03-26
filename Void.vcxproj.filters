@@ -93,6 +93,12 @@
     <ClInclude Include="src\compiler\Project.hpp">
       <Filter>compiler</Filter>
     </ClInclude>
+    <ClInclude Include="src\compiler\node\Node.hpp">
+      <Filter>compiler\node</Filter>
+    </ClInclude>
+    <ClInclude Include="src\compiler\node\NodeParser.hpp">
+      <Filter>compiler\node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -181,6 +187,12 @@
     <ClCompile Include="src\compiler\Project.cpp">
       <Filter>compiler</Filter>
     </ClCompile>
+    <ClCompile Include="src\compiler\node\NodeParser.cpp">
+      <Filter>compiler\node</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\node\Node.cpp">
+      <Filter>compiler\node</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="util">
@@ -209,6 +221,9 @@
     </Filter>
     <Filter Include="compiler\xml">
       <UniqueIdentifier>{032043ac-28c4-4d6c-bd86-e19034bf9de3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compiler\node">
+      <UniqueIdentifier>{0a408362-5862-4e73-a260-0f4f71dcb768}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

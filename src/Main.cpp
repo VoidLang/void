@@ -36,7 +36,11 @@ using namespace Void;
  * This must be a separated method because of the __try __except thing.
  */
 void start(int argc, char** argv) {
+    // disable syncing with the standard output stream
     setConsoleSync(false);
+    // make console standard output print utf-8
+    SetConsoleOutputCP(CP_UTF8);
+    
     Launcher().start(argc, argv);
 }
 

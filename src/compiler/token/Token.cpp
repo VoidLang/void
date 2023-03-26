@@ -1,4 +1,7 @@
 #include "Token.hpp"
+#include "../../util/Strings.hpp"
+
+using namespace Void;
 
 namespace Compiler {
     /**
@@ -6,7 +9,7 @@ namespace Compiler {
      * @param type token type
      * @param value token value
      */
-    Token::Token(TokenType type, String value)
+    Token::Token(TokenType type, UString value)
         : type(type), value(value)
     { }
 
@@ -16,7 +19,7 @@ namespace Compiler {
      * @param value token value
      * @return new parsed token
      */
-    Token Token::of(TokenType type, String value) {
+    Token Token::of(TokenType type, UString value) {
         return Token(type, value);
     }
 
@@ -26,7 +29,7 @@ namespace Compiler {
      * @return new parsed token
      */
     Token Token::of(TokenType type) {
-        return Token(type, "");
+        return Token(type, U"");
     }
 
     /**
@@ -34,38 +37,38 @@ namespace Compiler {
      * @param type target token type
      * @return token type name
      */
-    String Token::getTokenName(TokenType type) {
+    UString Token::getTokenName(TokenType type) {
         // declare a static array of the token type names
-        static const char* const names[]{
-            "String",
-            "Character",
-            "Begin",
-            "End",
-            "Byte",
-            "Short",
-            "Double",
-            "Float",
-            "Long",
-            "Integer",
-            "Hexadecimal",
-            "Boolean",
-            "Semicolon",
-            "Expression",
-            "Colon",
-            "Comma",
-            "Open",
-            "Close",
-            "Identifier",
-            "Operator",
-            "Type",
-            "Modifier",
-            "Start",
-            "Stop",
-            "Annotation",
-            "LineNumber",
-            "Null",
-            "Finish",
-            "Unexpected"
+        static const char32_t* const names[]{
+            U"String",
+            U"Character",
+            U"Begin",
+            U"End",
+            U"Byte",
+            U"Short",
+            U"Double",
+            U"Float",
+            U"Long",
+            U"Integer",
+            U"Hexadecimal",
+            U"Boolean",
+            U"Semicolon",
+            U"Expression",
+            U"Colon",
+            U"Comma",
+            U"Open",
+            U"Close",
+            U"Identifier",
+            U"Operator",
+            U"Type",
+            U"Modifier",
+            U"Start",
+            U"Stop",
+            U"Annotation",
+            U"LineNumber",
+            U"Null",
+            U"Finish",
+            U"Unexpected"
         };
         // write the token type to the output stream
         return names[static_cast<int>(type)];
@@ -116,7 +119,7 @@ namespace Compiler {
      * @param value token value
      * @return true if the token has the value
      */
-    bool Token::val(String value) {
+    bool Token::val(UString value) {
         return this->value == value;
     }
 
@@ -127,7 +130,8 @@ namespace Compiler {
      */
     OutputStream& operator<<(OutputStream& stream, const TokenType& type) {
         // write the token type to the output stream
-        return stream << Token::getTokenName(type);
+        UString name = Token::getTokenName(type);
+        return stream << Strings::fromUTF(name);
     }
 
     /**
@@ -136,6 +140,6 @@ namespace Compiler {
      * @param token target token
      */
     OutputStream& operator<<(OutputStream& stream, Token& token) {
-        return stream << token.type << (!token.value.empty() ? (" |" + token.value + "|") : "");
+        return stream << token.type << (!token.value.empty() ? (" |" + Strings::fromUTF(token.value) + "|") : "");
     }
 }

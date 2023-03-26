@@ -9,6 +9,8 @@
 #include <sstream>
 
 typedef std::string String;
+typedef std::u32string UString;
+typedef std::wstring WString;
 typedef std::stringstream StringStream;
 typedef std::ostream OutputStream;
 
@@ -41,9 +43,13 @@ using List = std::vector<T>;
 
 #define println(x) \
     std::cout << x << '\n'
-
 #define print(x) \
     std::cout << x
+
+#define uprintln(x) \
+    std::wcout << x << '\n'
+#define uprint(x) \
+    std::wcout << x
 
 #define error(x) \
     { std::cout << x << '\n'; exit(-1); }
@@ -97,6 +103,11 @@ typedef size_t ulong;
 typedef unsigned char byte;
 typedef __int64 lint;
 typedef wchar_t cint;
+
+#define getMin(a, b) \
+    ( (a <= b) ? a : b )
+#define getMax(a, b) \
+    ( (a >= b) ? a : b )
 
 // windows exceptions
 
