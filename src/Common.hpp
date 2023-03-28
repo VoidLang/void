@@ -102,7 +102,7 @@ typedef unsigned int uint;
 typedef size_t ulong;
 typedef unsigned char byte;
 typedef __int64 lint;
-typedef wchar_t cint;
+typedef char32_t cint;
 
 #define getMin(a, b) \
     ( (a <= b) ? a : b )

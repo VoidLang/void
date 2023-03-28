@@ -34,6 +34,11 @@ namespace Compiler {
          */
         uint lineNumber = 1;
 
+        /**
+         * The last token that has been parsed.
+         */
+        Token lastToken = Token::of(TokenType::None);
+
     public:
         /**
          * Initilaize the tokenizer.
@@ -100,32 +105,32 @@ namespace Compiler {
          * Get the character at the current index.
          * @return currently parsed data index
          */
-        char32_t peek();
+        cint peek();
 
         /**
          * Get the last non-whitespace character from the data.
          * @return last non-whitespace character
          */
-        char32_t peekNoWhitespace();
+        cint peekNoWhitespace();
 
         /**
          * Get the character at the current index and move to the next position.
          * @return currently parsed data index
          */
-        char32_t get();
+        cint get();
 
         /**
          * Get the previous character from the data.
          * @return previously parsed character
          */
-        char32_t prev();
+        cint prev();
 
         /**
          * Get the previous nth character from the data.
          * @param skip rewind amount
          * @return previous nth character
          */
-        char32_t prev(uint skip);
+        cint prev(uint skip);
 
         /**
          * Move the cursor with the given amount.
@@ -145,7 +150,7 @@ namespace Compiler {
          * @param index target data index
          * @return character at the index or '\0' if it is out of the bounds
          */
-        char32_t at(uint index);
+        cint at(uint index);
 
         /**
          * Get the string value from the data within the given range.
@@ -159,84 +164,84 @@ namespace Compiler {
          * @param c target character to test
          * @return true if the character is a whitespace
          */
-        bool isWhitespace(char32_t c);
+        bool isWhitespace(cint c);
 
         /**
          * Check if the given character is the beginning of an identifier.
          * @param c target character to test
          * @return true if the character is an identifier beginning
          */
-        bool isIdentifierStart(char32_t c);
+        bool isIdentifierStart(cint c);
     
         /**
          * Check if the given character is the part of an identifier.
          * @param c target character to test
          * @return true if the character is an identifier part
          */
-        bool isIdentifierPart(char32_t c);
+        bool isIdentifierPart(cint c);
 
         /**
          * Check if the given character is numeric.
          * @param c target character to test
          * @return true if the character is numeric
          */
-        bool isNumber(char32_t c);
+        bool isNumber(cint c);
 
         /**
          * Check if the given character is the beginning of a string.
          * @param c target character to test
          * @return true if the character is a string beginning
          */
-        bool isString(char32_t c);
+        bool isString(cint c);
 
         /**
          * Check if the given character is the beginning of a chat.
          * @param c target character to test
          * @return true if the character is a char beginning
          */
-        bool isChar(char32_t c);
+        bool isChar(cint c);
 
         /**
          * Check if the given character is the beginning of an annotaion.
          * @param c target character to test
          * @return true if the character is an annotation beginning
          */
-        bool isAnnotation(char32_t c);
+        bool isAnnotation(cint c);
 
         /**
          * Check if the given character is the ending of a number.
          * @param c target character to test
          * @return true if the character is a number suffix
          */
-        bool isNumberSuffix(char32_t c);
+        bool isNumberSuffix(cint c);
 
         /**
          * Check if the given character is a hexadecimal number part.
          * @param c target character to test
          * @return true if the character is a hexadecimal char
          */
-        bool isHexValue(char32_t c);
+        bool isHexValue(cint c);
 
         /**
          * Check if the given character is a content of a number.
          * @param c target character to test
          * @return true if the character is a number content
          */
-        bool isNumberContent(char32_t c);
+        bool isNumberContent(cint c);
 
         /**
          * Check if the given character is an operator.
          * @param c target character to test
          * @return true if the character is an operator
          */
-        bool isOperator(char32_t c);
+        bool isOperator(cint c);
 
         /**
          * Check if the given character is a separator.
          * @param c target character to test
          * @return true if the character is a separator
          */
-        bool isSeparator(char32_t c);
+        bool isSeparator(cint c);
 
         /**
          * Check if the given token is an expression token.
@@ -285,19 +290,26 @@ namespace Compiler {
          * @param c target character to be transformerd
          * @return uppercase representation of the character
          */
-        char32_t upper(char32_t c);
+        cint upper(cint c);
 
         /**
          * Get the lowercase format of the given characetr.
          * @param c target character to be transformerd
          * @return lowercase representation of the character
          */
-        char32_t lower(char32_t c);
+        cint lower(cint c);
 
         /**
          * Display a syntax error in the console with debug information.
          * @param message error message
          */
         void syntaxError(String message);
-    };
+
+        /**
+         * Auto-insert new lines at the end of lines if it is required.s
+         * @param source raw tokens input
+         * @return converted tokens output
+         */
+        List<Token> insertSemicolons(List<Token> source);
+   };
 }

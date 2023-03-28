@@ -25,6 +25,7 @@
     <ClInclude Include="src\compiler\Project.hpp" />
     <ClInclude Include="src\compiler\token\Token.hpp" />
     <ClInclude Include="src\compiler\token\Tokenizer.hpp" />
+    <ClInclude Include="src\compiler\token\Transformer.hpp" />
     <ClInclude Include="src\compiler\xml\PugiConfig.hpp" />
     <ClInclude Include="src\compiler\xml\PugiXml.hpp" />
     <ClInclude Include="src\Launcher.hpp" />
@@ -60,6 +61,7 @@
     <ClCompile Include="src\compiler\Project.cpp" />
     <ClCompile Include="src\compiler\token\Token.cpp" />
     <ClCompile Include="src\compiler\token\Tokenizer.cpp" />
+    <ClCompile Include="src\compiler\token\Transformer.cpp" />
     <ClCompile Include="src\compiler\xml\PugiXml.cpp" />
     <ClCompile Include="src\Launcher.cpp" />
     <ClCompile Include="src\Main.cpp" />

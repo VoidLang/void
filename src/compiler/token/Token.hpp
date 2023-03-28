@@ -36,7 +36,9 @@ namespace Compiler {
         Null,        // null
         Info,        // file information
         Finish,      // content finished
-        Unexpected   // syntax error
+        Unexpected,  // syntax error,
+        NewLine,     // temp new line, to be replaced by semicolons or be cleared
+        None         // no such token
     };
 
     /**
@@ -97,19 +99,26 @@ namespace Compiler {
         bool is(TokenType type);
 
         /**
-         * Determine if this token is one of the given types.
-         * @param size parameter types
-         * @param ... type varargs
-         * @return true if this token has the type
-         */
-        bool is(uint size, TokenType...);
-
-        /**
          * Determine if the token has the given value.
          * @param value token value
          * @return true if the token has the value
          */
         bool val(UString value);
+
+        /**
+         * Determine if this token has the given type and value.
+         * @param type token type
+         * @param value token value
+         * @return true if the type and value matches
+         */
+        bool eq(TokenType type, UString value);
+
+        /**
+         * Determine if token matches the data of the other token.
+         * @return other other token to check
+         * @return true if the two tokens match
+         */
+        bool eq(Token other);
     };
 
     /**

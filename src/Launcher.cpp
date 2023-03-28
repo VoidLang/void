@@ -11,18 +11,8 @@
 
 #include "compiler/token/Token.hpp"
 #include "compiler/token/Tokenizer.hpp"
+#include "compiler/token/Transformer.hpp"
 #include "compiler/Project.hpp"
-
-#include <iostream>
-#include <string>
-#include <locale>
-
-#include <fstream>
-#include <string>
-#include <codecvt>
-
-#pragma warning(disable : 4996)
-
 
 using namespace Compiler;
 
@@ -156,6 +146,17 @@ namespace Void {
                 break;
             tokens.push_back(token);
             println(std::setw(12) << token);
+        }
+
+        println("\n---\n");
+
+        Transformer transformer(tokens);
+
+        tokens = transformer.transform();
+
+        for (Token token : tokens) {
+            println(std::setw(12) << token);
+
         }
     }
 

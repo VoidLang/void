@@ -21,13 +21,11 @@ namespace Compiler {
         while (isWhitespace(peek())) {
             // handle new line
             if (get() == '\n') {
-                // TODO line numbers are removed for now for keeping thins simple
-                //  this might be implemented in further releases
-                // 
                 // reset the line index
                 lineIndex = 0; 
                 lineNumber++;
-                // return Token::of(TokenType::LineNumber, toString(++lineNumber));
+                // make a new line token to be replaced later to semicolons
+                return Token::of(TokenType::NewLine);
             }
         }
         // handle content endxing
@@ -195,7 +193,7 @@ namespace Compiler {
                 skip(1);
                 // get the value of the number
                 UString value = range(begin, cursor - 1);
-                return Token::of(type, value); 
+                return Token::of(type, value);
                 // TODO check if number declaration ended because a type specifier were set, 
                 //  but after the specifier there is no sperator or whitespace eg. 1.5Flol
             }
@@ -299,7 +297,7 @@ namespace Compiler {
      * Get the character at the current index.
      * @return currently parsed data index
      */
-    char32_t Tokenizer::peek() {
+    cint Tokenizer::peek() {
         return at(cursor);
     }
 
@@ -307,7 +305,7 @@ namespace Compiler {
      * Get the last non-whitespace character from the data.
      * @return last non-whitespace character
      */
-    char32_t Tokenizer::peekNoWhitespace() {
+    cint Tokenizer::peekNoWhitespace() {
         uint index = cursor;
         while (isWhitespace(at(index)))
             index--;
@@ -318,7 +316,7 @@ namespace Compiler {
      * Get the character at the current index and move to the next position.
      * @return currently parsed data index
      */
-    char32_t Tokenizer::get() {
+    cint Tokenizer::get() {
         lineIndex++;
         return at(cursor++);
     }
@@ -327,7 +325,7 @@ namespace Compiler {
      * Get the previous character from the data.
      * @return previously parsed character
      */
-    char32_t Tokenizer::prev() {
+    cint Tokenizer::prev() {
         return at(cursor - 1);
     }
 
@@ -336,7 +334,7 @@ namespace Compiler {
      * @param skip rewind amount
      * @return previous nth character
      */
-    char32_t Tokenizer::prev(uint skip) {
+    cint Tokenizer::prev(uint skip) {
         return at(cursor - skip);
     }
 
@@ -363,7 +361,7 @@ namespace Compiler {
      * @param index target data index
      * @return character at the index or '\0' if it is out of the bounds
      */
-    char32_t Tokenizer::at(uint index) {
+    cint Tokenizer::at(uint index) {
         return has(index) ? data[index] : '\0';
     }
 
@@ -384,7 +382,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is a whitespace
      */
-    bool Tokenizer::isWhitespace(char32_t c) {
+    bool Tokenizer::isWhitespace(cint c) {
         switch (c) {
             case ' ':
             case '\t':
@@ -401,7 +399,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is an identifier beginning
      */
-    bool Tokenizer::isIdentifierStart(char32_t c) {
+    bool Tokenizer::isIdentifierStart(cint c) {
         return iswalpha((wint_t) c) || c == '_';
     }
 
@@ -410,7 +408,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is an identifier part
      */
-    bool Tokenizer::isIdentifierPart(char32_t c) {
+    bool Tokenizer::isIdentifierPart(cint c) {
         return isIdentifierStart(c) || isNumber(c);
     }
 
@@ -419,7 +417,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is numeric
      */
-    bool Tokenizer::isNumber(char32_t c) {
+    bool Tokenizer::isNumber(cint c) {
         return iswdigit((wint_t) c);
     }
 
@@ -428,7 +426,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is a string beginning
      */
-    bool Tokenizer::isString(char32_t c) {
+    bool Tokenizer::isString(cint c) {
         return c == '"';
     }
 
@@ -437,7 +435,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is a char beginning
      */
-    bool Tokenizer::isChar(char32_t c) {
+    bool Tokenizer::isChar(cint c) {
         return c == '\'';
     }
 
@@ -446,7 +444,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is an annotation beginning
      */
-    bool Tokenizer::isAnnotation(char32_t c) {
+    bool Tokenizer::isAnnotation(cint c) {
         return c == '@';
     }
 
@@ -455,7 +453,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is a number suffix
      */
-    bool Tokenizer::isNumberSuffix(char32_t c) {
+    bool Tokenizer::isNumberSuffix(cint c) {
         switch (c) {
             case 'B':
             case 'S':
@@ -474,7 +472,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is a hexadecimal char
      */
-    bool Tokenizer::isHexValue(char32_t c) {
+    bool Tokenizer::isHexValue(cint c) {
         switch (c) {
             case 'A':
             case 'B':
@@ -493,7 +491,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is a number content
      */
-    bool Tokenizer::isNumberContent(char32_t c) {
+    bool Tokenizer::isNumberContent(cint c) {
         switch (c) {
             case '.':
             case '_':
@@ -508,7 +506,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is an operator
      */
-    bool Tokenizer::isOperator(char32_t c) {
+    bool Tokenizer::isOperator(cint c) {
         switch (c) {
             case '.':
             case '=':
@@ -535,7 +533,7 @@ namespace Compiler {
      * @param c target character to test
      * @return true if the character is a separator
      */
-    bool Tokenizer::isSeparator(char32_t c) {
+    bool Tokenizer::isSeparator(cint c) {
         switch (c) {
             case ';':
             case ':':
@@ -654,7 +652,7 @@ namespace Compiler {
      * @param c target character to be transformerd
      * @return uppercase representation of the character
      */
-    char32_t Tokenizer::upper(char32_t c) {
+    cint Tokenizer::upper(cint c) {
         return toupper(c);
     }
 
@@ -663,7 +661,7 @@ namespace Compiler {
      * @param c target character to be transformerd
      * @return lowercase representation of the character
      */
-    char32_t Tokenizer::lower(char32_t c) {
+    cint Tokenizer::lower(cint c) {
         return tolower(c);
     }
 
@@ -696,8 +694,6 @@ namespace Compiler {
 
         // debug the line with the error
         println(Strings::fromUTF(line));
-
-        // println(line);
     
         // debug a pointer to at the invalid character
         for (ulong i = 0; i < lineIndex - beginCut; i++)
@@ -708,5 +704,19 @@ namespace Compiler {
             print(" ");
         // debug the pointer itself
         println("^");
+    }
+
+    /**
+     * Auto-insert new lines at the end of lines if it is required.s
+     * @param source raw tokens input
+     * @return converted tokens output
+     */
+    List<Token> Tokenizer::insertSemicolons(List<Token> source) {
+        List<Token> output;
+
+        Token lastToken = Token::of(TokenType::None);
+        
+
+        return output;
     }
 }

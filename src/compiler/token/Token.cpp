@@ -67,8 +67,11 @@ namespace Compiler {
             U"Annotation",
             U"LineNumber",
             U"Null",
+            U"Info",
             U"Finish",
-            U"Unexpected"
+            U"Unexpected",
+            U"NewLine",
+            U"None"
         };
         // write the token type to the output stream
         return names[static_cast<int>(type)];
@@ -93,34 +96,42 @@ namespace Compiler {
     }
 
     /**
-     * Determine if this token is one of the given types.
-     * @param size parameter types
-     * @param ... type varargs
-     * @return true if this token has the type
-     */
-    bool Token::is(uint size, TokenType...) {
-        // begin the processing of the varargs
-        va_list list;
-        va_start(list, size);
-
-        // handle vararg parameters
-        for (uint i = 0; i < size; i++) {
-            if (va_arg(list, TokenType) == this->type)
-                return true;
-        }
-
-        // end varargs processing
-        va_end(list);
-        return false;
-    }
-
-    /**
      * Determine if the token has the given value.
      * @param value token value
      * @return true if the token has the value
      */
     bool Token::val(UString value) {
         return this->value == value;
+    }
+
+    /**
+     * Determine if this token has the given type and value.
+     * @param type token type
+     * @param value token value
+     * @return true if the type and value matches
+     */
+    bool Token::eq(TokenType type, UString value) {
+        return this->type == type
+            && this->value == value;
+    }
+
+    /**
+     * Determine if token matches the data of the other token.
+     * @return other other token to check
+     * @return true if the two tokens match
+     */
+    bool Token::eq(Token other) {
+        // make sure both the tokens has the same type
+        if (this->type != other.type)
+            return false;
+        switch (type) {
+            // some tokens' values must be checked as well
+            case TokenType::Operator:
+            case TokenType::Expression:
+                return this->value == other.value;
+            default:
+                return true;
+        }
     }
 
     /**
