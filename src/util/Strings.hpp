@@ -13,6 +13,13 @@ namespace Void {
         String join(List<String>& list, String separator);
 
         /**
+         * Join all the elements from a list using a separator.
+         * @param list elements source
+         * @param separator separator between elements
+         */
+        UString join(List<UString>& list, UString separator);
+
+        /**
          * Split the string to parts using a delimiter.
          * @param source target string
          * @param seperator character to split at

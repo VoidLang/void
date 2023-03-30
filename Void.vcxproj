@@ -22,6 +22,7 @@
     <ClInclude Include="src\Common.hpp" />
     <ClInclude Include="src\compiler\node\Node.hpp" />
     <ClInclude Include="src\compiler\node\NodeParser.hpp" />
+    <ClInclude Include="src\compiler\node\nodes\MethodNode.hpp" />
     <ClInclude Include="src\compiler\Project.hpp" />
     <ClInclude Include="src\compiler\token\Token.hpp" />
     <ClInclude Include="src\compiler\token\Tokenizer.hpp" />
@@ -58,6 +59,7 @@
   <ItemGroup>
     <ClCompile Include="src\compiler\node\Node.cpp" />
     <ClCompile Include="src\compiler\node\NodeParser.cpp" />
+    <ClCompile Include="src\compiler\node\nodes\MethodNode.cpp" />
     <ClCompile Include="src\compiler\Project.cpp" />
     <ClCompile Include="src\compiler\token\Token.cpp" />
     <ClCompile Include="src\compiler\token\Tokenizer.cpp" />

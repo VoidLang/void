@@ -27,7 +27,7 @@ namespace Compiler {
             // check if the token before is one of the required tokens
             bool requiredBefore = false;
             for (Token element : REQUIRED_BEFORE) {
-                if (element.eq(lastToken)) {
+                if (equals(element, lastToken)) {
                     requiredBefore = true;
                     break;
                 }
@@ -35,8 +35,7 @@ namespace Compiler {
             // check if the token after is one of the forbidden tokens
             bool forbiddenAfter = false;
             for (Token element : FORBIDDEN_AFTER) {
-                if (element.eq(nextToken)) {
-                    //println("forbidden " << nextToken);
+                if (equals(element, nextToken)) {
                     forbiddenAfter = true;
                     break;
                 }
@@ -64,6 +63,26 @@ namespace Compiler {
         lastToken = safeGet(cursor - 1);
         nextToken = safeGet(cursor + 1);
         cursor++;
+    }
+
+    /**
+     * Check if two tokens are equals. Ignore value checking for certain token types.
+     * @param left first token to check
+     * @param right second token to check
+     * @return true if the two tokens are equals
+     */
+    bool Transformer::equals(Token left, Token right) {
+        // make sure both the tokens has the same type
+        if (left.type != right.type)
+            return false;
+        switch (left.type) {
+            // some tokens' values must be checked as well
+            case TokenType::Operator:
+            case TokenType::Expression:
+                return left.value == right.value;
+            default:
+                return true;
+        }
     }
 
     /**

@@ -7,8 +7,8 @@ namespace Compiler {
      * Represents a registry of the parseable node types.
      */
     enum class NodeType {
-        
-
+        Method,
+        Error
     };
 
     /**
@@ -17,6 +17,14 @@ namespace Compiler {
      * The node hierarchy is then transformed to executable bytecode.
      */
     class Node {
+    public:
+        NodeType type;
 
+        Node(NodeType);
+    };
+    
+    class ErrorNode : public Node {
+    public:
+        ErrorNode();
     };
 }

@@ -141,3 +141,10 @@ typedef char32_t cint;
 
 #define nanoTime() \
     (DURATION_CAST<NANOSECONDS>(SYSTEM_CLOCK::now().time_since_epoch()).count())
+
+// optional
+
+#include <optional>
+
+template <typename T>
+using Option = std::optional<T>;

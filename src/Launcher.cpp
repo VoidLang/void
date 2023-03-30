@@ -13,6 +13,7 @@
 #include "compiler/token/Tokenizer.hpp"
 #include "compiler/token/Transformer.hpp"
 #include "compiler/Project.hpp"
+#include "compiler/node/NodeParser.hpp"
 
 using namespace Compiler;
 
@@ -154,9 +155,15 @@ namespace Void {
 
         tokens = transformer.transform();
 
-        for (Token token : tokens) {
+        for (Token token : tokens) 
             println(std::setw(12) << token);
+        
+        NodeParser parser(tokens);
+        while (true) {
+            Compiler::Node node = parser.next();
 
+            if (node.type == NodeType::Error)
+                error("Error!");
         }
     }
 

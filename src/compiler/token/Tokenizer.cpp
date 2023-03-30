@@ -99,7 +99,8 @@ namespace Compiler {
      */
     Token Tokenizer::nextSeparator() {
         TokenType type = TokenType::Unexpected;
-        switch (get()) {
+        cint c = get();
+        switch (c) {
             case ';':
                 type = TokenType::Semicolon;
                 break;
@@ -128,7 +129,7 @@ namespace Compiler {
                 type = TokenType::Stop;
                 break;
         }
-        return Token::of(type);
+        return Token::of(type, UString(1, c));
     }
 
     /**

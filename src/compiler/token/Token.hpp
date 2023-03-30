@@ -111,7 +111,7 @@ namespace Compiler {
          * @param value token value
          * @return true if the type and value matches
          */
-        bool eq(TokenType type, UString value);
+        bool is(TokenType type, UString value);
 
         /**
          * Determine if token matches the data of the other token.
@@ -134,4 +134,11 @@ namespace Compiler {
      * @param token target token
      */
     OutputStream& operator<<(OutputStream& stream, Token& token);
+
+    /**
+     * Make UTF-32 String printable to the console.
+     * @param stream console output stream
+     * @param string target string
+     */
+    OutputStream& operator<<(OutputStream& stream, UString string);
 }

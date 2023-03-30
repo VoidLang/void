@@ -24,6 +24,25 @@ namespace Void {
     }
 
     /**
+     * Join all the elements from a list using a separator.
+     * @param list elements source
+     * @param separator separator between elements
+     */
+    UString Strings::join(List<UString>& list, UString separator) {
+        // declare the final string result
+        UString value = U"";
+        // concat the elements of the list
+        for (ulong i = 0; i < list.size(); i++) {
+            // append the list element
+            value += list[i];
+            // append the separator if there are more elements remaining
+            if (i < list.size() - 1)
+                value += separator;
+        }
+        return value;
+    }
+
+    /**
      * Split the string to parts using a delimiter.
      * @param source target string
      * @param seperator character to split at

@@ -99,6 +99,10 @@
     <ClInclude Include="src\compiler\node\NodeParser.hpp">
       <Filter>compiler\node</Filter>
     </ClInclude>
+    <ClInclude Include="src\compiler\token\Transformer.hpp" />
+    <ClInclude Include="src\compiler\node\nodes\MethodNode.hpp">
+      <Filter>compiler\node\nodes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -193,6 +197,10 @@
     <ClCompile Include="src\compiler\node\Node.cpp">
       <Filter>compiler\node</Filter>
     </ClCompile>
+    <ClCompile Include="src\compiler\token\Transformer.cpp" />
+    <ClCompile Include="src\compiler\node\nodes\MethodNode.cpp">
+      <Filter>compiler\node\nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="util">
@@ -224,6 +232,9 @@
     </Filter>
     <Filter Include="compiler\node">
       <UniqueIdentifier>{0a408362-5862-4e73-a260-0f4f71dcb768}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compiler\node\nodes">
+      <UniqueIdentifier>{4570172b-fdb1-4af5-9015-45234f192a6f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

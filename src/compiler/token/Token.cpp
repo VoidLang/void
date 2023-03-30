@@ -110,7 +110,7 @@ namespace Compiler {
      * @param value token value
      * @return true if the type and value matches
      */
-    bool Token::eq(TokenType type, UString value) {
+    bool Token::is(TokenType type, UString value) {
         return this->type == type
             && this->value == value;
     }
@@ -121,17 +121,8 @@ namespace Compiler {
      * @return true if the two tokens match
      */
     bool Token::eq(Token other) {
-        // make sure both the tokens has the same type
-        if (this->type != other.type)
-            return false;
-        switch (type) {
-            // some tokens' values must be checked as well
-            case TokenType::Operator:
-            case TokenType::Expression:
-                return this->value == other.value;
-            default:
-                return true;
-        }
+        return this->type == other.type
+            && this->value == other.value;
     }
 
     /**
@@ -152,5 +143,14 @@ namespace Compiler {
      */
     OutputStream& operator<<(OutputStream& stream, Token& token) {
         return stream << token.type << (!token.value.empty() ? (" |" + Strings::fromUTF(token.value) + "|") : "");
+    }
+
+    /**
+     * Make UTF-32 String printable to the console.
+     * @param stream console output stream
+     * @param string target string
+     */
+    OutputStream& operator<<(OutputStream& stream, UString string) {
+        return stream << Strings::fromUTF(string);
     }
 }

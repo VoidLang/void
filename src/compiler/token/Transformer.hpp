@@ -100,6 +100,14 @@ namespace Compiler {
         void update();
 
         /**
+         * Check if two tokens are equals. Ignore value checking for certain token types.
+         * @param left first token to check
+         * @param right second token to check
+         * @return true if the two tokens are equals
+         */
+        bool equals(Token left, Token right);
+
+        /**
          * Safely get the token at the given index.
          * @return token at the given index
          */
