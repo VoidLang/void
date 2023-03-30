@@ -123,10 +123,28 @@ namespace Compiler {
         Node nextDeclaration();
 
         /**
+         * Parse the next package declaration.
+         * @return new declared package
+         */
+        Node nextPackage();
+
+        /**
+         * Parse the next package import.
+         * @return new package import
+         */
+        Node nextImport();
+
+        /**
          * Parse the generic types of a type.
-         * @return geneirc type tokens
+         * @return generic type tokens
          */
         List<Token> parseGenerics();
+
+        /**
+         * Parse the generic names of a method or type.
+         * @return generic type names
+         */
+        List<UString> parseGenericNames();
 
         /**
          * Parse the array declaration of a type.

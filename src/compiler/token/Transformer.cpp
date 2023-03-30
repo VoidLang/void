@@ -19,6 +19,8 @@ namespace Compiler {
         while (hasNext()) {
             // update the currently parsed tokens
             update();
+            handleCommandLine();
+            handleCommandBlock();
             // ignore the token if it is not a new line
             if (!token.is(TokenType::NewLine)) {
                 result.push_back(token);
@@ -99,5 +101,40 @@ namespace Compiler {
     */
     bool Transformer::hasNext() {
         return cursor >= 0 && cursor < tokens.size();
+    }
+
+    /**
+     * Ignore tokens that belong to a line of comment.
+     */
+    void Transformer::handleCommentLine() {
+        // check for line command start
+        if (!token.is(TokenType::Operator, U"/") || !nextToken.is(TokenType::Operator, U"/"))
+            return;
+        // loop unti a new line has started
+        while (true) {
+            Token token = safeGet(cursor++);
+            if (token.is(TokenType::NewLine)) {
+                update();
+                return;
+            }
+        }
+    }
+
+    /**
+     * Ignore tokens that belong to a block of comments..
+     */
+    void Transformer::handleCommentBlock() {
+        // check for block command start
+        if (!token.is(TokenType::Operator, U"/") || !nextToken.is(TokenType::Operator, U"*"))
+            return;
+        // loop until the comment block is ended
+        while (true) {
+            Token first = safeGet(cursor++);
+            Token second = safeGet(cursor++);
+            if (first.is(TokenType::Operator, U"*") && second.is(TokenType::Operator, U"/")) {
+                update();
+                return;
+            }
+        }
     }
 }

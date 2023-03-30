@@ -37,7 +37,7 @@ namespace Compiler {
         /**
          * The array of tokens forbidden after the new line for the semicolon the be inserted.
          */
-        const Token FORBIDDEN_AFTER[14] = {
+        const Token FORBIDDEN_AFTER[15] = {
             Token::of(TokenType::Operator, U"="),
             Token::of(TokenType::Operator, U"+"),
             Token::of(TokenType::Operator, U"-"),
@@ -52,6 +52,7 @@ namespace Compiler {
             Token::of(TokenType::Operator, U"~"),
             Token::of(TokenType::Operator, U"$"),
             Token::of(TokenType::Operator, U"."),
+            Token::of(TokenType::Expression, U"where")
         };
 
     private:
@@ -118,5 +119,15 @@ namespace Compiler {
          * @return true if there are more tokens
          */
         bool hasNext();
+
+        /**
+         * Ignore tokens that belong to a line of comment.
+         */
+        void handleCommentLine();
+
+        /**
+         * Ignore tokens that belong to a block of comments.
+         */
+        void handleCommentBlock();
     };
 }

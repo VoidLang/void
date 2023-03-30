@@ -576,14 +576,15 @@ namespace Compiler {
             || token == U"await"
             || token == U"goto"
             || token == U"is"
-            || token == U"as";
+            || token == U"as"
+            || token == U"where";
     }
 
     /**
-    * Check if the given token is a type token.
-    * @param c target character to test
-    * @return true if the token is a type
-    */
+     * Check if the given token is a type token.
+     * @param c target character to test
+     * @return true if the token is a type
+     */
     bool Tokenizer::isType(UString token) {
         return token == U"let"
             || token == U"byte"

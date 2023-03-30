@@ -96,6 +96,29 @@ namespace Compiler {
     }
 
     /**
+     * Determine if this token has any of the given types.
+     * @param length of target token types
+     * @return true if this token has the type
+     */
+    bool Token::is(uint size, ...) {
+        // begin the processing of the varargs
+        va_list list;
+        va_start(list, size);
+
+        // handle vararg parameters
+        for (uint i = 0; i < size; i++) {
+            TokenType type = va_arg(list, TokenType);
+            if (type == this->type)
+                return true;
+        }
+
+        // end varargs processing
+        va_end(list);
+
+        return false;
+    }
+
+    /**
      * Determine if the token has the given value.
      * @param value token value
      * @return true if the token has the value

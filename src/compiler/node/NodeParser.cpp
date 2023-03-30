@@ -1,6 +1,7 @@
 #include "NodeParser.hpp"
 #include "../../util/Strings.hpp"
 #include "nodes/MethodNode.hpp"
+#include "nodes/FileInfo.hpp"
 
 using namespace Void;
 
@@ -17,18 +18,16 @@ namespace Compiler {
      * @return new instruction node
      */
     Node NodeParser::next() {
-        // handle package method declaration
-        if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier))
-            return nextMethod();
-        // handle multi-return method
-        else if (peek().is(TokenType::Open))
-            return nextMethod();
-        // handle package method or class declaration
-        else if (peek().is(TokenType::Modifier))
-            return nextMethod();
-        // handle package type declaration
-        else if (peek().is(TokenType::Expression))
-            return nextType();
+        // handle package declaration
+        if (peek().is(TokenType::Info, U"package")) 
+            return nextPackage();
+        // handle package import
+        else if (peek().is(TokenType::Info, U"import")) 
+            return nextImport();
+        // handle method or type declaration
+        else if (peek().is(5, TokenType::Type, TokenType::Identifier, TokenType::Open, TokenType::Modifier, TokenType::Expression))
+            return nextDeclaration();
+        // handle unexpected token
         return ErrorNode();
     }
 
@@ -58,7 +57,7 @@ namespace Compiler {
     /**
      * Get the current at the index.
      * Check if the retrieved token does not match any of the given typs.
-     * @param size required token types' length
+     * @param length of required token types
      * @return currently parsed token
      */
     Token NodeParser::peek(uint size, ...) {
@@ -457,6 +456,26 @@ namespace Compiler {
         // handle method modifiers
         List<UString> modifiers = parseModifiers(NodeType::Method);
 
+        // get the kind of the type
+        // class MyClass {
+        // ^^^^^ the expression indicates the kind of the type
+        UString kind = get(TokenType::Expression).value;
+
+        // handle type generic names
+        // struct MyGenericStruct<T> {
+        //                       ^^^ the generic names are placed in between angle brackets
+        List<UString> genericNames = parseGenericNames();
+
+        // TODO generic type implementation (where T implements MyType)
+
+        // handle type body begin
+        get(TokenType::Begin);
+
+        // TODO parse type body
+
+        // handle type body end
+        get(TokenType::End);
+        
         return ErrorNode();
     }
 
@@ -465,7 +484,50 @@ namespace Compiler {
      * @return new declared type or method
      */
     Node NodeParser::nextDeclaration() {
-        
+        // handle package method declaration
+        if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier))
+            return nextMethod();
+        // handle multi-return method
+        else if (peek().is(TokenType::Open))
+            return nextMethod();
+        // handle package method or class declaration
+        else if (peek().is(TokenType::Modifier))
+            return nextMethod();
+        // handle package type declaration
+        else if (peek().is(TokenType::Expression))
+            return nextType();
+        // handle unexpected token
+        return ErrorNode();
+    }
+
+    /**
+     * Parse the next package declaration.
+     * @return new declared package
+     */
+    Node NodeParser::nextPackage() {
+        // handle package declaration
+        get(TokenType::Info, U"package");
+        // get the name of the package
+        UString name = get(TokenType::String).value;
+        // ensure that the package is ended by a semicolon
+        get(TokenType::Semicolon);
+        println("package \"" << name << '"');
+        return Package(name);
+    }
+
+    /**
+     * Parse the next package import.
+     * @return new package import
+     */
+    Node NodeParser::nextImport() {
+        // handle package import
+        get(TokenType::String, U"import");
+        // get the name of the package
+        UString name = get(TokenType::String).value;
+        // ensure that the package is ended by a semicolon
+        get(TokenType::Semicolon);
+        println("import \"" << name << '"');
+        return Import(name);
     }
 
     /**
@@ -502,6 +564,48 @@ namespace Compiler {
         if (generics.empty())
             error("Generic type cannot be left empty.");
         return generics;
+    }
+
+
+    /**
+     * Parse the generic names of a method or type.
+     * @return generic type names
+     */
+    List<UString> NodeParser::parseGenericNames() {
+        // handle method or type generic types
+        // method and type generic type declaration look somewhat different from type generic declaration
+        // in here we only define what identifiers we are willing to use as generic types inside the method
+        // void concat<T>(List<T> firstList, List<T> secondList)
+        //            ^^^ method generics are placed after the method name
+        // void createMap<K,V>()
+        //                 ^ you may have multiple method generic types
+        //                   they are also separated with a comma
+        List<UString> genericNames;
+        if (peek().is(TokenType::Operator, U"<")) {
+        parseGeneric:
+            // skip the '<' or ',' symbol
+            // void foo<Bar,Baz>()
+            //         ^   ^ we don't care about these two characters, as they are already handled
+            get();
+
+            // get the name of the generic 
+            // void myMethod<MyGeneric>()
+            //               ^^^^^^^^^ the identifier (name) of the method generic type 
+            UString genericName = get(TokenType::Identifier).value;
+            genericNames.push_back(genericName);
+
+            // check if there are more generic types
+            // U transform<T,U>(T source)
+            //              ^ comma indicates, that there are more method generic types
+            if (peek().is(TokenType::Comma))
+                goto parseGeneric;
+
+            // handle method generic types end
+            // T getValue<T>(String key)
+            //              ^ close angle bracket indicates, that the declaration of the method generic types has ended
+            get(TokenType::Operator, U">");
+        }
+        return genericNames;
     }
 
     /**

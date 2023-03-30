@@ -99,6 +99,13 @@ namespace Compiler {
         bool is(TokenType type);
 
         /**
+         * Determine if this token has any of the given types.
+         * @param length of target token types
+         * @return true if this token has the type
+         */
+        bool is(uint size, ...);
+
+        /**
          * Determine if the token has the given value.
          * @param value token value
          * @return true if the token has the value

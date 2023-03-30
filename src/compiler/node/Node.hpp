@@ -8,6 +8,8 @@ namespace Compiler {
      */
     enum class NodeType {
         Method,
+        Package,
+        Import,
         Error
     };
 
