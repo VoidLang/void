@@ -19,8 +19,8 @@ namespace Compiler {
         while (hasNext()) {
             // update the currently parsed tokens
             update();
-            handleCommandLine();
-            handleCommandBlock();
+            handleCommentLine();
+            handleCommentBlock();
             // ignore the token if it is not a new line
             if (!token.is(TokenType::NewLine)) {
                 result.push_back(token);
