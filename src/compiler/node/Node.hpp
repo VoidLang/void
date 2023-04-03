@@ -10,7 +10,9 @@ namespace Compiler {
         Method,
         Package,
         Import,
-        Error
+        Type,
+        Error,
+        Finish
     };
 
     /**
@@ -28,5 +30,10 @@ namespace Compiler {
     class ErrorNode : public Node {
     public:
         ErrorNode();
+    };
+
+    class FinishNode : public Node {
+    public:
+        FinishNode();
     };
 }

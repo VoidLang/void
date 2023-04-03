@@ -2,6 +2,7 @@
 #include "../../util/Strings.hpp"
 #include "nodes/MethodNode.hpp"
 #include "nodes/FileInfo.hpp"
+#include "nodes/TypeNode.hpp"
 
 using namespace Void;
 
@@ -18,8 +19,11 @@ namespace Compiler {
      * @return new instruction node
      */
     Node NodeParser::next() {
+        // handle content ending
+        if (peek().is(TokenType::Finish))
+            return FinishNode();
         // handle package declaration
-        if (peek().is(TokenType::Info, U"package")) 
+        else if (peek().is(TokenType::Info, U"package")) 
             return nextPackage();
         // handle package import
         else if (peek().is(TokenType::Info, U"import")) 
@@ -28,6 +32,8 @@ namespace Compiler {
         else if (peek().is(5, TokenType::Type, TokenType::Identifier, TokenType::Open, TokenType::Modifier, TokenType::Expression))
             return nextDeclaration();
         // handle unexpected token
+        Token error = peek();
+        println("Error1 " << error);
         return ErrorNode();
     }
 
@@ -398,6 +404,10 @@ namespace Compiler {
 
         // handle method body end
         get(TokenType::End);
+        
+        // skip the auto-inserted semicolon
+        if (peek().is(TokenType::Semicolon))
+            get();
 
         if (!modifiers.empty())
             print(Strings::join(modifiers, U" ") << " ");
@@ -449,6 +459,10 @@ namespace Compiler {
         println(") {");
 
         println("}");
+
+        // skip the auto-inserted semicolon
+        if (peek().is(TokenType::Semicolon))
+            get();
         
         return MethodNode(modifiers, returnTypes, name, parameters, List<Node>());
     }
@@ -466,6 +480,11 @@ namespace Compiler {
         // ^^^^^ the expression indicates the kind of the type
         UString kind = get(TokenType::Expression).value;
 
+        // get the name of the type
+        // class Test {
+        //       ^^^^ the identifier indicates the name of the type
+        UString name = get(TokenType::Identifier).value;
+
         // handle type generic names
         // struct MyGenericStruct<T> {
         //                       ^^^ the generic names are placed in between angle brackets
@@ -476,12 +495,19 @@ namespace Compiler {
         // handle type body begin
         get(TokenType::Begin);
 
-        // TODO parse type body
+        println(kind << " " << name << " {");
+
+        // parse the body of the type
+        List<Node> nodes;
+        while (!peek().is(TokenType::End)) 
+            nodes.push_back(nextContent());
 
         // handle type body end
         get(TokenType::End);
-        
-        return ErrorNode();
+
+        println("}");
+
+        return TypeNode();
     }
 
     /**
@@ -502,6 +528,32 @@ namespace Compiler {
         else if (peek().is(TokenType::Expression))
             return nextType();
         // handle unexpected token
+        Token error = peek();
+        println("Error2 " << error);
+        return ErrorNode();
+    }
+
+    /**
+     * Parse the next content of a type, which might be a type, method or field.
+     * @return new declared type, method or field
+     */
+    Node NodeParser::nextContent() {
+        // handle package method declaration
+        if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier))
+            return nextMethod();
+        // handle multi-return method
+        else if (peek().is(TokenType::Open))
+            return nextMethod();
+        // handle package method or class declaration
+        else if (peek().is(TokenType::Modifier))
+            return nextMethod();
+        // handle package type declaration
+        else if (peek().is(TokenType::Expression))
+            return nextType();
+        // TODO handle field
+        // handle unexpected token
+        Token error = peek();
+        println("Error4 " << error);
         return ErrorNode();
     }
 
@@ -647,6 +699,7 @@ namespace Compiler {
         List<UString> modifiers;
         while (peek().is(TokenType::Modifier)) {
             // TODO handle modifier regions (public:)
+            // TODO handle node type
             modifiers.push_back(get().value);
         }
         return modifiers;

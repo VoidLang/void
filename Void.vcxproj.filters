@@ -108,6 +108,9 @@
     <ClInclude Include="src\compiler\token\Transformer.hpp">
       <Filter>compiler\token</Filter>
     </ClInclude>
+    <ClInclude Include="src\compiler\node\nodes\TypeNode.hpp">
+      <Filter>compiler\node\nodes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -210,6 +213,9 @@
     </ClCompile>
     <ClCompile Include="src\compiler\token\Transformer.cpp">
       <Filter>compiler\token</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\node\nodes\TypeNode.cpp">
+      <Filter>compiler\node\nodes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

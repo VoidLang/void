@@ -123,6 +123,12 @@ namespace Compiler {
         Node nextDeclaration();
 
         /**
+         * Parse the next content of a type, which might be a type, method or field.
+         * @return new declared type, method or field
+         */
+        Node nextContent();
+
+        /**
          * Parse the next package declaration.
          * @return new declared package
          */

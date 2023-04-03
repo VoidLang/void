@@ -149,7 +149,7 @@ namespace Void {
             println(std::setw(12) << token);
         }
 
-        println("\n---\n");
+        println("\n--- TRANSFORMED: ---\n");
 
         Transformer transformer(tokens);
 
@@ -163,7 +163,10 @@ namespace Void {
             Compiler::Node node = parser.next();
 
             if (node.type == NodeType::Error)
-                error("Error!");
+                error("Error!")
+
+            else if (node.type == NodeType::Finish)
+                break;
         }
     }
 

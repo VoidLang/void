@@ -8,4 +8,8 @@ namespace Compiler {
     ErrorNode::ErrorNode()
         : Node(NodeType::Error)
     { }
+
+    FinishNode::FinishNode()
+        : Node(NodeType::Finish)
+    { }
 }
