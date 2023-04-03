@@ -338,8 +338,10 @@ namespace Compiler {
         // check if the method has no parameters
         // void myMethodWithNoParameters()
         //                              ^^ open parenthesis are directly followed by close parenthesis
-        if (peek().is(TokenType::Close))
+        if (peek().is(TokenType::Close)) {
+            get();
             goto noParams;
+        }
         
         parseParam: {
             // get the type of the parameter
@@ -379,22 +381,23 @@ namespace Compiler {
             // handle more parameters
             // int subtract(int a, int b)
             //                   ^ the comma indicates, that there are more parameters to be parsed
+            // void myMethod(int myParam)
+            //                          ^ the closing parenthesis incidate, that the declaration of the parameter list has ended
             Token token = get(2, TokenType::Comma, TokenType::Close);
             if (token.is(TokenType::Comma))
                 goto parseParam;
-
-            
-            // handle the ending of the parameter list
-            // void myMethod(int myParam)
-            //                          ^ the closing parenthesis incidate, that the declaration of the parameter list has ended
-            else if (token.is(TokenType::Close))
-                get();
         }
 
         // handle method without any parameters
     noParams:
-        // skip the closing pranthesis
-        get();
+
+        // handle method body begin
+        get(TokenType::Begin);
+
+        // TODO parse type body
+
+        // handle method body end
+        get(TokenType::End);
 
         if (!modifiers.empty())
             print(Strings::join(modifiers, U" ") << " ");
@@ -443,9 +446,11 @@ namespace Compiler {
                 print(", ");
         }
 
-        println(")");
+        println(") {");
+
+        println("}");
         
-        return ErrorNode();
+        return MethodNode(modifiers, returnTypes, name, parameters, List<Node>());
     }
 
     /**

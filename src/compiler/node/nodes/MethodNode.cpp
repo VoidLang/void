@@ -1,8 +1,9 @@
 #include "MethodNode.hpp"
 
 namespace Compiler {
-    MethodNode::MethodNode()
-        : Node(NodeType::Method)
+
+    MethodNode::MethodNode(List<UString> modifiers, List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node> body)
+        : Node(NodeType::Method), modifiers(modifiers), returnTypes(returnTypes), name(name), parameters(parameters), body(body)
     { }
 
     Parameter::Parameter(Token type, List<Token> generics, bool varargs, UString name) 

@@ -35,6 +35,12 @@ namespace Compiler {
 
         List<ReturnType> returnTypes;
 
-        MethodNode();
+        UString name;
+
+        List<Parameter> parameters;
+
+        List<Node> body;
+
+        MethodNode(List<UString> modifiers, List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node> body);
     };
 }
