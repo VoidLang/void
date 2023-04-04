@@ -122,10 +122,16 @@ namespace Compiler {
 
         /**
          * Determine if token matches the data of the other token.
-         * @return other other token to check
+         * @param other other token to check
          * @return true if the two tokens match
          */
         bool eq(Token other);
+
+        /**
+         * Determine if the type of this token is a number.
+         * @return true if this token is a number
+         */
+        bool isNumber();
     };
 
     /**

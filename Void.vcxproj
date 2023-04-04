@@ -23,8 +23,10 @@
     <ClInclude Include="src\compiler\node\Node.hpp" />
     <ClInclude Include="src\compiler\node\NodeParser.hpp" />
     <ClInclude Include="src\compiler\node\nodes\FileInfo.hpp" />
+    <ClInclude Include="src\compiler\node\nodes\LocalNode.hpp" />
     <ClInclude Include="src\compiler\node\nodes\MethodNode.hpp" />
     <ClInclude Include="src\compiler\node\nodes\TypeNode.hpp" />
+    <ClInclude Include="src\compiler\node\nodes\ValueNode.hpp" />
     <ClInclude Include="src\compiler\Project.hpp" />
     <ClInclude Include="src\compiler\token\Token.hpp" />
     <ClInclude Include="src\compiler\token\Tokenizer.hpp" />
@@ -62,8 +64,10 @@
     <ClCompile Include="src\compiler\node\Node.cpp" />
     <ClCompile Include="src\compiler\node\NodeParser.cpp" />
     <ClCompile Include="src\compiler\node\nodes\FileInfo.cpp" />
+    <ClCompile Include="src\compiler\node\nodes\LocalNode.cpp" />
     <ClCompile Include="src\compiler\node\nodes\MethodNode.cpp" />
     <ClCompile Include="src\compiler\node\nodes\TypeNode.cpp" />
+    <ClCompile Include="src\compiler\node\nodes\ValueNode.cpp" />
     <ClCompile Include="src\compiler\Project.cpp" />
     <ClCompile Include="src\compiler\token\Token.cpp" />
     <ClCompile Include="src\compiler\token\Tokenizer.cpp" />

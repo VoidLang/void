@@ -140,13 +140,32 @@ namespace Compiler {
 
     /**
      * Determine if token matches the data of the other token.
-     * @return other other token to check
+     * @param other other token to check
      * @return true if the two tokens match
      */
     bool Token::eq(Token other) {
         return this->type == other.type
             && this->value == other.value;
     }
+
+    /**
+     * Determine if the type of this token is a number.
+     * @return true if this token is a number
+     */
+    bool Token::isNumber() {
+        switch (type) {
+            case TokenType::Byte:
+            case TokenType::Short:
+            case TokenType::Integer:
+            case TokenType::Long:
+            case TokenType::Float:
+            case TokenType::Double:
+                return true;
+            default:
+                return false;
+        }
+    }
+
 
     /**
      * Make the token type printable to the output stream.

@@ -3,6 +3,8 @@
 #include "nodes/MethodNode.hpp"
 #include "nodes/FileInfo.hpp"
 #include "nodes/TypeNode.hpp"
+#include "nodes/LocalNode.hpp"
+#include "nodes/ValueNode.hpp"
 
 using namespace Void;
 
@@ -30,10 +32,10 @@ namespace Compiler {
             return nextImport();
         // handle method or type declaration
         else if (peek().is(5, TokenType::Type, TokenType::Identifier, TokenType::Open, TokenType::Modifier, TokenType::Expression))
-            return nextDeclaration();
+            return nextTypeOrMethod();
         // handle unexpected token
         Token error = peek();
-        println("Error1 " << error);
+        println("Error " << error);
         return ErrorNode();
     }
 
@@ -400,7 +402,11 @@ namespace Compiler {
         // handle method body begin
         get(TokenType::Begin);
 
-        // TODO parse type body
+        // parse the body of the method
+        List<Node> body;
+        while (!peek().is(TokenType::End)) {
+            body.push_back(nextExpression());
+        }
 
         // handle method body end
         get(TokenType::End);
@@ -458,7 +464,12 @@ namespace Compiler {
 
         println(") {");
 
-        println("}");
+        for (Node element : body) {
+            print(element.type << ": ");
+            element.debug();
+        }
+
+        println("\n}");
 
         // skip the auto-inserted semicolon
         if (peek().is(TokenType::Semicolon))
@@ -514,7 +525,7 @@ namespace Compiler {
      * Parse the next type or method declaration.
      * @return new declared type or method
      */
-    Node NodeParser::nextDeclaration() {
+    Node NodeParser::nextTypeOrMethod() {
         // handle package method declaration
         if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier))
             return nextMethod();
@@ -529,8 +540,78 @@ namespace Compiler {
             return nextType();
         // handle unexpected token
         Token error = peek();
-        println("Error2 " << error);
+        println("Error " << error);
         return ErrorNode();
+    }
+
+    /**
+     * Parse the next expression instruction.
+     * @return new expression
+     */
+    Node NodeParser::nextExpression() {
+        // handle local variable declaration
+        if (peek().is(TokenType::Type))
+            return nextLocalDeclaration();
+        // handle number constant
+        else if (peek().isNumber() || peek().is(4, TokenType::Boolean, TokenType::Identifier, TokenType::String, TokenType::Character)) {
+            // get the value constant
+            Token value = get();
+
+            // handle single value expression
+            if (peek().is(TokenType::Semicolon)) {
+                get();
+                return SingleValue(value);
+            }
+
+            // handle operation between two expressions
+            else if (peek().is(TokenType::Operator))
+                return Operation(SingleValue(value), get().value, nextExpression());
+            
+            // TODO handle method call
+
+        }
+
+        // TODO handle local variable assignation
+        // handle unexpected token
+        Token error = peek();
+        println("Error " << error);
+        return ErrorNode();
+    }
+
+    /**
+     * Parse the new local declaration.
+     * @return new local declaration
+     */
+    Node NodeParser::nextLocalDeclaration() {
+        // get the type of the local variable
+        // float myNumber = 3
+        // ^^^^^ the type or identifier indicates the type of the local variable
+        Token type = get(2, TokenType::Type, TokenType::Identifier);
+
+        // get the name of the local variable
+        // let variable = "Hello, World"
+        //     ^^^^^^^^ the identifier indicates the name of the local variable
+        UString name = get(TokenType::Identifier).value;
+
+        // check if the local variable does not have an initial value
+        // let myVar;
+        //          ^ the (auto-inserted) semicolon indicates that the local variable is not initialized by defualt
+        if (peek().is(TokenType::Semicolon)) {
+            get();
+            return LocalNode(type, name, {});
+        }
+
+        // handle the assignation of the local variable
+        // let number = 100
+        //            ^ the equals sign indicates that the assignation of the local variable has been started
+        get(TokenType::Operator, U"=");
+
+        // parse the value of the local variable
+        // let value = 100 + 50 - 25
+        //             ^^^^^^^^^^^^^ the instructions after the equals sign indicate the value of the local variable
+        Node value = nextExpression();
+
+        return LocalNode(type, name, makeOptional(value));
     }
 
     /**

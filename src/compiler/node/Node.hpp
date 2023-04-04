@@ -11,9 +11,14 @@ namespace Compiler {
         Package,
         Import,
         Type,
+        Local,
+        SingleValue,
+        Operation,
         Error,
         Finish
     };
+
+    OutputStream& operator<<(OutputStream& stream, NodeType& type);
 
     /**
      * Represents an instruction node that is parsed from raw tokens.
@@ -22,18 +27,53 @@ namespace Compiler {
      */
     class Node {
     public:
+        /**
+         * The type of the node.
+         */
         NodeType type;
 
-        Node(NodeType);
+        /**
+         * Initialize the node.
+         * @param type node type
+         */
+        Node(NodeType type);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        virtual void debug();
     };
     
+    /**
+     * Represewnts a node that holds the information of a compiling error 
+     * that occurred whilst parsing tokens to nodes.
+     */
     class ErrorNode : public Node {
     public:
+        /**
+         * Initialize the error node.
+         */
         ErrorNode();
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
     };
 
+    /**
+     * Represents a node that indicates that the parsing of the file has been ended.
+     */
     class FinishNode : public Node {
     public:
+        /**
+         * Initialize the finish node.
+         */
         FinishNode();
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
     };
 }

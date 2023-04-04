@@ -148,3 +148,5 @@ typedef char32_t cint;
 
 template <typename T>
 using Option = std::optional<T>;
+#define makeOptional(x) \
+    std::make_optional(x)

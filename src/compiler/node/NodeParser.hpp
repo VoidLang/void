@@ -105,6 +105,18 @@ namespace Compiler {
         bool has(uint index);
 
         /**
+         * Parse the next package declaration.
+         * @return new declared package
+         */
+        Node nextPackage();
+
+        /**
+         * Parse the next package import.
+         * @return new package import
+         */
+        Node nextImport();
+
+        /**
          * Parse the next method node.
          * @return new method node
          */
@@ -120,7 +132,7 @@ namespace Compiler {
          * Parse the next type or method declaration.
          * @return new declared type or method
          */
-        Node nextDeclaration();
+        Node nextTypeOrMethod();
 
         /**
          * Parse the next content of a type, which might be a type, method or field.
@@ -129,16 +141,16 @@ namespace Compiler {
         Node nextContent();
 
         /**
-         * Parse the next package declaration.
-         * @return new declared package
+         * Parse the next expression instruction.
+         * @return new expression
          */
-        Node nextPackage();
+        Node nextExpression();
 
         /**
-         * Parse the next package import.
-         * @return new package import
+         * Parse the new local declaration.
+         * @return new local declaration
          */
-        Node nextImport();
+        Node nextLocalDeclaration();
 
         /**
          * Parse the generic types of a type.
