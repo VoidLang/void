@@ -302,7 +302,7 @@ private:
     float health
 
     float stamina
-    }
+}
 ```
 ```java
 Visibility modifiers are public, protected and private.
