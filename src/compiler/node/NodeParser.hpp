@@ -206,5 +206,11 @@ namespace Compiler {
          * @return parsed modifier list
          */
         List<UString> parseModifiers(NodeType type);
+
+        /**
+         * Test if there are variadic arguments declared.
+         * @return true if varargs are declared
+         */
+        bool testVarargs();
     };
 }

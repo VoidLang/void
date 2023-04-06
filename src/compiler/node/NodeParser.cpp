@@ -560,11 +560,20 @@ namespace Compiler {
             return nextLocalAssignation();
 
         // handle node grouping
+        // let a = (b + c) + d
+        //         ^ the open parenthesis indicate, that the following nodes should be placed in a node group
         else if (peek().is(TokenType::Open)) {
+            // skip the '(' sign
             get();
+            
             // parse the expression inside the group
+            // let res = (1 + 2 + 3) / 4
+            //            ^^^^^^^^^ the nodes between parenthesis are the content of the node group
             Node* value = nextExpression();
+            
             // handle the group closing
+            // let test = (7 - 1)
+            //                  ^ the closing parenthesis indicate, that the declaration of node group has been ended
             get(TokenType::Close);
 
             // handle operation after a node group
@@ -574,7 +583,115 @@ namespace Compiler {
                 UString target = get().value;
                 return fixOperationTree(new Operation(new Group(value), target, nextExpression()));
             }
+
             return new Group(value);
+        }
+
+        // handle lambda function
+        else if (peek().is(TokenType::Operator, U"|")) {
+            // skip the '|' sign
+            get();
+            // parse the parameters of the lamba function
+            List<Parameter> parameters;
+            // determine if types are declared in the lambda's parameter list
+            // this must be tracked, because if one parameter sets a type, all
+            // of the other parameters must set types as well
+            bool typed = false;
+            if (!peek().is(TokenType::Operator, U"|")) {
+            parseParameter:
+                // get the next parameter
+                // call(|x| println(x))
+                //       ^ here this is just an identifier, which is the name of a lamba parameter
+                // let other = |int x| println(x)
+                //              ^^^^^ here a type is specified as well, expecting all the arguments to be typed
+                Token token = get(2, TokenType::Identifier, TokenType::Type);
+                // check if the parameter has a type
+                // let foo = |int x| println(x)
+                //            ^^^ the type token indicates, that the lambda function must declare a type for all of the parameters
+                if (token.is(TokenType::Type)) {
+                    // TODO make sure value is not "let"
+                    // TODO make sure only the last argument is variadic
+                    typed = true;
+
+                    // test if the type is variadic
+                    // let callback = |float... f| print(f[0])
+                    //                      ^^^ these dots indicate, that the parameter type is variadic
+                    bool varargs = testVarargs();
+
+                    // get the name of the parameter
+                    // |int foo| bar(foo)
+                    //      ^^^ the identifier is the name of the parameter
+                    UString name = get(TokenType::Identifier).value;
+
+                    // register the lambda parameter
+                    parameters.push_back(Parameter(token, List<Token>(), varargs, name));
+                }
+                // check if the type was an identifier and a parameter identifier is following it
+                // let func = |User u| u.login()
+                //             ^^^^ if two identifiers follow each other, the first one is the type, 
+                //                  the second one is the name of the parameter
+                else if (peek().is(TokenType::Identifier)) /* assuming token is identifier */ {
+                    typed = true;
+                    // TODO parse type generic tokens
+
+                    // test if the type is variadic
+                    bool varargs = testVarargs();
+
+                    // get the name of the parameter
+                    // |Foo foo| bar(foo)
+                    //      ^^^ the identifier is the name of the parameter
+                    UString name = get(TokenType::Identifier).value;
+
+                    // register the lambda parameter
+                    parameters.push_back(Parameter(token, List<Token>(), varargs, name));
+                }
+                // check if only the parameter name was given
+                else /* assuming token is identifier */ {
+                    // check if types were given previously, but is missing from here
+                    if (typed)
+                        error("Inconsistent lambda parameter type declaration");
+
+                    // register the lambda parameter
+                    parameters.push_back(Parameter(Token::of(TokenType::None), List<Token>(), false, token.value));
+                }
+
+                // handle more parameters
+                // data.enumerate(|index, value| bar())
+                //                      ^ the comma indicates, that more lambda parameters are yet to be parsed
+                if (peek().is(TokenType::Comma)) {
+                    // skip the '^' sign
+                    get();
+                    goto parseParameter;
+                }
+
+                // handle parameter list ending
+                // foo(|x, y, z| baz(x  - y + z))
+                //             ^ the "|" operator indicates, that the lambda parameter list has been ended
+                get(TokenType::Operator, U"|");
+            }
+
+            // parse the body of the lambda function
+            List<Node*> body;
+
+            // check if multiple instruction should be assigned for the body
+            // users.forEach(|u| { /* do something*/ }
+            //                   ^ the open curly bracket indicates, that the lambda body has multiple instructions inside
+            if (peek().is(TokenType::Begin)) {
+                get();
+                // parse the lamba body instructions
+                while (!peek().is(TokenType::End)) 
+                    body.push_back(nextExpression());
+                get();
+            }
+
+            // handle single-instruction lambda function
+            // get(|req, res| res.send("hello))
+            //                ^ if there is no open curly bracket after the lambda parameter list, it means
+            //                  that there is only one instruction for the labmda body
+            else /* there is no '{' after parameter list */
+                body.push_back(nextExpression());
+
+            return new Lambda(typed, parameters, body);
         }
 
         // handle string template
@@ -1012,5 +1129,20 @@ namespace Compiler {
             modifiers.push_back(get().value);
         }
         return modifiers;
+    }
+
+    /**
+     * Test if there are variadic arguments declared.
+     * @return true if varargs are declared
+     */
+    bool NodeParser::testVarargs() {
+        // ignore non-varargs tokens
+        if (!peek().is(TokenType::Operator, U"."))
+            return false;
+        // parse the variadic arguments indicator
+        get(TokenType::Operator, U".");
+        get(TokenType::Operator, U".");
+        get(TokenType::Operator, U".");
+        return true;
     }
 }

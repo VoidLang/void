@@ -16,6 +16,7 @@ namespace Compiler {
             "MethodCall",
             "Group",
             "Template",
+            "Lambda",
             "Error",
             "Finish"
         };

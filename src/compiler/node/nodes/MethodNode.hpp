@@ -57,4 +57,20 @@ namespace Compiler {
          */
         void debug() override;
     };
+
+    class Lambda : public Node {
+    public:
+        bool typed;
+
+        List<Parameter> parameters;
+
+        List<Node*> body;
+
+        Lambda(bool typed, List<Parameter> parameters, List<Node*> body);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
+    };
 }

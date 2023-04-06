@@ -30,4 +30,35 @@ namespace Compiler {
         }
         print("]}");
     }
+
+    Lambda::Lambda(bool typed, List<Parameter> parameters, List<Node*> body)
+        : Node(NodeType::Lambda), typed(typed), parameters(parameters), body(body)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void Lambda::debug() {
+        print("Lambda{typed=" << (typed ? "true" : "false") << ", parameters=[");
+        for (uint i = 0; i < parameters.size(); i++) {
+            auto param = parameters[i];
+            if (typed) {
+                print(param.type);
+                if (param.varargs)
+                    print("...");
+                print(" ");
+            }
+            print(param.name);
+            if (i < parameters.size() - 1)
+                print(", ");
+        }
+        print("], body={\n");
+        for (uint i = 0; i < body.size(); i++) {
+            print("\t");
+            body[i]->debug();
+            if (i < body.size() - 1)
+                println("; ");
+        }
+        print("}}");
+    }
 }

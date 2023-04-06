@@ -523,6 +523,7 @@ namespace Compiler {
             case '&':
             case '~':
             case '$':
+            case '|':
                 return true;
             default:
                 return false;
