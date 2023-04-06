@@ -20,10 +20,10 @@ namespace Compiler {
      * Parse the next instruction node.
      * @return new instruction node
      */
-    Node NodeParser::next() {
+    Node* NodeParser::next() {
         // handle content ending
         if (peek().is(TokenType::Finish))
-            return FinishNode();
+            return new FinishNode();
         // handle package declaration
         else if (peek().is(TokenType::Info, U"package")) 
             return nextPackage();
@@ -35,8 +35,8 @@ namespace Compiler {
             return nextTypeOrMethod();
         // handle unexpected token
         Token error = peek();
-        println("Error " << error);
-        return ErrorNode();
+        println("Error (Next) " << error);
+        return new ErrorNode();
     }
 
     /**
@@ -228,7 +228,7 @@ namespace Compiler {
      * Parse the next method node.
      * @return new method node
      */
-    Node NodeParser::nextMethod() {
+    Node* NodeParser::nextMethod() {
         // handle method modifiers
         List<UString> modifiers = parseModifiers(NodeType::Method);
 
@@ -403,7 +403,7 @@ namespace Compiler {
         get(TokenType::Begin);
 
         // parse the body of the method
-        List<Node> body;
+        List<Node*> body;
         while (!peek().is(TokenType::End)) {
             body.push_back(nextExpression());
         }
@@ -464,9 +464,9 @@ namespace Compiler {
 
         println(") {");
 
-        for (Node element : body) {
-            print(element.type << ": ");
-            element.debug();
+        for (Node* element : body) {
+            element->debug();
+            println("");
         }
 
         println("\n}");
@@ -475,14 +475,14 @@ namespace Compiler {
         if (peek().is(TokenType::Semicolon))
             get();
         
-        return MethodNode(modifiers, returnTypes, name, parameters, List<Node>());
+        return new MethodNode(modifiers, returnTypes, name, parameters, List<Node*>());
     }
 
     /**
      * Parse the next type declaration.
      * @return new declared type
      */
-    Node NodeParser::nextType() {
+    Node* NodeParser::nextType() {
         // handle method modifiers
         List<UString> modifiers = parseModifiers(NodeType::Method);
 
@@ -509,7 +509,7 @@ namespace Compiler {
         println(kind << " " << name << " {");
 
         // parse the body of the type
-        List<Node> nodes;
+        List<Node*> nodes;
         while (!peek().is(TokenType::End)) 
             nodes.push_back(nextContent());
 
@@ -518,14 +518,14 @@ namespace Compiler {
 
         println("}");
 
-        return TypeNode();
+        return new TypeNode();
     }
 
     /**
      * Parse the next type or method declaration.
      * @return new declared type or method
      */
-    Node NodeParser::nextTypeOrMethod() {
+    Node* NodeParser::nextTypeOrMethod() {
         // handle package method declaration
         if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier))
             return nextMethod();
@@ -540,49 +540,85 @@ namespace Compiler {
             return nextType();
         // handle unexpected token
         Token error = peek();
-        println("Error " << error);
-        return ErrorNode();
+        println("Error (Type/Method) " << error);
+        return new ErrorNode();
     }
 
     /**
      * Parse the next expression instruction.
      * @return new expression
      */
-    Node NodeParser::nextExpression() {
+    Node* NodeParser::nextExpression() {
         // handle local variable declaration
-        if (peek().is(TokenType::Type))
+        // let myVariable = 100
+        // ^^^ the "let" keyword indicates that, the local variable declaration has been started
+        if (peek().is(TokenType::Type, U"let"))
             return nextLocalDeclaration();
-        // handle number constant
-        else if (peek().isNumber() || peek().is(4, TokenType::Boolean, TokenType::Identifier, TokenType::String, TokenType::Character)) {
+
+        // handle literal constant or identifier
+        // let name = "John Doe"
+        //            ^^^^^^^^^^ the literal token indicates, that a value is expected
+        else if (peek().isLiteral() || peek().is(TokenType::Identifier)) {
             // get the value constant
+            // let age = 32
+            //           ^^ get the actual value of the literal
             Token value = get();
 
-            // handle single value expression
-            if (peek().is(TokenType::Semicolon)) {
-                get();
-                return SingleValue(value);
-            }
+            // handle single value expression, in which case the local variable is declared, but is not initialized
+
+            if (peek().is(TokenType::Semicolon)) 
+                return new Value(value);
 
             // handle operation between two expressions
-            else if (peek().is(TokenType::Operator))
-                return Operation(SingleValue(value), get().value, nextExpression());
-            
-            // TODO handle method call
+            else if (peek().is(TokenType::Operator)) {
+                UString target = get().value;
+                return new Operation(new Value(value), target, nextExpression());
+            }
 
+            // handle method call
+            else if (peek().is(TokenType::Open)) {
+                // TODO make sure "value" is an identifier
+                get();
+                // handle method arguments
+                List<Node*> arguments;
+                if (!peek().is(TokenType::Close)) {
+                parseArgument:
+                    arguments.push_back(nextExpression());
+                    // check for more arguments
+                    if (peek().is(TokenType::Comma)) {
+                        get();
+                        goto parseArgument;
+                    }
+                }
+                // handle method call ending
+                get(TokenType::Close);
+                // check if the method call is used as a statement or isn't expecting to be passed in a nested context
+                if (peek().is(TokenType::Semicolon))
+                    get();
+                return new MethodCall(value.value, arguments);
+            }
+
+            // handle group closing
+            else if (peek().is(TokenType::Close)) 
+                return new Value(value);
+
+            // handle argument list
+            else if (peek().is(TokenType::Comma))
+                return new Value(value);
         }
 
         // TODO handle local variable assignation
         // handle unexpected token
         Token error = peek();
-        println("Error " << error);
-        return ErrorNode();
+        println("Error (Expression) " << error);
+        return new ErrorNode();
     }
 
     /**
      * Parse the new local declaration.
      * @return new local declaration
      */
-    Node NodeParser::nextLocalDeclaration() {
+    Node* NodeParser::nextLocalDeclaration() {
         // get the type of the local variable
         // float myNumber = 3
         // ^^^^^ the type or identifier indicates the type of the local variable
@@ -598,7 +634,7 @@ namespace Compiler {
         //          ^ the (auto-inserted) semicolon indicates that the local variable is not initialized by defualt
         if (peek().is(TokenType::Semicolon)) {
             get();
-            return LocalNode(type, name, {});
+            return new LocalDeclare(type, name);
         }
 
         // handle the assignation of the local variable
@@ -609,16 +645,21 @@ namespace Compiler {
         // parse the value of the local variable
         // let value = 100 + 50 - 25
         //             ^^^^^^^^^^^^^ the instructions after the equals sign indicate the value of the local variable
-        Node value = nextExpression();
+        Node* value = nextExpression();
 
-        return LocalNode(type, name, makeOptional(value));
+        // skip the semicolon after the declaration
+        // let variable = 100;
+        //                   ^ the (auto-inserted) semicolon indicates, that the assigning variable declaration has been ended
+        get(TokenType::Semicolon);
+
+        return new LocalDeclareAssign(type, name, value);
     }
 
     /**
      * Parse the next content of a type, which might be a type, method or field.
      * @return new declared type, method or field
      */
-    Node NodeParser::nextContent() {
+    Node* NodeParser::nextContent() {
         // handle package method declaration
         if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier))
             return nextMethod();
@@ -634,15 +675,15 @@ namespace Compiler {
         // TODO handle field
         // handle unexpected token
         Token error = peek();
-        println("Error4 " << error);
-        return ErrorNode();
+        println("Error (Content) " << error);
+        return new ErrorNode();
     }
 
     /**
      * Parse the next package declaration.
      * @return new declared package
      */
-    Node NodeParser::nextPackage() {
+    Node* NodeParser::nextPackage() {
         // handle package declaration
         get(TokenType::Info, U"package");
         // get the name of the package
@@ -650,14 +691,14 @@ namespace Compiler {
         // ensure that the package is ended by a semicolon
         get(TokenType::Semicolon);
         println("package \"" << name << '"');
-        return Package(name);
+        return new Package(name);
     }
 
     /**
      * Parse the next package import.
      * @return new package import
      */
-    Node NodeParser::nextImport() {
+    Node* NodeParser::nextImport() {
         // handle package import
         get(TokenType::String, U"import");
         // get the name of the package
@@ -665,7 +706,7 @@ namespace Compiler {
         // ensure that the package is ended by a semicolon
         get(TokenType::Semicolon);
         println("import \"" << name << '"');
-        return Import(name);
+        return new Import(name);
     }
 
     /**

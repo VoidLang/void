@@ -166,6 +166,20 @@ namespace Compiler {
         }
     }
 
+    /**
+     * Determine if the type of this token is a literal token type.
+     * @return true if this token is a constant literal
+     */
+    bool Token::isLiteral() {
+        switch (type) {
+            case TokenType::String:
+            case TokenType::Character:
+            case TokenType::Boolean:
+                return true;
+            default:
+                return isNumber();
+        }
+    }
 
     /**
      * Make the token type printable to the output stream.

@@ -8,7 +8,7 @@ namespace Compiler {
     /**
      * Represents a node that holds a single value.
      */
-    class SingleValue : public Node {
+    class Value : public Node {
     public:
         /**
          * The held value of the node.
@@ -19,7 +19,7 @@ namespace Compiler {
          * Initialize the single value node.
          * @param value node value
          */
-        SingleValue(Token value);
+        Value(Token value);
 
         /**
          * Debug the content of the parsed node.
@@ -35,7 +35,7 @@ namespace Compiler {
         /**
          * The first expression of the operation.
          */
-        Node left;
+        Node* left;
 
         /**
          * The target operator of the operation.
@@ -45,7 +45,7 @@ namespace Compiler {
         /**
          * The second expression of the operation.
          */
-        Node right;
+        Node* right;
 
         /**
          * Initialize the operation.
@@ -53,7 +53,7 @@ namespace Compiler {
          * @param target target operator
          * @param right second expression
          */
-        Operation(Node left, UString target, Node right);
+        Operation(Node* left, UString target, Node* right);
 
         /**
          * Debug the content of the parsed node.

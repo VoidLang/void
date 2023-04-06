@@ -7,9 +7,12 @@ namespace Compiler {
             "Package",
             "Import",
             "Type",
-            "Local",
+            "LocalDeclare",
+            "LocalDeclareAssign",
+            "LocalAssign",
             "SingleValue",
             "Operation",
+            "MethodCall",
             "Error",
             "Finish"
         };

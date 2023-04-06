@@ -39,8 +39,22 @@ namespace Compiler {
 
         List<Parameter> parameters;
 
-        List<Node> body;
+        List<Node*> body;
 
-        MethodNode(List<UString> modifiers, List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node> body);
+        MethodNode(List<UString> modifiers, List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body);
+    };
+
+    class MethodCall : public Node {
+    public:
+        UString name;
+
+        List<Node*> arguments;
+
+        MethodCall(UString name, List<Node*> arguments);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
     };
 }

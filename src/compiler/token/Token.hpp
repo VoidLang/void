@@ -132,6 +132,12 @@ namespace Compiler {
          * @return true if this token is a number
          */
         bool isNumber();
+
+        /**
+         * Determine if the type of this token is a literal token type.
+         * @return true if this token is a constant literal
+         */
+        bool isLiteral();
     };
 
     /**

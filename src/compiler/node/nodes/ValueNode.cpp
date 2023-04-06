@@ -5,15 +5,15 @@ namespace Compiler {
      * Initialize the single value node.
      * @param value node value
      */
-    SingleValue::SingleValue(Token value) 
+    Value::Value(Token value)
         : Node(NodeType::SingleValue), value(value)
     { }
 
     /**
      * Debug the content of the parsed node.
      */
-    void SingleValue::debug() {
-        print("SingleValue{value=" << value << "}");
+    void Value::debug() {
+        print("Value{value=" << value << "}");
     }
 
     /**
@@ -22,7 +22,7 @@ namespace Compiler {
      * @param target target operator
      * @param right second expression
      */
-    Operation::Operation(Node left, UString target, Node right)
+    Operation::Operation(Node* left, UString target, Node* right)
         : Node(NodeType::Operation), left(left), target(target), right(right)
     { }
 
@@ -31,9 +31,9 @@ namespace Compiler {
      */
     void Operation::debug() {
         print("Operation{left=");
-        left.debug();
-        print(", operator=" << target);
-        right.debug();
+        left->debug();
+        print(", operator=" << target << ", right=");
+        right->debug();
         print("}");
     }
 }

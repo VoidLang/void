@@ -30,7 +30,7 @@ namespace Compiler {
          * Parse the next instruction node.
          * @return new instruction node
          */
-        Node next();
+        Node* next();
 
         /**
          * Get the current at the index.
@@ -108,49 +108,49 @@ namespace Compiler {
          * Parse the next package declaration.
          * @return new declared package
          */
-        Node nextPackage();
+        Node* nextPackage();
 
         /**
          * Parse the next package import.
          * @return new package import
          */
-        Node nextImport();
+        Node* nextImport();
 
         /**
          * Parse the next method node.
          * @return new method node
          */
-        Node nextMethod();
+        Node* nextMethod();
 
         /**
          * Parse the next type declaration.
          * @return new declared type
          */
-        Node nextType();
+        Node* nextType();
 
         /**
          * Parse the next type or method declaration.
          * @return new declared type or method
          */
-        Node nextTypeOrMethod();
+        Node* nextTypeOrMethod();
 
         /**
          * Parse the next content of a type, which might be a type, method or field.
          * @return new declared type, method or field
          */
-        Node nextContent();
+        Node* nextContent();
 
         /**
          * Parse the next expression instruction.
          * @return new expression
          */
-        Node nextExpression();
+        Node* nextExpression();
 
         /**
          * Parse the new local declaration.
          * @return new local declaration
          */
-        Node nextLocalDeclaration();
+        Node* nextLocalDeclaration();
 
         /**
          * Parse the generic types of a type.

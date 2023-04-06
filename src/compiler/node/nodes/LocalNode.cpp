@@ -1,31 +1,28 @@
 #include "LocalNode.hpp"
 
 namespace Compiler {
-    LocalNode::LocalNode(Token type, UString name, Option<Node> value)
-        : Node(NodeType::Local), type(type), name(name), value(value)
+    LocalDeclare::LocalDeclare(Token type, UString name)
+        : Node(NodeType::LocalDeclare), type(type), name(name)
     { }
 
     /**
      * Debug the content of the parsed node.
      */
-    void LocalNode::debug() {
-        print("LocalNode{type=" << type << ", name=" << name);
-        if (value.has_value()) {
-            print(", value=");
-            (*value).debug();
-        }
-        print("}");
+    void LocalDeclare::debug() {
+        print("LocalDeclare{type=" << type << ", name=" << name << "}");
     }
+
+
+    LocalDeclareAssign::LocalDeclareAssign(Token type, UString name, Node* value)
+        : Node(NodeType::LocalDeclareAssign), type(type), name(name), value(value)
+    { }
 
     /**
      * Debug the content of the parsed node.
      */
-    void LocalNode::debug2() {
-        print("LocalNode{type=" << type << ", name=" << name);
-        if (value.has_value()) {
-            print(", value=");
-            (*value).debug();
-        }
+    void LocalDeclareAssign::debug() {
+        print("LocalDeclareAssign{type=" << type << ", name=" << name << ", value=");
+        value->debug();
         print("}");
     }
 }

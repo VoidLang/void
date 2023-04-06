@@ -160,12 +160,12 @@ namespace Void {
         
         NodeParser parser(tokens);
         while (true) {
-            Compiler::Node node = parser.next();
+            Compiler::Node* node = parser.next();
 
-            if (node.type == NodeType::Error)
+            if (node->type == NodeType::Error)
                 error("Error!")
 
-            else if (node.type == NodeType::Finish)
+            else if (node->type == NodeType::Finish)
                 break;
         }
     }

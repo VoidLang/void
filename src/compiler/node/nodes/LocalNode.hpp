@@ -5,24 +5,34 @@
 #include "../Node.hpp"
 
 namespace Compiler {
-    class LocalNode : public Node {
+    class LocalDeclare : public Node {
     public:
         Token type;
 
         UString name;
 
-        Option<Node> value;
-
-        LocalNode(Token type, UString name, Option<Node> value);
+        LocalDeclare(Token type, UString name);
 
         /**
          * Debug the content of the parsed node.
          */
         void debug() override;
+    };
+
+
+    class LocalDeclareAssign : public Node {
+    public:
+        Token type;
+
+        UString name;
+
+        Node* value;
+
+        LocalDeclareAssign(Token type, UString name, Node* value);
 
         /**
          * Debug the content of the parsed node.
          */
-        void debug2();
+        void debug() override;
     };
 }
