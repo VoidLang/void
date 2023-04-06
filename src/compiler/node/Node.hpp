@@ -21,6 +21,8 @@ namespace Compiler {
         Group,
         Template,
         Lambda,
+        IndexFetch,
+        IndexAssign,
         Error,
         Finish
     };

@@ -102,4 +102,34 @@ namespace Compiler {
          */
         void debug() override;
     };
+
+    class IndexFetch : public Node {
+    public:
+        UString name;
+
+        Node* index;
+
+        IndexFetch(UString name, Node* index);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
+    };
+
+    class IndexAssign : public Node {
+    public:
+        UString name;
+
+        Node* index;
+
+        Node* value;
+
+        IndexAssign(UString name, Node* index, Node* value);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
+    };
 }

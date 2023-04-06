@@ -13,7 +13,8 @@ namespace Compiler {
      * Debug the content of the parsed node.
      */
     void Value::debug() {
-        print("Value{value=" << value << "}");
+        // print("Value{value=" << value << "}");
+        print(value);
     }
 
     /**
@@ -82,5 +83,34 @@ namespace Compiler {
      */
     void Template::debug() {
         print("Template{value=" << value << "}");
+    }
+
+    IndexFetch::IndexFetch(UString name, Node* index)
+        : Node(NodeType::IndexFetch), name(name), index(index)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void IndexFetch::debug() {
+        print("IndexFetch{name=" << name << ", index=");
+        index->debug();
+        print("}");
+    }
+
+    IndexAssign::IndexAssign(UString name, Node* index, Node* value)
+        : Node(NodeType::IndexAssign), name(name), index(index), value(value)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void IndexAssign::debug() {
+        print("IndexAssign{name=" << name << ", index=");
+        index->debug();
+        print(", value=");
+        value->debug();
+        print("}");
+        
     }
 }

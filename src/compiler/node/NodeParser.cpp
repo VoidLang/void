@@ -722,7 +722,7 @@ namespace Compiler {
             // handle single value expression, in which case the local variable is declared, but is not initialized
             // let myUninitializedVariable;
             //                            ^ the (auto-inserted) semicolon indicates, that the variable is declared, but is not yet assigned with a value
-            if (peek().is(TokenType::Semicolon)) 
+            if (peek().is(TokenType::Semicolon))
                 return new Value(value);
 
             // handle operation between two expressions
@@ -786,7 +786,7 @@ namespace Compiler {
             // handle group closing
             // let val = (1 + 2) / 3
             //                 ^ the close parenthesis indicates, that we are not expecting any value after the current token
-            else if (peek().is(TokenType::Close)) 
+            else if (peek().is(TokenType::Close))
                 return new Value(value);
 
             // handle argument list or array fill
@@ -794,6 +794,45 @@ namespace Compiler {
             //        ^ the comma indicates, that the expression has been terminated
             else if (peek().is(TokenType::Comma))
                 return new Value(value);
+
+            // handle index closing or array end
+            // foo[10] = 404
+            //       ^ the closing square bracket indicates, that the expression has been terminatedd
+            else if (peek().is(TokenType::Stop))
+                return new Value(value);
+
+            // handle indexing
+            else if (peek().is(TokenType::Start)) {
+                // skip the '[' sign
+                get();
+                // parse the index value
+                Node* index = nextExpression();
+                // handle the ']' after the index
+                get(TokenType::Stop);
+                
+                // check if the value is assigned for the index
+                if (peek().is(TokenType::Operator, U"=")) {
+                    // skip the '=' sign
+                    get();
+                    // parse the value of index index assignation
+                    Node* indexValue = nextExpression();
+
+                    // handle the semicolon after index assignation
+                    if (peek().is(TokenType::Semicolon))
+                        get();
+
+                    return new IndexAssign(value.value, index, indexValue);
+                }
+
+                // handle operation after an index fetch
+                if (peek().is(TokenType::Operator)) {
+                    UString target = get().value;
+                    return fixOperationTree(new Operation(new IndexFetch(value.value, index), target, nextExpression()));
+                }
+
+                // there is no value assignation, handle index fetch
+                return new IndexFetch(value.value, index);
+            }
         }
 
         // TODO handle local variable assignation
