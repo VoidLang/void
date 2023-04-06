@@ -630,6 +630,7 @@ namespace Compiler {
                 // baz("John Doe")
                 //               ^ the close parenthesis indicates, that the method call has been ended
                 get(TokenType::Close);
+
                 // check if the method call is used as a statement or isn't expecting to be passed in a nested context
                 // let result = calculateHash("my input"); 
                 //                                       ^ the (auto-inserted) semicolon indicates, that the method call does not have any
@@ -705,7 +706,8 @@ namespace Compiler {
         // skip the semicolon after the declaration
         // let variable = 100;
         //                   ^ the (auto-inserted) semicolon indicates, that the assigning variable declaration has been ended
-        get(TokenType::Semicolon);
+        if (peek().is(TokenType::Semicolon))
+            get();
 
         return new LocalDeclareAssign(type, name, value);
     }
@@ -725,17 +727,18 @@ namespace Compiler {
         Node* value = nextExpression();
 
         // skip the semicolon after the declaration
-        get(TokenType::Semicolon);
+        if (peek().is(TokenType::Semicolon))
+            get();
 
         return new LocalAssign(name, value);
     }
 
     /**
-         * Check if the first operator has a predecende priority over the second operator.
-         * @param first first operator to check
-         * @param second second operator to check
-         * @return true if the first operator has higher precedence than the second one
-         */
+     * Check if the first operator has a predecende priority over the second operator.
+     * @param first first operator to check
+     * @param second second operator to check
+     * @return true if the first operator has higher precedence than the second one
+     */
     bool NodeParser::hasPrecedence(UString first, UString second) {
          return OPERATION_INFO[first].first > OPERATION_INFO[second].first ||
             (OPERATION_INFO[first].first == OPERATION_INFO[second].first &&

@@ -17,6 +17,14 @@ namespace Compiler {
     }
 
     /**
+     * Build bytecode for this node.
+     * @param bytecode result bytecode list
+     */
+    void Value::build(List<String>& bytecode) {
+
+    }
+
+    /**
      * Initialize the operation.
      * @param left first expression
      * @param target target operator
@@ -25,6 +33,13 @@ namespace Compiler {
     Operation::Operation(Node* left, UString target, Node* right)
         : Node(NodeType::Operation), left(left), target(target), right(right)
     { }
+
+    /**
+     * Build bytecode for this node.
+     * @param bytecode result bytecode list
+     */
+    void Operation::build(List<String>& bytecode) {
+    }
 
     /**
      * Debug the content of the parsed node.
@@ -48,5 +63,13 @@ namespace Compiler {
         print("Group{value=");
         value->debug();
         print("}");
+    }
+
+    /**
+     * Build bytecode for this node.
+     * @param bytecode result bytecode list
+     */
+    void Group::build(List<String>& bytecode) {
+
     }
 }

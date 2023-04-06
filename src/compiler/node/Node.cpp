@@ -32,7 +32,15 @@ namespace Compiler {
      * Debug the content of the parsed node.
      */
     void Node::debug() {
-        print("None");
+        print("Not implemented (" << type << ")");
+    }
+
+    /**
+     * Build bytecode for this node.
+     * @param bytecode result bytecode list
+     */
+    void Node::build(List<String>& bytecode) {
+        println("Building not implemented for " << type);
     }
 
     /**

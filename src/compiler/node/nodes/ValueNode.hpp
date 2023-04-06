@@ -25,6 +25,12 @@ namespace Compiler {
          * Debug the content of the parsed node.
          */
         void debug() override;
+
+        /**
+         * Build bytecode for this node.
+         * @param bytecode result bytecode list
+         */
+        void build(List<String>& bytecode) override;
     };
 
     /**
@@ -59,6 +65,12 @@ namespace Compiler {
          * Debug the content of the parsed node.
          */
         void debug() override;
+
+        /**
+         * Build bytecode for this node.
+         * @param bytecode result bytecode list
+         */
+        void build(List<String>& bytecode) override;
     };
 
     class Group : public Node {
@@ -71,5 +83,11 @@ namespace Compiler {
          * Debug the content of the parsed node.
          */
         void debug() override;
+
+        /**
+         * Build bytecode for this node.
+         * @param bytecode result bytecode list
+         */
+        void build(List<String>& bytecode) override;
     };
 }

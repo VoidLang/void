@@ -264,5 +264,8 @@
     <Filter Include="compiler\node\nodes">
       <UniqueIdentifier>{4570172b-fdb1-4af5-9015-45234f192a6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="compiler\node\builder">
+      <UniqueIdentifier>{c9ed9a22-dfd7-4a29-8b38-01922a1957fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

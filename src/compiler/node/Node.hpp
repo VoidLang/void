@@ -46,6 +46,12 @@ namespace Compiler {
          * Debug the content of the parsed node.
          */
         virtual void debug();
+
+        /**
+         * Build bytecode for this node.
+         * @param bytecode result bytecode list
+         */
+        virtual void build(List<String>& bytecode);
     };
     
     /**
