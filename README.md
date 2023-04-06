@@ -122,7 +122,7 @@ In the last example, a tuple is returned.
 A tuple can hold values of any length and any type. 
 To access these values you can use a feature called tuple destruction.
 ```
-```rust
+```js
 let (code, message) = fetchURL("google.com")
 println($"Webserver responded with {code} status code")
 ```
@@ -147,7 +147,7 @@ Member names are specified inside the method return type declaration.
 ```
 In this case, you can access these values by their names.
 ```
-```rust
+```js
 let result = authenticate("admin", "12345")
 if (result.success) {
     println("Authenticated.")
