@@ -31,7 +31,8 @@ void main() {
 
 ### Variable declaration
 ```
-You can declare variables using the "let" keyword. It automatically detects the type of the variable, but type can be also declared explicitly.
+You can declare variables using the "let" keyword. 
+It automatically detects the type of the variable, but type can be also declared explicitly.
 ```
 ```rust
 let value = 100
@@ -43,7 +44,9 @@ In case of explicit type definition:
 float value = 3.5
 ```
 ```
-As you may notice, semicolons are not required. The compiler automatically places them after the end of lines, when it is required. This allows the chaining syntax, unlike many in case of many languages.
+As you may notice, semicolons are not required. 
+The compiler automatically places them after the end of lines, when it is required. 
+This allows the chaining syntax, unlike many in case of many languages.
 ```
 ```cpp
 database
@@ -52,22 +55,28 @@ database
     .getOrThrow(err)
 ```
 ```
-In case of putting multiple statements in one line, you can separate them with putting a semicolon between them.
+In case of putting multiple statements in one line, 
+you can separate them with putting a semicolon between them.
 ```
 ```java
 int f = 0; float f = 10.0 
 ```
 ```
-Although it is possible in Void, it is considered a bad practice of coding, as it can possibly overcomplicate a line of code. You may put only one statement in a line.
+Although it is possible in Void, it is considered a bad practice of coding, 
+as it can possibly overcomplicate a line of code. 
+You may put only one statement in a line.
 ```
 
 
 ### Variable redeclaration
 ```
-Normally languages doesn't let you declare variables twice, but as for some other languages such as Void, lets you to do that.
+Normally languages doesn't let you declare variables twice, 
+but as for some other languages such as Void, lets you to do that.
 ```
 ```
-This is becuase in many cases you need to swap between variable types for a value, and having too much variables for a single value, or having long lines of type conversion is both considered a bad practice.
+This is becuase in many cases you need to swap between variable types for a value, 
+and having too much variables for a single value, 
+or having long lines of type conversion is both considered a bad practice.
 ```
 ```rust
 // bad code
@@ -85,7 +94,8 @@ let balance = $"{balance} USD"
 ### Multi-returning
 ```
 Void lets you have methods return multiple variables at once.
-This allows you to have more simple codes, without the need of making structs holding multiple values for return.
+This allows you to have more simple codes, 
+without the need of making structs holding multiple values for return.
 ```
 ```java
 // overcomplicated code
@@ -107,14 +117,17 @@ HttpResponse fetchURL(String url) {
 }
 ```
 ```
-In the last example, a tuple is returned. A tuple can hold values of any length and any type. To access these values you can use a feature called tuple destruction.
+In the last example, a tuple is returned. 
+A tuple can hold values of any length and any type. 
+To access these values you can use a feature called tuple destruction.
 ```
 ```rust
 let (code, message) = fetchURL("google.com")
 println($"Webserver responded with {code} status code")
 ```
 ```
-You can also access these values without destructing the tuple. You need to specify the index of the tuple you want to retrieve.
+You can also access these values without destructing the tuple. 
+You need to specify the index of the tuple you want to retrieve.
 ```
 ```rust
 let response = fetchURL("google.com")
@@ -122,7 +135,8 @@ let code = response.0
 let message = response.1
 ```
 ```
-Void allows you to name tuple members. Member names are specified inside the method return type declaration.
+Void allows you to name tuple members. 
+Member names are specified inside the method return type declaration.
 ```
 ```java
 (boolean success, String token) authenticate(String username, String password) {
@@ -206,7 +220,8 @@ void drawPoint(Point point) { /* do something */ }
 drawPoint({ x: 30, y: 40 })
 ```
 ```
-You can create classes which only show you what methods they have, but they don't have an actual implementations.
+You can create classes which only show you what methods they have, 
+but they don't have an actual implementations.
 ```
 ```java
 interface Car {
@@ -259,7 +274,8 @@ Void features two types of access modifier declarations.
 ```
 ```
 You can specify access modifiers separately for each methods and fields.
-However this is not a good practise, as you are making method declarations much longer by having to put these manually everywhere.
+However this is not a good practise, as you are making method declarations 
+much longer by having to put these manually everywhere.
 ```
 ```cpp
 public static void foo() {
@@ -271,7 +287,8 @@ struct Point {
 }
 ```
 ```
-Alternatively, you can use "modifier blocks", which allows you to set the visibility modifiers of a section of code.
+Alternatively, you can use "modifier blocks", 
+which allows you to set the visibility modifiers of a section of code.
 ```
 ```cpp
 class Entity {
@@ -343,7 +360,8 @@ let car = default(Car) // null
 ```
 ```
 Void features a system, which allows to create custom default values for your own class types.
-You should put a "default" modifier before the class declaration, and a default() method must be declared as well.
+You should put a "default" modifier before the class declaration, 
+and a default() method must be declared as well.
 ```
 ```java
 default class Credentials {
@@ -361,7 +379,8 @@ default class Credentials {
 // initialize credentials to the default value 
 let credentials = default(Credentials ) // { username: "admin", password: "12345" }
 
-// you can use the default function without an explicit type, if the variable's type is defined explicitly
+// you can use the default function without an explicit type, 
+if the variable's type is defined explicitly
 Credentials credentials = default 
 
 // a simplfied syntax is also available
@@ -390,7 +409,9 @@ person?.entity?.motion?.move()
 
 ### Static variables
 ```
-By default, variables live only in the scope of a method. Static variables however provide a way to statically store data in the method, that is accessible for further method calls.
+By default, variables live only in the scope of a method. 
+Static variables however provide a way to statically store data in the method,
+that is accessible for further method calls.
 ```
 ```ts
 int getIncrementId() {
@@ -421,7 +442,8 @@ switch (status) {
 }
 ```
 ```
-However in most cases, this old design forces us to write a lot of unnecessary code, such as always having to write "break" after each cases.
+However in most cases, this old design forces us to write a lot of unnecessary code, 
+such as always having to write "break" after each cases.
 Void's echanted switch allows you to simplify switch blocks and use them as direct expressions.
 ```
 ```java
@@ -469,7 +491,8 @@ int code = getStatus(SUCCESS)
 
 ### Method pre-processing
 ```
-Void allows you to merge an instruction with the return keyword. Therefore you don't need two extra lines to do a negated method guard.
+Void allows you to merge an instruction with the return keyword. 
+Therefore you don't need two extra lines to do a negated method guard.
 ```
 ```java
 // previously you had to use two lines of code to return
@@ -492,7 +515,8 @@ if (!p.hasPermission("use"))
 
 ### Method post-processing
 ```
-In Void, you can queue post tasks for the method, that are going to be executed, when the method returns.
+In Void, you can queue post tasks for the method, 
+that are going to be executed, when the method returns.
 This can be used to prevent duplicating instructions whenever returning.
 ```
 ```js
@@ -518,7 +542,8 @@ void myThreadSafeMethod() {
 }
 ```
 ```
-In Void, you can replace these duplicates using the "defer" keyword. Deferred instructions will be executed whenever the method returns.
+In Void, you can replace these duplicates using the "defer" keyword. 
+Deferred instructions will be executed whenever the method returns.
 ```
 ```js
 void myThreadSafeMethod() {
@@ -539,7 +564,8 @@ void myThreadSafeMethod() {
 
 ### Conditional variables
 ```
-Conditional variables are local variables that only exist in the scope of the condition. This prevents keeping unused object in the memory, and unnecessary variable name reservation.
+Conditional variables are local variables that only exist in the scope of the condition. 
+This prevents keeping unused object in the memory, and unnecessary variable name reservation.
 ```
 ```js
 // previously you had to code something like this
@@ -554,7 +580,8 @@ if (let created = createFolder("folder"); !created)
 	return error
 ```
 ```
-When checking the isntance of objects, in older code practices, you had to first check the instance, then manually cast the value to the new type.
+When checking the isntance of objects, in older code practices, 
+you had to first check the instance, then manually cast the value to the new type.
 ```
 ```js
 if (animal is Parrot) {
@@ -599,7 +626,8 @@ if (condition)
 
 ### Multithreading
 ```
-Void features an async value retrieval system. In other programming languages, you might have seen these ad promises, tasks or futures.
+Void features an async value retrieval system. In other programming languages, 
+you might have seen these ad promises, tasks or futures.
 ```
 ```js
 Future<User> getUser() {
@@ -609,7 +637,8 @@ Future<User> getUser() {
 let user = getUser().get()
 ```
 ```
-Although Void lets you to explicitly declare future types, you should rather use the async/await syntax.
+Although Void lets you to explicitly declare future types, 
+you should rather use the async/await syntax.
 This automatically wraps the return type to be a Future, and calls get().
 ```
 ```js
@@ -633,7 +662,8 @@ thread.start()
 
 ### JSON in code
 ```
-Void has a built-in JSON serializer, which allows you to directly map Void objects to JSON and vice versa.
+Void has a built-in JSON serializer, which allows you to directly 
+map Void objects to JSON and vice versa.
 ```
 ```rust
 // object to string
@@ -669,7 +699,8 @@ println($"Welcome, {user.name}")
 
 ### HTML in code
 ```
-Void lets you have HTML code inside source code. By default, tags are mapped with Void's built-in tag system, however this can be extended.
+Void lets you have HTML code inside source code. 
+By default, tags are mapped with Void's built-in tag system, however this can be extended.
 ```
 ```jsx
 let page = @Html {
@@ -704,7 +735,8 @@ let test = getSomeMagicValue()
 
 ### Interaction with native code
 ```
-Void allows you to call native library methods. It also has a framework that makes it possible to interace with Void from native context.
+Void allows you to call native library methods. 
+It also has a framework that makes it possible to interace with Void from native context.
 ```
 ```java
 // get the implementation of the method from native code
