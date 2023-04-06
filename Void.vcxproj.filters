@@ -117,6 +117,9 @@
     <ClInclude Include="src\compiler\node\nodes\ValueNode.hpp">
       <Filter>compiler\node\nodes</Filter>
     </ClInclude>
+    <ClInclude Include="src\compiler\node\nodes\ControlFlow.hpp">
+      <Filter>compiler\node\nodes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -227,6 +230,9 @@
       <Filter>compiler\node\nodes</Filter>
     </ClCompile>
     <ClCompile Include="src\compiler\node\nodes\ValueNode.cpp">
+      <Filter>compiler\node\nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\node\nodes\ControlFlow.cpp">
       <Filter>compiler\node\nodes</Filter>
     </ClCompile>
   </ItemGroup>

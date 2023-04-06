@@ -19,6 +19,7 @@ namespace Compiler {
             "Lambda",
             "IndexFetch",
             "IndexAssign",
+            "Return",
             "Error",
             "Finish"
         };

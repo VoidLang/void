@@ -5,6 +5,7 @@
 #include "nodes/TypeNode.hpp"
 #include "nodes/LocalNode.hpp"
 #include "nodes/ValueNode.hpp"
+#include "nodes/ControlFlow.hpp"
 
 using namespace Void;
 
@@ -834,6 +835,28 @@ namespace Compiler {
                 return new IndexFetch(value.value, index);
             }
         }
+
+        // handle return statement
+        else if (peek().is(TokenType::Expression, U"return")) {
+            // skip the "return" keyword
+            get();
+            
+            // check if the return statement has no value to return
+            if (peek().is(TokenType::Semicolon)) {
+                get();
+                return new Return();
+            }
+            
+            // parse the value to be retured
+            Node* value = nextExpression();
+
+            // handle the semicolon after return statement
+            if (peek().is(TokenType::Semicolon))
+                get();
+
+            return new Return(value);
+        }
+
 
         // TODO handle local variable assignation
         // handle unexpected token
