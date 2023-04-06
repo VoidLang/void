@@ -571,6 +571,31 @@ namespace Compiler {
             // let res = (1 + 2 + 3) / 4
             //            ^^^^^^^^^ the nodes between parenthesis are the content of the node group
             Node* value = nextExpression();
+
+            // handle tuples
+            if (peek().is(TokenType::Comma)) {
+                // append the first value of the group
+                List<Node*> members;
+                members.push_back(value);
+
+                // parse the members of the tuple
+            parseMember:
+                // skip the comma token
+                get();
+
+                // parse the next member of the tuple
+                Node* member = nextExpression();
+                members.push_back(member);
+
+                // check if there are more members or the tuple
+                if (peek().is(TokenType::Comma))
+                    goto parseMember;
+
+                // handle tuple ending
+                get(TokenType::Close);
+
+                return new Tuple(members);
+            }
             
             // handle the group closing
             // let test = (7 - 1)

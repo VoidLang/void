@@ -111,6 +111,22 @@ namespace Compiler {
         print(", value=");
         value->debug();
         print("}");
-        
+    }
+
+    Tuple::Tuple(List<Node*> members)
+        : Node(NodeType::Tuple), members(members)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void Tuple::debug() {
+        print("Tuple(");
+        for (uint i = 0; i < members.size(); i++) {
+            members[i]->debug();
+            if (i < members.size() - 1)
+                print(", ");
+        }
+        print(")");
     }
 }

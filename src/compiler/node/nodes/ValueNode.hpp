@@ -132,4 +132,16 @@ namespace Compiler {
          */
         void debug() override;
     };
+
+    class Tuple : public Node {
+    public:
+        List<Node*> members;
+
+        Tuple(List<Node*> members);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
+    };
 }

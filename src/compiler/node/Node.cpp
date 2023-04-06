@@ -21,6 +21,7 @@ namespace Compiler {
             "IndexAssign",
             "Return",
             "Defer",
+            "Tuple",
             "Error",
             "Finish"
         };
