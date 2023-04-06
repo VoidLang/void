@@ -572,7 +572,7 @@ namespace Compiler {
             //         ^ the operator indicates, that the method call should be groupped with the expression afterwards
             if (peek().is(TokenType::Operator)) {
                 UString target = get().value;
-                return new Operation(new Group(value), target, nextExpression());
+                return fixOperationTree(new Operation(new Group(value), target, nextExpression()));
             }
             return new Group(value);
         }
@@ -598,7 +598,7 @@ namespace Compiler {
             //                 the two operands are groupped together by an Operation node
             else if (peek().is(TokenType::Operator)) {
                 UString target = get().value;
-                return new Operation(new Value(value), target, nextExpression());
+                return fixOperationTree(new Operation(new Value(value), target, nextExpression()));
             }
 
             // handle method call
@@ -643,7 +643,7 @@ namespace Compiler {
                 //                  ^ the operator indicates, that the method call should be groupped with the expression afterwards
                 if (peek().is(TokenType::Operator)) {
                     UString target = get().value;
-                    return new Operation(new MethodCall(value.value, arguments), target, nextExpression());
+                    return fixOperationTree(new Operation(new MethodCall(value.value, arguments), target, nextExpression()));
                 }
 
                 return new MethodCall(value.value, arguments);
@@ -728,6 +728,63 @@ namespace Compiler {
         get(TokenType::Semicolon);
 
         return new LocalAssign(name, value);
+    }
+
+    /**
+         * Check if the first operator has a predecende priority over the second operator.
+         * @param first first operator to check
+         * @param second second operator to check
+         * @return true if the first operator has higher precedence than the second one
+         */
+    bool NodeParser::hasPrecedence(UString first, UString second) {
+         return OPERATION_INFO[first].first > OPERATION_INFO[second].first ||
+            (OPERATION_INFO[first].first == OPERATION_INFO[second].first &&
+                OPERATION_INFO[first].second == 0);
+    }
+
+    /**
+     * Fix the order of the operation sequences in the parsed value node.
+     * @param root root value expression node
+     * @return fixed node operations
+     */
+    Node* NodeParser::fixOperationTree(Node* node) {
+        // if the node is not an operation, return it as is
+        if (dynamic_cast<Operation*>(node) == nullptr) {
+            return node;
+        }
+
+        Operation* op = static_cast<Operation*>(node);
+        // recursively correct the order of the left and right nodes
+        op->left = fixOperationTree(op->left);
+        op->right = fixOperationTree(op->right);
+
+        // check if the current operator has lower precedence than the operator
+        // of its right child
+        if (op->right != nullptr &&
+            dynamic_cast<Operation*>(op->right) != nullptr &&
+            hasPrecedence(op->target, static_cast<Operation*>(op->right)->target)) {
+            // perform a right rotation
+            Node* tmp = op->right;
+            op->right = static_cast<Operation*>(tmp)->left;
+            static_cast<Operation*>(tmp)->left = op;
+            return tmp;
+        }
+
+        // check if the current operator has lower or equal precedence than the
+        // operator of its left child, and the left child is also an operation
+        if (op->left != nullptr &&
+            dynamic_cast<Operation*>(op->left) != nullptr &&
+            hasPrecedence(op->target, static_cast<Operation*>(op->left)->target) &&
+            OPERATION_INFO[op->target].second == 0) {
+            // perform a left rotation
+            Node* tmp = op->left;
+            op->left = static_cast<Operation*>(tmp)->right;
+            static_cast<Operation*>(tmp)->right = op;
+            return tmp;
+        }
+
+        // the current order is correct, so return the node as it is
+        return node;
     }
 
     /**

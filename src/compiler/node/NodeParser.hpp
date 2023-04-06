@@ -5,6 +5,15 @@
 #include "Node.hpp"
 
 namespace Compiler {
+    static TreeMap<UString, Pair<int, int>> OPERATION_INFO = {
+        {U"+", {1, 0}},
+        {U"-", {1, 0}},
+        {U"*", {2, 0}},
+        {U"/", {2, 0}},
+        {U"%", {2, 0}},
+        {U"^", {3, 1}}
+    };
+
     /**
      * Represents a parser that transforms raw tokens to instructions.
      */
@@ -157,6 +166,21 @@ namespace Compiler {
          * @return new local assignation
          */
         Node* nextLocalAssignation();
+
+        /**
+         * Check if the first operator has a predecende priority over the second operator.
+         * @param first first operator to check
+         * @param second second operator to check
+         * @return true if the first operator has higher precedence than the second one
+         */
+        bool hasPrecedence(UString first, UString second);
+
+        /**
+         * Fix the order of the operation sequences in the parsed value node.
+         * @param root root value expression node
+         * @return fixed node operations
+         */
+        Node* fixOperationTree(Node* root);
 
         /**
          * Parse the generic types of a type.

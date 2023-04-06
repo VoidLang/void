@@ -27,9 +27,17 @@ typedef std::any Object;
 // maps
 
 #include <unordered_map>
+#include <map>
+#include <deque>
 
 template <typename K, typename V>
 using Map = std::unordered_map<K, V>;
+
+template <typename K, typename V>
+using TreeMap = std::map<K, V>;
+
+template <typename K, typename V>
+using Pair = std::pair<K, V>;
 
 // lists
 
