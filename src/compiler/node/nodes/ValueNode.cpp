@@ -72,4 +72,15 @@ namespace Compiler {
     void Group::build(List<String>& bytecode) {
 
     }
+
+    Template::Template(Token value)
+        : Node(NodeType::Template), value(value)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void Template::debug() {
+        print("Template{value=" << value << "}");
+    }
 }

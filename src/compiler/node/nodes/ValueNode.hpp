@@ -90,4 +90,16 @@ namespace Compiler {
          */
         void build(List<String>& bytecode) override;
     };
+
+    class Template : public Node {
+    public:
+        Token value;
+
+        Template(Token value);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
+    };
 }

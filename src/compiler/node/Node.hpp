@@ -18,6 +18,7 @@ namespace Compiler {
         Operation,
         MethodCall,
         Group,
+        Template,
         Error,
         Finish
     };

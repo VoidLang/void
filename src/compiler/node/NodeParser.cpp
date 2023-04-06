@@ -552,7 +552,7 @@ namespace Compiler {
         // handle local variable declaration
         // let myVariable = 100
         // ^^^ the "let" keyword indicates that, the local variable declaration has been started
-        if (peek().is(TokenType::Type, U"let"))
+        if (peek().is(TokenType::Type))
             return nextLocalDeclaration();
 
         // handle variable assignation (TODO and non-primitive local variable declaration)
@@ -577,10 +577,26 @@ namespace Compiler {
             return new Group(value);
         }
 
+        // handle string template
+        else if (peek().is(TokenType::Operator, U"$")) {
+            // skip the '$' sign
+            get();
+            // get the string value of the template
+            Token value = get(TokenType::String);
+
+            // handle operation after template string
+            if (peek().is(TokenType::Operator)) {
+                UString target = get().value;
+                return fixOperationTree(new Operation(new Template(value), target, nextExpression()));
+            }
+
+            return new Template(value);
+        }
+
         // handle literal constant or identifier
         // let name = "John Doe"
         //            ^^^^^^^^^^ the literal token indicates, that a value is expected
-        else if (peek().isLiteral() || peek().is(TokenType::Identifier)) {
+        else if (peek().isLiteral() || peek().is(2, TokenType::Identifier)) {
             // get the value constant
             // let age = 32
             //           ^^ get the actual value of the literal
