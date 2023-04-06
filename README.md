@@ -78,14 +78,15 @@ This is becuase in many cases you need to swap between variable types for a valu
 and having too much variables for a single value, 
 or having long lines of type conversion is both considered a bad practice.
 ```
-```rust
+```java
 // bad code
 int balance = database.getUser("username").balance
 String balanceStr = $"{balance} USD"
 
 // also bad code
 String balance = String.from(database.getUser("username").balance) + " USD"
-
+```
+```rust
 // simplified code with variable redeclaration
 let balance = database.getUser("username").balance
 let balance = $"{balance} USD"
@@ -97,7 +98,7 @@ Void lets you have methods return multiple variables at once.
 This allows you to have more simple codes, 
 without the need of making structs holding multiple values for return.
 ```
-```java
+```c#
 // overcomplicated code
 struct HttpResponse {
     public int code
@@ -138,7 +139,7 @@ let message = response.1
 Void allows you to name tuple members. 
 Member names are specified inside the method return type declaration.
 ```
-```java
+```c#
 (boolean success, String token) authenticate(String username, String password) {
     return (true, "Authenticated.")
 }
@@ -167,7 +168,7 @@ byte, short, int, long, float, double
 ```
 And their unsigned version.
 ```
-```
+```c
 ubyte, ushort, uint, ulong, ufloat, udouble
 ```
 
@@ -195,7 +196,7 @@ class Car {
     String type
     int speed
 
-	void move() {
+    void move() {
         println("Moving...")
     }
 }
@@ -245,8 +246,8 @@ You can have classes with constant members.
 ```java
 enum MimeType {
     PLAIN_TEXT("text/plain"),
-    IMAGE("image/png")
-    VIDEO("video/mp4");
+    IMAGE("image/png"),
+    VIDEO("video/mp4")
 
     String data;
 
@@ -277,7 +278,7 @@ You can specify access modifiers separately for each methods and fields.
 However this is not a good practise, as you are making method declarations 
 much longer by having to put these manually everywhere.
 ```
-```cpp
+```c#
 public static void foo() {
 	println("bar")
 }
@@ -316,7 +317,8 @@ You can destruct object members in order to make them more accessible in the cod
 struct Point {
     int x, y
 }
-
+```
+```js
 let point = new Point { x: 10, y: -2 }
 let { x, y } = point
 
@@ -365,14 +367,14 @@ and a default() method must be declared as well.
 ```
 ```java
 default class Credentials {
-	String username, password
+    String username, password
 	
-	default() {
-		return {
-			username: "admin",
-			password: "12345"
-		}
-	}
+    default() {
+        return {
+            username: "admin",
+            password: "12345"
+        }
+    }
 }
 ```
 ```rust
@@ -415,8 +417,8 @@ that is accessible for further method calls.
 ```
 ```ts
 int getIncrementId() {
-	static let counter = 0
-	return counter++
+    static let counter = 0
+    return counter++
 }
 
 getIncrementId() // returns 0
@@ -431,14 +433,14 @@ In Void you can use the old switch syntax.
 ```
 ```java
 switch (status) {
-	case 200:
-		println("ok")
-		break
-	case 400:
-		println("error")
-		break
-	default:
-		println("unrecognized")
+    case 200:
+        println("ok")
+        break
+    case 400:
+        println("error")
+        break
+    default:
+        println("unrecognized")
 }
 ```
 ```
@@ -448,21 +450,21 @@ Void's echanted switch allows you to simplify switch blocks and use them as dire
 ```
 ```java
 enum Status {
-	SUCCESS,
-	FAILED,
-	UNKNOWN
+    SUCCESS,
+    FAILED,
+    UNKNOWN
 }
 
 switch (code) {
-	200 -> println("success")
-	400 -> println("failed")
-	else -> println("unknown")
+    200 -> println("success")
+    400 -> println("failed")
+    else -> println("unknown")
 }
 
 // you can merge cases as well
 switch (status) {
-	FAILED|UNKNOWN -> println("Unable to authenticate")
-	SUCCESS -> println("Authenticated")
+    FAILED|UNKNOWN -> println("Unable to authenticate")
+    SUCCESS -> println("Authenticated")
 }
 ```
 
@@ -472,16 +474,16 @@ You can use code blocks as expressions, including loops and switches.
 ```
 ```js
 let status = switch (code) {
-	200 -> SUCCESS
-	400 -> FAILED
-	else -> UNKNOWN
+    200 -> SUCCESS
+    400 -> FAILED
+    else -> UNKNOWN
 }
 ```
 ```java
 Status getStatus(int code) = switch (code) {
-	case SUCCESS -> 200
-	case FAILED -> 400
-	else -> 0
+    case SUCCESS -> 200
+    case FAILED -> 400
+    else -> 0
 }
 
 int code = getStatus(SUCCESS)
@@ -494,20 +496,20 @@ int code = getStatus(SUCCESS)
 Void allows you to merge an instruction with the return keyword. 
 Therefore you don't need two extra lines to do a negated method guard.
 ```
-```java
+```c#
 // previously you had to use two lines of code to return
 void handleCommand(Player p, String command) {
-	if (!p.hasPermission("use")) {
-		p.sendMessage("no perms")
-		return
-	}
-	// handle the command
+    if (!p.hasPermission("use")) {
+        p.sendMessage("no perms")
+        return
+    }
+    // handle the command
 }
 ```
 ```java
 // Void's syntax allows you to merge these two lines together
 if (!p.hasPermission("use"))
-	return p.sendMessage("no perms")
+    return p.sendMessage("no perms")
 // note that handleCommand returns void, so there are no conflicts returning something.
 // the return value of p.sendMessage (assuming it has one) is ignored
 ```
@@ -523,22 +525,22 @@ This can be used to prevent duplicating instructions whenever returning.
 // prevously you had to do something like this
 // as you can see you need to call guard.unlock() 3 times
 void myThreadSafeMethod() {
-	let guard = // get some lock for concurrency
-	guard.lock()
+    let guard = // get some lock for concurrency
+    guard.lock()
 
-	if (myObject.someError) {
-		guard.unlock()
-		return
-	}
+    if (myObject.someError) {
+        guard.unlock()
+        return
+    }
 
-	if (myObject.someOtherError) {
-		guard.unlock()
-		return
-	}
+    if (myObject.someOtherError) {
+        guard.unlock()
+        return
+    }
 
-	myObject.doSomething()
+    myObject.doSomething()
 
-	guard.unlock()
+    guard.unlock()
 }
 ```
 ```
@@ -547,17 +549,17 @@ Deferred instructions will be executed whenever the method returns.
 ```
 ```js
 void myThreadSafeMethod() {
-	let guard = // get some lock for concurrency
-	guard.lock()
-	defer guard.unlock()
+    let guard = // get some lock for concurrency
+    guard.lock()
+    defer guard.unlock()
 
-	if (myObject.someError) 
-		return
+    if (myObject.someError) 
+        return
 
-	if (myObject.someOtherError) 
-		return
-	
-	myObject.doSomething()
+    if (myObject.someOtherError) 
+        return
+
+    myObject.doSomething()
 }
 ```
 
@@ -571,13 +573,12 @@ This prevents keeping unused object in the memory, and unnecessary variable name
 // previously you had to code something like this
 let created = createFolder("myFolder")
 if (!created)
-	return error
-	
+    return error
 ```
 ```js
 // Void allows you to simplify this code the following way
 if (let created = createFolder("folder"); !created)
-	return error
+    return error
 ```
 ```
 When checking the isntance of objects, in older code practices, 
@@ -585,8 +586,8 @@ you had to first check the instance, then manually cast the value to the new typ
 ```
 ```js
 if (animal is Parrot) {
-	let parrot = (Parrot) animal
-	parrot.fly()
+    let parrot = (Parrot) animal
+    parrot.fly()
 }
 ```
 ```
@@ -594,7 +595,7 @@ However this code requires us to write an extra line of code and manually cast t
 ```
 ```rust
 if (animal is Parrot parrot) {
-	parrot.fly()
+    parrot.fly()
 }
 ```
 
@@ -607,12 +608,12 @@ You can name certain parts of code in order to allow jumps in scopes and nested 
 // you may label your outer loop in order to allow "break" or "continue" on it.
 myLoop: 
 for (let i in 1..10) {
-	for (let j in 1..10) {
-		println($"{i} {j}")
-		if (j == 5) {
-			break myLoop
-		}
-	}
+    for (let j in 1..10) {
+        println($"{i} {j}")
+        if (j == 5) {
+            break myLoop
+        }
+    }
 }
 ```
 ```cpp
@@ -621,7 +622,7 @@ for (let i in 1..10) {
 hello:
 doSomething()
 if (condition)
-	goto hello
+    goto hello
 ```
 
 ### Multithreading
@@ -631,7 +632,7 @@ you might have seen these ad promises, tasks or futures.
 ```
 ```js
 Future<User> getUser() {
-	return Future.completed(myUser)
+    return Future.completed(myUser)
 }
 
 let user = getUser().get()
@@ -643,7 +644,7 @@ This automatically wraps the return type to be a Future, and calls get().
 ```
 ```js
 async User getUser() {
-	return myUser
+    return myUser
 }
 
 let user = await getUser()
@@ -653,9 +654,9 @@ You can create threads as well and have full control over them.
 ```
 ```js
 let thread = new Thread(||
-	println("hello"))
-	.setName("my-thread")
-	.setPriority(0)
+    println("hello"))
+    .setName("my-thread")
+    .setPriority(0)
 thread.start()
 ```
 
@@ -759,12 +760,12 @@ native void foo(@NativeParam("int") int a)
 
 @Link("library.dll")
 class MyNativeImplementation {
-	native int foo()
+    native int foo()
 
-	native void bar(float f)
+    native void bar(float f)
 
-	@NativeTarget("baz")
-	native void something()
+    @NativeTarget("baz")
+    native void something()
 }
 ```
 
@@ -785,16 +786,16 @@ Void's built-in http module allows you to create efficient web servers with the 
 ```
 ```js
 void main() {
-	// create a new server instance which will take care of handling the request routes
-	let server = new HttpServer()
+    // create a new server instance which will take care of handling the request routes
+    let server = new HttpServer()
 
-	// create a GET request handler for the "/" route
-	server.get("/", |req, res|
-		// respond to the request with a plain text message
-		res.send("Hello, World")
-	)
+    // create a GET request handler for the "/" route
+    server.get("/", |req, res|
+        // respond to the request with a plain text message
+        res.send("Hello, World")
+    )
 
-	// start the web server and listen on port 80
-	server.listen(80)
+    // start the web server and listen on port 80
+    server.listen(80)
 }
 ```
