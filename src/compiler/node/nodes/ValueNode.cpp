@@ -32,7 +32,7 @@ namespace Compiler {
     void Operation::debug() {
         print("Operation{left=");
         left->debug();
-        print(", operator=" << target << ", right=");
+        print(", operator='" << target << "', right=");
         right->debug();
         print("}");
     }

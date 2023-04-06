@@ -565,44 +565,68 @@ namespace Compiler {
             Token value = get();
 
             // handle single value expression, in which case the local variable is declared, but is not initialized
-
+            // let myUninitializedVariable;
+            //                            ^ the (auto-inserted) semicolon indicates, that the variable is declared, but is not yet assigned with a value
             if (peek().is(TokenType::Semicolon)) 
                 return new Value(value);
 
             // handle operation between two expressions
+            // let var = 100 + 
+            //               ^ the operator after a literal indicates, that there are more expressions to be parsed
+            //                 the two operands are groupped together by an Operation node
             else if (peek().is(TokenType::Operator)) {
                 UString target = get().value;
                 return new Operation(new Value(value), target, nextExpression());
             }
 
             // handle method call
+            // println("Hello, World!")
+            //        ^ the open parenthesis token after an identifier indicates, that a method call is expected
             else if (peek().is(TokenType::Open)) {
                 // TODO make sure "value" is an identifier
+                // skip the '(' char
                 get();
                 // handle method arguments
+                // foo(123)
+                //     ^^^ the tokens in between parenthesis are the arguments of the method call
                 List<Node*> arguments;
                 if (!peek().is(TokenType::Close)) {
                 parseArgument:
+                    // register the parsed method argument expression
                     arguments.push_back(nextExpression());
                     // check for more arguments
+                    // bar(4.5, true, "hello")
+                    //        ^ the comma indicates, that there are more arguments to be parsed
                     if (peek().is(TokenType::Comma)) {
+                        // skip the ',' char
                         get();
+                        // expect another method argument
                         goto parseArgument;
                     }
                 }
                 // handle method call ending
+                // baz("John Doe")
+                //               ^ the close parenthesis indicates, that the method call has been ended
                 get(TokenType::Close);
                 // check if the method call is used as a statement or isn't expecting to be passed in a nested context
+                // let result = calculateHash("my input"); 
+                //                                       ^ the (auto-inserted) semicolon indicates, that the method call does not have any
+                //                                         expressions after. unlike: let res = foo() + bar
+                //                                         let test = baz(); <- method call value is terminated, not expecting anything afterwards
                 if (peek().is(TokenType::Semicolon))
                     get();
                 return new MethodCall(value.value, arguments);
             }
 
             // handle group closing
+            // let val = (1 + 2) / 3
+            //                 ^ the close parenthesis indicates, that we are not expecting any value after the current token
             else if (peek().is(TokenType::Close)) 
                 return new Value(value);
 
-            // handle argument list
+            // handle argument list or array fill
+            // foo(123, 450.7)
+            //        ^ the comma indicates, that the expression has been terminated
             else if (peek().is(TokenType::Comma))
                 return new Value(value);
         }
