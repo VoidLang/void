@@ -578,7 +578,8 @@ namespace Compiler {
             || token == U"goto"
             || token == U"is"
             || token == U"as"
-            || token == U"where";
+            || token == U"where"
+            || token == U"defer";
     }
 
     /**

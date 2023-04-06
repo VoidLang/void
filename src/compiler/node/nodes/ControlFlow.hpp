@@ -17,4 +17,16 @@ namespace Compiler {
          */
         void debug() override;
     };
+
+    class Defer : public Node {
+    public:
+        Node* instruction;
+
+        Defer(Node* instruction);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
+    };
 }

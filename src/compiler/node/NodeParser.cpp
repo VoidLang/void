@@ -850,13 +850,27 @@ namespace Compiler {
             // parse the value to be retured
             Node* value = nextExpression();
 
-            // handle the semicolon after return statement
+            // handle the semicolon after the return statement
             if (peek().is(TokenType::Semicolon))
                 get();
 
             return new Return(value);
         }
 
+        // handle instruction deferring
+        else if (peek().is(TokenType::Expression, U"defer")) {
+            // skip the "defer" keyword
+            get();
+
+            // parse the instruction to be deferred
+            Node* instruction = nextExpression();
+
+            // handle the semicolon after the defer statement
+            if (peek().is(TokenType::Semicolon))
+                get();
+
+            return new Defer(instruction);
+        }
 
         // TODO handle local variable assignation
         // handle unexpected token

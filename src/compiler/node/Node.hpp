@@ -24,6 +24,7 @@ namespace Compiler {
         IndexFetch,
         IndexAssign,
         Return,
+        Defer,
         Error,
         Finish
     };

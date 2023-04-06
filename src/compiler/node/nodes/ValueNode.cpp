@@ -61,7 +61,7 @@ namespace Compiler {
      * Debug the content of the parsed node.
      */
     void Group::debug() {
-        print("Group{value=");
+        print("Group{");
         value->debug();
         print("}");
     }

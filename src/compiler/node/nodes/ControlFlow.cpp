@@ -15,9 +15,21 @@ namespace Compiler {
     void Return::debug() {
         print("Return{");
         if (value.has_value()) {
-            print("value=");
             (*value)->debug();
         }
+        print("}");
+    }
+
+    Defer::Defer(Node* instruction)
+        : Node(NodeType::Defer), instruction(instruction)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void Defer::debug() {
+        print("Defer{");
+        instruction->debug();
         print("}");
     }
 }
