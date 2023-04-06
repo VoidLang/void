@@ -162,13 +162,13 @@ if (result.success) {
 ```
 Void features a wide variety of primitive types.
 ```
-```java
+```
 byte, short, int, long, float, double
 ```
 ```
 And their unsigned version.
 ```
-```c
+```
 ubyte, ushort, uint, ulong, ufloat, udouble
 ```
 

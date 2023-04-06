@@ -615,6 +615,15 @@ namespace Compiler {
                 //                                         let test = baz(); <- method call value is terminated, not expecting anything afterwards
                 if (peek().is(TokenType::Semicolon))
                     get();
+
+                // handle operation after a method call
+                // outer(inner(123) + 2)
+                //                  ^ the operator indicates, that the method call should be groupped with the expression afterwards
+                if (peek().is(TokenType::Operator)) {
+                    UString target = get().value;
+                    return new Operation(new MethodCall(value.value, arguments), target, nextExpression());
+                }
+
                 return new MethodCall(value.value, arguments);
             }
 
