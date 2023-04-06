@@ -284,7 +284,7 @@ public static void foo() {
 }
 
 struct Point {
-	public int x, y
+    public int x, y
 }
 ```
 ```
