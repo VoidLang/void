@@ -280,7 +280,7 @@ much longer by having to put these manually everywhere.
 ```
 ```c#
 public static void foo() {
-	println("bar")
+    println("bar")
 }
 
 struct Point {
@@ -294,15 +294,15 @@ which allows you to set the visibility modifiers of a section of code.
 ```cpp
 class Entity {
 public:
-	int posX, posY
+    int posX, posY
 
-	int entityId
-	
+    int entityId
+
 private:
-	float health
+    float health
 
-	float stamina
-}
+    float stamina
+    }
 ```
 ```java
 Visibility modifiers are public, protected and private.
