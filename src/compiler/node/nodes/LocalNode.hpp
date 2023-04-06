@@ -37,6 +37,21 @@ namespace Compiler {
     };
 
     
+    class LocalDeclareDestruct : public Node {
+    public:
+        List<UString> members;
+
+        Node* value;
+
+        LocalDeclareDestruct(List<UString> members, Node* value);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
+    };
+
+    
     class LocalAssign : public Node {
     public:
         UString name;
@@ -49,5 +64,5 @@ namespace Compiler {
          * Debug the content of the parsed node.
          */
         void debug() override;
-    };
+    };   
 }

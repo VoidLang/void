@@ -696,6 +696,42 @@ namespace Compiler {
         // ^^^^^ the type or identifier indicates the type of the local variable
         Token type = get(2, TokenType::Type, TokenType::Identifier);
 
+        // handle tuple destruction
+        // let (a, b) = foo()
+        //     ^ the open parenthesis after "let" indicates, that the tuple value should be destructed
+        if (peek().is(TokenType::Open)) {
+            // TODO make sure that type is "let"
+            List<UString> members;
+        parseTupleMember:
+            get();
+            // register the tuple member
+            UString member = get(TokenType::Identifier).value;
+            members.push_back(member);
+            // handle more tuple members
+            if (peek().is(TokenType::Comma))
+                goto parseTupleMember;
+            // handle tuple destruction ending
+            get(TokenType::Close);
+
+            // handle the assignation of the tuple destruction
+            // let (a, b) = foo()
+            //            ^ the equals sign indicates that the assignation of the local variable has been started
+            get(TokenType::Operator, U"=");
+
+            // parse the value of the local variable
+            // let (code, msg) = requestSomething()
+            //                   ^^^^^^^^^^^^^^^^^^ the instructions after the equals sign is the value of the local variable
+            Node* value = nextExpression();
+
+            // skip the semicolon after the declaration
+            // let (a, b, c) = fooBar();
+            //                         ^ the (auto-inserted) semicolon indicates, that the assigning variable declaration has been ended
+            if (peek().is(TokenType::Semicolon))
+                get();
+
+            return new LocalDeclareDestruct(members, value);
+        }
+
         // get the name of the local variable
         // let variable = "Hello, World"
         //     ^^^^^^^^ the identifier indicates the name of the local variable
@@ -716,7 +752,7 @@ namespace Compiler {
 
         // parse the value of the local variable
         // let value = 100 + 50 - 25
-        //             ^^^^^^^^^^^^^ the instructions after the equals sign indicate the value of the local variable
+        //             ^^^^^^^^^^^^^ the instructions after the equals sign is the value of the local variable
         Node* value = nextExpression();
 
         // skip the semicolon after the declaration

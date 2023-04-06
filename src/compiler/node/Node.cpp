@@ -9,6 +9,7 @@ namespace Compiler {
             "Type",
             "LocalDeclare",
             "LocalDeclareAssign",
+            "LocalDeclareDestruct",
             "LocalAssign",
             "SingleValue",
             "Operation",
