@@ -17,6 +17,7 @@ namespace Compiler {
         SingleValue,
         Operation,
         MethodCall,
+        Group,
         Error,
         Finish
     };

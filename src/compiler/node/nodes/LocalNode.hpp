@@ -35,4 +35,19 @@ namespace Compiler {
          */
         void debug() override;
     };
+
+    
+    class LocalAssign : public Node {
+    public:
+        UString name;
+
+        Node* value;
+
+        LocalAssign(UString name, Node* value);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
+    };
 }

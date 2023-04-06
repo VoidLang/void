@@ -25,4 +25,17 @@ namespace Compiler {
         value->debug();
         print("}");
     }
+
+    LocalAssign::LocalAssign(UString name, Node* value) 
+        : Node(NodeType::LocalAssign), name(name), value(value)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void LocalAssign::debug() {
+        print("LocalAssign{name=" << name << ", value=");
+        value->debug();
+        print("}");
+    }
 }

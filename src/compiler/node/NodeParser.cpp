@@ -555,6 +555,28 @@ namespace Compiler {
         if (peek().is(TokenType::Type, U"let"))
             return nextLocalDeclaration();
 
+        // handle variable assignation (TODO and non-primitive local variable declaration)
+        else if (peek().is(TokenType::Identifier) && at(cursor + 1).is(TokenType::Operator, U"=")) 
+            return nextLocalAssignation();
+
+        // handle node grouping
+        else if (peek().is(TokenType::Open)) {
+            get();
+            // parse the expression inside the group
+            Node* value = nextExpression();
+            // handle the group closing
+            get(TokenType::Close);
+
+            // handle operation after a node group
+            // (2 + 3) + 7
+            //         ^ the operator indicates, that the method call should be groupped with the expression afterwards
+            if (peek().is(TokenType::Operator)) {
+                UString target = get().value;
+                return new Operation(new Group(value), target, nextExpression());
+            }
+            return new Group(value);
+        }
+
         // handle literal constant or identifier
         // let name = "John Doe"
         //            ^^^^^^^^^^ the literal token indicates, that a value is expected
@@ -686,6 +708,26 @@ namespace Compiler {
         get(TokenType::Semicolon);
 
         return new LocalDeclareAssign(type, name, value);
+    }
+
+    /**
+     * Parse the next local variable value assignation.
+     * @return new local assignation
+     */
+    Node* NodeParser::nextLocalAssignation() {
+        // get the name of the local variabl
+        UString name = get().value;
+
+        // skip the equals sign
+        get(TokenType::Operator, U"=");
+
+        // parse the value of the local variable
+        Node* value = nextExpression();
+
+        // skip the semicolon after the declaration
+        get(TokenType::Semicolon);
+
+        return new LocalAssign(name, value);
     }
 
     /**

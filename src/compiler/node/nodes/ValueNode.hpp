@@ -60,4 +60,16 @@ namespace Compiler {
          */
         void debug() override;
     };
+
+    class Group : public Node {
+    public:
+        Node* value;
+
+        Group(Node* value);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug() override;
+    };
 }

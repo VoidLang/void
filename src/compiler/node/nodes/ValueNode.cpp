@@ -36,4 +36,17 @@ namespace Compiler {
         right->debug();
         print("}");
     }
+
+    Group::Group(Node* value) 
+        : Node(NodeType::Group), value(value)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void Group::debug() {
+        print("Group{value=");
+        value->debug();
+        print("}");
+    }
 }

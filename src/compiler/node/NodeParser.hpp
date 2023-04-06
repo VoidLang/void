@@ -147,10 +147,16 @@ namespace Compiler {
         Node* nextExpression();
 
         /**
-         * Parse the new local declaration.
+         * Parse the next local variable declaration.
          * @return new local declaration
          */
         Node* nextLocalDeclaration();
+
+        /**
+         * Parse the next local variable value assignation.
+         * @return new local assignation
+         */
+        Node* nextLocalAssignation();
 
         /**
          * Parse the generic types of a type.
