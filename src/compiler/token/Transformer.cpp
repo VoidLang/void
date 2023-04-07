@@ -23,7 +23,8 @@ namespace Compiler {
             handleCommentBlock();
             // ignore the token if it is not a new line
             if (!token.is(TokenType::NewLine)) {
-                result.push_back(token);
+                if (!token.is(TokenType::None))
+                    result.push_back(token);
                 continue;
             }
             // check if the token before is one of the required tokens

@@ -22,6 +22,7 @@ namespace Compiler {
             "Return",
             "Defer",
             "Tuple",
+            "If",
             "Error",
             "Finish"
         };
@@ -40,7 +41,7 @@ namespace Compiler {
      * Debug the content of the parsed node.
      */
     void Node::debug(uint& index) {
-        print("Not implemented (" << type << ")");
+        println("Not implemented (" << type << ")");
     }
 
     /**
@@ -62,7 +63,7 @@ namespace Compiler {
      * Debug the content of the parsed node.
      */
     void ErrorNode::debug(uint& index) {
-        print("Error");
+        println("Error");
     }
 
     /**
@@ -76,6 +77,6 @@ namespace Compiler {
      * Debug the content of the parsed node.
      */
     void FinishNode::debug(uint& index) {
-        print("Finish");
+        println("Finish");
     }
 }

@@ -29,4 +29,18 @@ namespace Compiler {
          */
         void debug(uint& index) override;
     };
+
+    class If : public Node {
+    public:
+        Node* condition;
+
+        List<Node*> body;
+
+        If(Node* condition, List<Node*> body);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug(uint& index) override;
+    };
 }

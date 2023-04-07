@@ -50,4 +50,36 @@ namespace Compiler {
         println(Strings::fill(index, "    ") << "}");
         index--;
     }
+
+    If::If(Node* condition, List<Node*> body)
+        : Node(NodeType::If), condition(condition), body(body)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void If::debug(uint& index) {
+        index++;
+        println("If {");
+
+        print(Strings::fill(index + 1, "    ") << "condition: ");
+        condition->debug(index);
+        if (condition->type == NodeType::Value || condition->type == NodeType::Template)
+            println("");
+
+        println(Strings::fill(index + 1, "    ") << "body: {");
+        for (uint i = 0; i < body.size(); i++) {
+            print(Strings::fill(index + 2, "    "));
+            auto element = body[i];
+            index++;
+            element->debug(index);
+            index--;
+            if (element->type == NodeType::Value || element->type == NodeType::Template)
+                println("");
+        }
+        println(Strings::fill(index + 1, "    ") << "}");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
+    }
 }

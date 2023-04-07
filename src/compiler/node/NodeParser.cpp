@@ -716,7 +716,7 @@ namespace Compiler {
             // handle single-instruction lambda function
             // get(|req, res| res.send("hello))
             //                ^ if there is no open curly bracket after the lambda parameter list, it means
-            //                  that there is only one instruction for the labmda body
+            //                  that there is only one instruction for the lambda body
             else /* there is no '{' after parameter list */
                 body.push_back(nextExpression());
 
@@ -898,6 +898,50 @@ namespace Compiler {
                 get();
 
             return new Defer(instruction);
+        }
+
+        // handle if statement
+        else if (peek().is(TokenType::Expression, U"if")) {
+            // skip the "if" keyword
+            get();
+
+            // handle the beginning of the condition
+            get(TokenType::Open);
+
+            // parse the statement condition
+            // TODO support if let, instanceof simplifier
+            Node* condition = nextExpression();
+
+            // handle the ending of the condition
+            get(TokenType::Close);
+
+
+            // parse the body of the if statement
+            List<Node*> body;
+
+            // check if multiple instruction should be assigned for the body
+            // if (condition) { /* do something*/ }
+            //    ^ the open curly bracket indicates, that the lambda body has multiple instructions inside
+            if (peek().is(TokenType::Begin)) {
+                get();
+                // parse the lamba body instructions
+                while (!peek().is(TokenType::End))
+                    body.push_back(nextExpression());
+                get();
+            }
+
+            // handle single-instruction if statement
+            // if (foo) bar()
+            //          ^ if there is no open curly bracket after the condition, it means
+            //            that there is only one instruction for the statement body
+            else /* there is no '{' after parameter list */
+                body.push_back(nextExpression());
+
+            // skip the auto-inserted semicolon
+            if (peek().is(TokenType::Semicolon))
+                get();
+
+            return new If(condition, body);
         }
 
         // TODO handle local variable assignation

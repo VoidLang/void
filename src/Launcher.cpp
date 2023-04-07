@@ -148,6 +148,7 @@ namespace Void {
             tokens.push_back(token);
             println(std::setw(12) << token);
         }
+        tokens.push_back(Token::of(TokenType::NewLine));
 
         println("\n--- TRANSFORMED: ---\n");
 

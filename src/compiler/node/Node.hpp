@@ -26,6 +26,7 @@ namespace Compiler {
         Return,
         Defer,
         Tuple,
+        If,
         Error,
         Finish
     };
