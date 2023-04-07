@@ -17,6 +17,9 @@ It has many built-in designs, which makes it much easier to develop enterprise-g
 ## How to use Void?
 Void is designed to satisfy the needs of multiple development paradigms. Unlike many production-oriented languages, Void does not force object-oriented programming on you, however it is recommended to use in most cases.
 
+## Want to know more?
+[Join the discord server](https://discord.gg/HdgnHqqGAW)
+
 ## Examples
 Below are few examples showcasing what Void provides to enchant programming experience.
 
