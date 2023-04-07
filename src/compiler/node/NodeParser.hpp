@@ -168,6 +168,42 @@ namespace Compiler {
         Node* nextLocalAssignation();
 
         /**
+         * Parse the next lambda function declaration.
+         * @return new lambda function
+         */
+        Node* nextLambdaFunction();
+
+        /**
+         * Parse the next literal value or method call declaration.
+         * @return new literal or method call
+         */
+        Node* nextLiteralOrMethodCall();
+
+        /**
+         * Parse the next string template declaration.
+         * @return new string template 
+         */
+        Node* nextStringTemplate();
+
+        /**
+         * Parse the next value return statement declaration.
+         * @return new return statement
+         */
+        Node* nextReturnStatement();
+
+        /**
+         * Parse the next instruction deferrer statement declaration.
+         * @return new defer statement
+         */
+        Node* nextDeferStatement();
+
+        /**
+         * Parse the next group or tuple declaration.
+         * @return new group or tuple
+         */
+        Node* nextGroupOrTuple();
+
+        /**
          * Parse the next if statement declaration.
          * @return new if statement
          */

@@ -566,339 +566,30 @@ namespace Compiler {
         // handle node grouping
         // let a = (b + c) + d
         //         ^ the open parenthesis indicate, that the following nodes should be placed in a node group
-        else if (peek().is(TokenType::Open)) {
-            // skip the '(' sign
-            get();
-            
-            // parse the expression inside the group
-            // let res = (1 + 2 + 3) / 4
-            //            ^^^^^^^^^ the nodes between parenthesis are the content of the node group
-            Node* value = nextExpression();
-
-            // handle tuples
-            if (peek().is(TokenType::Comma)) {
-                // append the first value of the group
-                List<Node*> members;
-                members.push_back(value);
-
-                // parse the members of the tuple
-            parseMember:
-                // skip the comma token
-                get();
-
-                // parse the next member of the tuple
-                Node* member = nextExpression();
-                members.push_back(member);
-
-                // check if there are more members or the tuple
-                if (peek().is(TokenType::Comma))
-                    goto parseMember;
-
-                // handle tuple ending
-                get(TokenType::Close);
-
-                return new Tuple(members);
-            }
-            
-            // handle the group closing
-            // let test = (7 - 1)
-            //                  ^ the closing parenthesis indicate, that the declaration of node group has been ended
-            get(TokenType::Close);
-
-            // handle operation after a node group
-            // (2 + 3) + 7
-            //         ^ the operator indicates, that the method call should be groupped with the expression afterwards
-            if (peek().is(TokenType::Operator)) {
-                UString target = get().value;
-                return fixOperationTree(new Operation(new Group(value), target, nextExpression()));
-            }
-
-            return new Group(value);
-        }
+        else if (peek().is(TokenType::Open)) 
+            return nextGroupOrTuple();
 
         // handle lambda function
-        else if (peek().is(TokenType::Operator, U"|")) {
-            // skip the '|' sign
-            get();
-            // parse the parameters of the lamba function
-            List<Parameter> parameters;
-            // determine if types are declared in the lambda's parameter list
-            // this must be tracked, because if one parameter sets a type, all
-            // of the other parameters must set types as well
-            bool typed = false;
-            if (!peek().is(TokenType::Operator, U"|")) {
-            parseParameter:
-                // get the next parameter
-                // call(|x| println(x))
-                //       ^ here this is just an identifier, which is the name of a lamba parameter
-                // let other = |int x| println(x)
-                //              ^^^^^ here a type is specified as well, expecting all the arguments to be typed
-                Token token = get(2, TokenType::Identifier, TokenType::Type);
-                // check if the parameter has a type
-                // let foo = |int x| println(x)
-                //            ^^^ the type token indicates, that the lambda function must declare a type for all of the parameters
-                if (token.is(TokenType::Type)) {
-                    // TODO make sure value is not "let"
-                    // TODO make sure only the last argument is variadic
-                    typed = true;
-
-                    // test if the type is variadic
-                    // let callback = |float... f| print(f[0])
-                    //                      ^^^ these dots indicate, that the parameter type is variadic
-                    bool varargs = testVarargs();
-
-                    // get the name of the parameter
-                    // |int foo| bar(foo)
-                    //      ^^^ the identifier is the name of the parameter
-                    UString name = get(TokenType::Identifier).value;
-
-                    // register the lambda parameter
-                    parameters.push_back(Parameter(token, List<Token>(), varargs, name));
-                }
-                // check if the type was an identifier and a parameter identifier is following it
-                // let func = |User u| u.login()
-                //             ^^^^ if two identifiers follow each other, the first one is the type, 
-                //                  the second one is the name of the parameter
-                else if (peek().is(TokenType::Identifier)) /* assuming token is identifier */ {
-                    typed = true;
-                    // TODO parse type generic tokens
-
-                    // test if the type is variadic
-                    bool varargs = testVarargs();
-
-                    // get the name of the parameter
-                    // |Foo foo| bar(foo)
-                    //      ^^^ the identifier is the name of the parameter
-                    UString name = get(TokenType::Identifier).value;
-
-                    // register the lambda parameter
-                    parameters.push_back(Parameter(token, List<Token>(), varargs, name));
-                }
-                // check if only the parameter name was given
-                else /* assuming token is identifier */ {
-                    // check if types were given previously, but is missing from here
-                    if (typed)
-                        error("Inconsistent lambda parameter type declaration");
-
-                    // register the lambda parameter
-                    parameters.push_back(Parameter(Token::of(TokenType::None), List<Token>(), false, token.value));
-                }
-
-                // handle more parameters
-                // data.enumerate(|index, value| bar())
-                //                      ^ the comma indicates, that more lambda parameters are yet to be parsed
-                if (peek().is(TokenType::Comma)) {
-                    // skip the '^' sign
-                    get();
-                    goto parseParameter;
-                }
-
-                // handle parameter list ending
-                // foo(|x, y, z| baz(x  - y + z))
-                //             ^ the "|" operator indicates, that the lambda parameter list has been ended
-                get(TokenType::Operator, U"|");
-            }
-
-            // parse the body of the lambda function
-            List<Node*> body;
-
-            // check if multiple instructions should be assigned for the body
-            // users.forEach(|u| { /* do something */ }
-            //                   ^ the open curly bracket indicates, that the lambda body has multiple instructions inside
-            if (peek().is(TokenType::Begin)) {
-                get();
-                // parse the lamba body instructions
-                while (!peek().is(TokenType::End)) 
-                    body.push_back(nextExpression());
-                get();
-            }
-
-            // handle single-instruction lambda function
-            // get(|req, res| res.send("hello))
-            //                ^ if there is no open curly bracket after the lambda parameter list, it means
-            //                  that there is only one instruction for the lambda body
-            else /* there is no '{' after parameter list */
-                body.push_back(nextExpression());
-
-            return new Lambda(typed, parameters, body);
-        }
+        else if (peek().is(TokenType::Operator, U"|")) 
+            return nextLambdaFunction();
 
         // handle string template
-        else if (peek().is(TokenType::Operator, U"$")) {
-            // skip the '$' sign
-            get();
-            // get the string value of the template
-            Token value = get(TokenType::String);
-
-            // handle operation after template string
-            if (peek().is(TokenType::Operator)) {
-                UString target = get().value;
-                return fixOperationTree(new Operation(new Template(value), target, nextExpression()));
-            }
-
-            return new Template(value);
-        }
+        else if (peek().is(TokenType::Operator, U"$")) 
+            return nextStringTemplate();
 
         // handle literal constant or identifier
         // let name = "John Doe"
         //            ^^^^^^^^^^ the literal token indicates, that a value is expected
-        else if (peek().isLiteral() || peek().is(2, TokenType::Identifier)) {
-            // get the value constant
-            // let age = 32
-            //           ^^ get the actual value of the literal
-            Token value = get();
-
-            // handle single value expression, in which case the local variable is declared, but is not initialized
-            // let myUninitializedVariable;
-            //                            ^ the (auto-inserted) semicolon indicates, that the variable is declared, but is not yet assigned with a value
-            if (peek().is(TokenType::Semicolon))
-                return new Value(value);
-
-            // handle operation between two expressions
-            // let var = 100 + 
-            //               ^ the operator after a literal indicates, that there are more expressions to be parsed
-            //                 the two operands are groupped together by an Operation node
-            else if (peek().is(TokenType::Operator)) {
-                UString target = get().value;
-                return fixOperationTree(new Operation(new Value(value), target, nextExpression()));
-            }
-
-            // handle method call
-            // println("Hello, World!")
-            //        ^ the open parenthesis token after an identifier indicates, that a method call is expected
-            else if (peek().is(TokenType::Open)) {
-                // TODO make sure "value" is an identifier
-                // skip the '(' char
-                get();
-                // handle method arguments
-                // foo(123)
-                //     ^^^ the tokens in between parenthesis are the arguments of the method call
-                List<Node*> arguments;
-                if (!peek().is(TokenType::Close)) {
-                parseArgument:
-                    // register the parsed method argument expression
-                    arguments.push_back(nextExpression());
-                    // check for more arguments
-                    // bar(4.5, true, "hello")
-                    //        ^ the comma indicates, that there are more arguments to be parsed
-                    if (peek().is(TokenType::Comma)) {
-                        // skip the ',' char
-                        get();
-                        // expect another method argument
-                        goto parseArgument;
-                    }
-                }
-                // handle method call ending
-                // baz("John Doe")
-                //               ^ the close parenthesis indicates, that the method call has been ended
-                get(TokenType::Close);
-
-                // check if the method call is used as a statement or isn't expecting to be passed in a nested context
-                // let result = calculateHash("my input"); 
-                //                                       ^ the (auto-inserted) semicolon indicates, that the method call does not have any
-                //                                         expressions after. unlike: let res = foo() + bar
-                //                                         let test = baz(); <- method call value is terminated, not expecting anything afterwards
-                if (peek().is(TokenType::Semicolon))
-                    get();
-
-                // handle operation after a method call
-                // outer(inner(123) + 2)
-                //                  ^ the operator indicates, that the method call should be groupped with the expression afterwards
-                if (peek().is(TokenType::Operator)) {
-                    UString target = get().value;
-                    return fixOperationTree(new Operation(new MethodCall(value.value, arguments), target, nextExpression()));
-                }
-
-                return new MethodCall(value.value, arguments);
-            }
-
-            // handle group closing
-            // let val = (1 + 2) / 3
-            //                 ^ the close parenthesis indicates, that we are not expecting any value after the current token
-            else if (peek().is(TokenType::Close))
-                return new Value(value);
-
-            // handle argument list or array fill
-            // foo(123, 450.7)
-            //        ^ the comma indicates, that the expression has been terminated
-            else if (peek().is(TokenType::Comma))
-                return new Value(value);
-
-            // handle index closing or array end
-            // foo[10] = 404
-            //       ^ the closing square bracket indicates, that the expression has been terminatedd
-            else if (peek().is(TokenType::Stop))
-                return new Value(value);
-
-            // handle indexing
-            else if (peek().is(TokenType::Start)) {
-                // skip the '[' sign
-                get();
-                // parse the index value
-                Node* index = nextExpression();
-                // handle the ']' after the index
-                get(TokenType::Stop);
-                
-                // check if the value is assigned for the index
-                if (peek().is(TokenType::Operator, U"=")) {
-                    // skip the '=' sign
-                    get();
-                    // parse the value of index index assignation
-                    Node* indexValue = nextExpression();
-
-                    // handle the semicolon after index assignation
-                    if (peek().is(TokenType::Semicolon))
-                        get();
-
-                    return new IndexAssign(value.value, index, indexValue);
-                }
-
-                // handle operation after an index fetch
-                if (peek().is(TokenType::Operator)) {
-                    UString target = get().value;
-                    return fixOperationTree(new Operation(new IndexFetch(value.value, index), target, nextExpression()));
-                }
-
-                // there is no value assignation, handle index fetch
-                return new IndexFetch(value.value, index);
-            }
-        }
+        else if (peek().isLiteral() || peek().is(TokenType::Identifier)) 
+            return nextLiteralOrMethodCall();
 
         // handle return statement
-        else if (peek().is(TokenType::Expression, U"return")) {
-            // skip the "return" keyword
-            get();
-            
-            // check if the return statement has no value to return
-            if (peek().is(TokenType::Semicolon)) {
-                get();
-                return new Return();
-            }
-            
-            // parse the value to be retured
-            Node* value = nextExpression();
-
-            // handle the semicolon after the return statement
-            if (peek().is(TokenType::Semicolon))
-                get();
-
-            return new Return(value);
-        }
+        else if (peek().is(TokenType::Expression, U"return")) 
+            return nextReturnStatement();
 
         // handle instruction deferring
-        else if (peek().is(TokenType::Expression, U"defer")) {
-            // skip the "defer" keyword
-            get();
-
-            // parse the instruction to be deferred
-            Node* instruction = nextExpression();
-
-            // handle the semicolon after the defer statement
-            if (peek().is(TokenType::Semicolon))
-                get();
-
-            return new Defer(instruction);
-        }
+        else if (peek().is(TokenType::Expression, U"defer")) 
+            return nextDeferStatement();
 
         // handle if statement
         else if (peek().is(TokenType::Expression, U"if")) 
@@ -1008,6 +699,376 @@ namespace Compiler {
             get();
 
         return new LocalAssign(name, value);
+    }
+
+    /**
+     * Parse the next lambda function declaration.
+     * @return new lambda function
+     */
+    Node* NodeParser::nextLambdaFunction() {
+        // skip the '|' sign
+        get(TokenType::Operator, U"|");
+
+        // parse the parameters of the lamba function
+        List<Parameter> parameters;
+
+        // determine if types are declared in the lambda's parameter list
+        // this must be tracked, because if one parameter sets a type, all
+        // of the other parameters must set types as well
+        bool typed = false;
+
+        if (!peek().is(TokenType::Operator, U"|")) {
+        parseParameter:
+            // get the next parameter
+            // call(|x| println(x))
+            //       ^ here this is just an identifier, which is the name of a lamba parameter
+            // let other = |int x| println(x)
+            //              ^^^^^ here a type is specified as well, expecting all the arguments to be typed
+            Token token = get(2, TokenType::Identifier, TokenType::Type);
+
+            // check if the parameter has a type
+            // let foo = |int x| println(x)
+            //            ^^^ the type token indicates, that the lambda function must declare a type for all of the parameters
+            if (token.is(TokenType::Type)) {
+                // TODO make sure value is not "let"
+                // TODO make sure only the last argument is variadic
+                typed = true;
+
+                // test if the type is variadic
+                // let callback = |float... f| print(f[0])
+                //                      ^^^ these dots indicate, that the parameter type is variadic
+                bool varargs = testVarargs();
+
+                // get the name of the parameter
+                // |int foo| bar(foo)
+                //      ^^^ the identifier is the name of the parameter
+                UString name = get(TokenType::Identifier).value;
+
+                // register the lambda parameter
+                parameters.push_back(Parameter(token, List<Token>(), varargs, name));
+            }
+
+            // check if the type was an identifier and a parameter identifier is following it
+            // let func = |User u| u.login()
+            //             ^^^^ if two identifiers follow each other, the first one is the type, 
+            //                  the second one is the name of the parameter
+            else if (peek().is(TokenType::Identifier)) /* assuming token is identifier */ {
+                typed = true;
+                // TODO parse type generic tokens
+
+                // test if the type is variadic
+                bool varargs = testVarargs();
+
+                // get the name of the parameter
+                // |Foo foo| bar(foo)
+                //      ^^^ the identifier is the name of the parameter
+                UString name = get(TokenType::Identifier).value;
+
+                // register the lambda parameter
+                parameters.push_back(Parameter(token, List<Token>(), varargs, name));
+            }
+            // check if only the parameter name was given
+            else /* assuming token is identifier */ {
+                // check if types were given previously, but is missing from here
+                if (typed)
+                    error("Inconsistent lambda parameter type declaration");
+
+                // register the lambda parameter
+                parameters.push_back(Parameter(Token::of(TokenType::None), List<Token>(), false, token.value));
+            }
+
+            // handle more parameters
+            // data.enumerate(|index, value| bar())
+            //                      ^ the comma indicates, that more lambda parameters are yet to be parsed
+            if (peek().is(TokenType::Comma)) {
+                // skip the '^' sign
+                get();
+                goto parseParameter;
+            }
+
+            // handle parameter list ending
+            // foo(|x, y, z| baz(x  - y + z))
+            //             ^ the "|" operator indicates, that the lambda parameter list has been ended
+            get(TokenType::Operator, U"|");
+        }
+
+        // parse the body of the lambda function
+        List<Node*> body;
+
+        // check if multiple instructions should be assigned for the body
+        // users.forEach(|u| { /* do something */ }
+        //                   ^ the open curly bracket indicates, that the lambda body has multiple instructions inside
+        if (peek().is(TokenType::Begin)) {
+            get();
+            // parse the lamba body instructions
+            while (!peek().is(TokenType::End))
+                body.push_back(nextExpression());
+            get();
+        }
+
+        // handle single-instruction lambda function
+        // get(|req, res| res.send("hello))
+        //                ^ if there is no open curly bracket after the lambda parameter list, it means
+        //                  that there is only one instruction for the lambda body
+        else /* there is no '{' after parameter list */
+            body.push_back(nextExpression());
+
+        return new Lambda(typed, parameters, body);
+    }
+
+    /**
+     * Parse the next literal value or method call declaration.
+     * @return new literal or method call
+     */
+    Node* NodeParser::nextLiteralOrMethodCall() {
+        // handle literal constant or identifier
+        // 
+        // let name = "John Doe"
+        //            ^^^^^^^^^^ the literal token indicates, that a value is expected
+        // get the value constant
+        // let age = 32
+        //           ^^ get the actual value of the literal
+        Token value = get(10, TokenType::Identifier,
+            TokenType::Boolean, TokenType::Character, TokenType::String,
+            TokenType::Byte, TokenType::Short, TokenType::Integer, 
+            TokenType::Long, TokenType::Float, TokenType::Double
+        );
+
+        // handle single value expression, in which case the local variable is declared, but is not initialized
+        // let myUninitializedVariable;
+        //                            ^ the (auto-inserted) semicolon indicates, that the variable is declared, but is not yet assigned with a value
+        if (peek().is(TokenType::Semicolon))
+            return new Value(value);
+
+        // handle operation between two expressions
+        // let var = 100 + 
+        //               ^ the operator after a literal indicates, that there are more expressions to be parsed
+        //                 the two operands are groupped together by an Operation node
+        else if (peek().is(TokenType::Operator)) {
+            UString target = get().value;
+            return fixOperationTree(new Operation(new Value(value), target, nextExpression()));
+        }
+
+        // handle method call
+        // println("Hello, World!")
+        //        ^ the open parenthesis token after an identifier indicates, that a method call is expected
+        else if (peek().is(TokenType::Open)) {
+            // TODO make sure "value" is an identifier
+            // skip the '(' char
+            get();
+            // handle method arguments
+            // foo(123)
+            //     ^^^ the tokens in between parenthesis are the arguments of the method call
+            List<Node*> arguments;
+            if (!peek().is(TokenType::Close)) {
+            parseArgument:
+                // register the parsed method argument expression
+                arguments.push_back(nextExpression());
+                // check for more arguments
+                // bar(4.5, true, "hello")
+                //        ^ the comma indicates, that there are more arguments to be parsed
+                if (peek().is(TokenType::Comma)) {
+                    // skip the ',' char
+                    get();
+                    // expect another method argument
+                    goto parseArgument;
+                }
+            }
+            // handle method call ending
+            // baz("John Doe")
+            //               ^ the close parenthesis indicates, that the method call has been ended
+            get(TokenType::Close);
+
+            // check if the method call is used as a statement or isn't expecting to be passed in a nested context
+            // let result = calculateHash("my input"); 
+            //                                       ^ the (auto-inserted) semicolon indicates, that the method call does not have any
+            //                                         expressions after. unlike: let res = foo() + bar
+            //                                         let test = baz(); <- method call value is terminated, not expecting anything afterwards
+            if (peek().is(TokenType::Semicolon))
+                get();
+
+            // handle operation after a method call
+            // outer(inner(123) + 2)
+            //                  ^ the operator indicates, that the method call should be groupped with the expression afterwards
+            if (peek().is(TokenType::Operator)) {
+                UString target = get().value;
+                return fixOperationTree(new Operation(new MethodCall(value.value, arguments), target, nextExpression()));
+            }
+
+            return new MethodCall(value.value, arguments);
+        }
+
+        // handle group closing
+        // let val = (1 + 2) / 3
+        //                 ^ the close parenthesis indicates, that we are not expecting any value after the current token
+        else if (peek().is(TokenType::Close))
+            return new Value(value);
+
+        // handle argument list or array fill
+        // foo(123, 450.7)
+        //        ^ the comma indicates, that the expression has been terminated
+        else if (peek().is(TokenType::Comma))
+            return new Value(value);
+
+        // handle index closing or array end
+        // foo[10] = 404
+        //       ^ the closing square bracket indicates, that the expression has been terminatedd
+        else if (peek().is(TokenType::Stop))
+            return new Value(value);
+
+        // handle indexing
+        else if (peek().is(TokenType::Start)) {
+            // skip the '[' sign
+            get();
+            // parse the index value
+            Node* index = nextExpression();
+            // handle the ']' after the index
+            get(TokenType::Stop);
+
+            // check if the value is assigned for the index
+            if (peek().is(TokenType::Operator, U"=")) {
+                // skip the '=' sign
+                get();
+                // parse the value of index index assignation
+                Node* indexValue = nextExpression();
+
+                // handle the semicolon after index assignation
+                if (peek().is(TokenType::Semicolon))
+                    get();
+
+                return new IndexAssign(value.value, index, indexValue);
+            }
+
+            // handle operation after an index fetch
+            if (peek().is(TokenType::Operator)) {
+                UString target = get().value;
+                return fixOperationTree(new Operation(new IndexFetch(value.value, index), target, nextExpression()));
+            }
+
+            // there is no value assignation, handle index fetch
+            return new IndexFetch(value.value, index);
+        }
+
+        Token error = peek();
+        println("Error (Literal / Method Call) " << error);
+        return new ErrorNode();
+    }
+
+    /**
+     * Parse the next string template declaration.
+     * @return new string template
+     */
+    Node* NodeParser::nextStringTemplate() {
+        // skip the '$' sign
+        get(TokenType::Operator, U"$");
+        // get the string value of the template
+        Token value = get(TokenType::String);
+
+        // handle operation after template string
+        if (peek().is(TokenType::Operator)) {
+            UString target = get().value;
+            return fixOperationTree(new Operation(new Template(value), target, nextExpression()));
+        }
+
+        return new Template(value);
+    }
+
+    /**
+     * Parse the next value return statement declaration.
+     * @return new return statement
+     */
+    Node* NodeParser::nextReturnStatement() {
+        // skip the "return" keyword
+        get(TokenType::Expression, U"return");
+
+        // check if the return statement has no value to return
+        if (peek().is(TokenType::Semicolon)) {
+            get();
+            return new Return();
+        }
+
+        // parse the value to be retured
+        Node* value = nextExpression();
+
+        // handle the semicolon after the return statement
+        if (peek().is(TokenType::Semicolon))
+            get();
+
+        return new Return(value);
+    }
+
+    /**
+     * Parse the next instruction deferrer statement declaration.
+     * @return new defer statement
+     */
+    Node* NodeParser::nextDeferStatement() {
+        // skip the "defer" keyword
+        get(TokenType::Expression, U"defer");
+
+        // parse the instruction to be deferred
+        Node* instruction = nextExpression();
+
+        // handle the semicolon after the defer statement
+        if (peek().is(TokenType::Semicolon))
+            get();
+
+        return new Defer(instruction);
+    }
+
+    /**
+     * Parse the next group or tuple declaration.
+     * @return new group or tuple
+     */
+    Node* NodeParser::nextGroupOrTuple() {
+        // let a = (b + c) + d
+        //         ^ the open parenthesis indicate, that the following nodes should be placed in a node group
+        // skip the '(' sign
+        get(TokenType::Open);
+
+        // parse the expression inside the group
+        // let res = (1 + 2 + 3) / 4
+        //            ^^^^^^^^^ the nodes between parenthesis are the content of the node group
+        Node* value = nextExpression();
+
+        // handle tuples
+        if (peek().is(TokenType::Comma)) {
+            // append the first value of the group
+            List<Node*> members;
+            members.push_back(value);
+
+            // parse the members of the tuple
+        parseMember:
+            // skip the comma token
+            get();
+
+            // parse the next member of the tuple
+            Node* member = nextExpression();
+            members.push_back(member);
+
+            // check if there are more members or the tuple
+            if (peek().is(TokenType::Comma))
+                goto parseMember;
+
+            // handle tuple ending
+            get(TokenType::Close);
+
+            return new Tuple(members);
+        }
+
+        // handle the group closing
+        // let test = (7 - 1)
+        //                  ^ the closing parenthesis indicate, that the declaration of node group has been ended
+        get(TokenType::Close);
+
+        // handle operation after a node group
+        // (2 + 3) + 7
+        //         ^ the operator indicates, that the method call should be groupped with the expression afterwards
+        if (peek().is(TokenType::Operator)) {
+            UString target = get().value;
+            return fixOperationTree(new Operation(new Group(value), target, nextExpression()));
+        }
+
+        return new Group(value);
     }
 
     /**

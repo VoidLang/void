@@ -88,7 +88,7 @@ namespace Compiler {
         }
         println(Strings::fill(index + 1, "    ") << "}");
 
-        print(Strings::fill(index, "    ") << "}");
+        println(Strings::fill(index, "    ") << "}");
         index--;
     }
 }
