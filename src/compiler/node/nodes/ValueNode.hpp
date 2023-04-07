@@ -24,7 +24,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
 
         /**
          * Build bytecode for this node.
@@ -64,7 +64,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
 
         /**
          * Build bytecode for this node.
@@ -82,7 +82,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
 
         /**
          * Build bytecode for this node.
@@ -100,7 +100,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };
 
     class IndexFetch : public Node {
@@ -114,7 +114,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };
 
     class IndexAssign : public Node {
@@ -130,7 +130,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };
 
     class Tuple : public Node {
@@ -142,6 +142,6 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };
 }

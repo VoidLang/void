@@ -15,7 +15,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };
 
     class Defer : public Node {
@@ -27,6 +27,6 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };
 }

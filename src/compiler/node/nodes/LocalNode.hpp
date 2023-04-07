@@ -16,7 +16,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };
 
 
@@ -33,7 +33,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };
 
     
@@ -48,7 +48,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };
 
     
@@ -63,6 +63,6 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };   
 }

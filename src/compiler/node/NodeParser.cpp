@@ -466,11 +466,14 @@ namespace Compiler {
         println(") {");
 
         for (Node* element : body) {
-            element->debug();
-            println("");
+            uint index = -1;
+            index++;
+            print(Strings::fill(index + 1, "    "));
+            element->debug(index);
+            index--;
         }
 
-        println("\n}");
+        println("}");
 
         // skip the auto-inserted semicolon
         if (peek().is(TokenType::Semicolon))

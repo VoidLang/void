@@ -115,4 +115,17 @@ namespace Void {
         std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
         return converter.to_bytes(utf);
     }
+
+    /**
+     * Fill a new string with the given string n times.
+     * @param count fill count
+     * @param string fill source
+     * @return filled string content
+     */
+    String Strings::fill(uint count, String string) {
+        String result = "";
+        for (uint i = 0; i < count; i++)
+            result += string;
+        return result;
+    }
 }

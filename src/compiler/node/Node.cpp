@@ -11,7 +11,7 @@ namespace Compiler {
             "LocalDeclareAssign",
             "LocalDeclareDestruct",
             "LocalAssign",
-            "SingleValue",
+            "Value",
             "Operation",
             "MethodCall",
             "Group",
@@ -39,7 +39,7 @@ namespace Compiler {
     /**
      * Debug the content of the parsed node.
      */
-    void Node::debug() {
+    void Node::debug(uint& index) {
         print("Not implemented (" << type << ")");
     }
 
@@ -61,7 +61,7 @@ namespace Compiler {
     /**
      * Debug the content of the parsed node.
      */
-    void ErrorNode::debug() {
+    void ErrorNode::debug(uint& index) {
         print("Error");
     }
 
@@ -75,7 +75,7 @@ namespace Compiler {
     /**
      * Debug the content of the parsed node.
      */
-    void FinishNode::debug() {
+    void FinishNode::debug(uint& index) {
         print("Finish");
     }
 }

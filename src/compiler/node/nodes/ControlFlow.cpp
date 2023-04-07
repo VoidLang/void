@@ -1,5 +1,9 @@
 #include "ControlFlow.hpp"
 
+#include "../../../util/Strings.hpp"
+
+using namespace Void;
+
 namespace Compiler {
     Return::Return(Node* value)
         : Node(NodeType::Return), value(value)
@@ -12,12 +16,19 @@ namespace Compiler {
     /**
      * Debug the content of the parsed node.
      */
-    void Return::debug() {
-        print("Return{");
+    void Return::debug(uint& index) {
+        index++;
+        println("Return {");
+
         if (value.has_value()) {
-            (*value)->debug();
+            print(Strings::fill(index + 1, "    "));
+            (*value)->debug(index);
+            if ((*value)->type == NodeType::Value || (*value)->type == NodeType::Template)
+                println("");
         }
-        print("}");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
     }
 
     Defer::Defer(Node* instruction)
@@ -27,9 +38,9 @@ namespace Compiler {
     /**
      * Debug the content of the parsed node.
      */
-    void Defer::debug() {
+    void Defer::debug(uint& index) {
         print("Defer{");
-        instruction->debug();
+        instruction->debug(index);
         print("}");
     }
 }

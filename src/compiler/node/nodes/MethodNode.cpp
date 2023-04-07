@@ -1,5 +1,8 @@
 #include "MethodNode.hpp"
 
+#include "../../../util/Strings.hpp"
+using namespace Void;
+
 namespace Compiler {
     MethodNode::MethodNode(List<UString> modifiers, List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body)
         : Node(NodeType::Method), modifiers(modifiers), returnTypes(returnTypes), name(name), parameters(parameters), body(body)
@@ -20,15 +23,26 @@ namespace Compiler {
     /**
      * Debug the content of the parsed node.
      */
-    void MethodCall::debug() {
-        print("MethodCall{name=" << name);
-        print(", arguments=[");
+    void MethodCall::debug(uint& index) {
+        index++;
+        println("MethodCall {");
+
+        println(Strings::fill(index + 1, "    ") << "name: " << name);
+
+        println(Strings::fill(index + 1, "    ") << "arguments: [");
+
         for (uint i = 0; i < arguments.size(); i++) {
-            arguments[i]->debug();
-            if (i < arguments.size() - 1)
-                print(", ");
+            print(Strings::fill(index + 2, "    "));
+            index++;
+            arguments[i]->debug(index);
+            index--;
+            println("");
         }
-        print("]}");
+
+        println(Strings::fill(index + 1, "    ") << "]");
+        
+        println(Strings::fill(index, "    ") << "}");
+        index--;
     }
 
     Lambda::Lambda(bool typed, List<Parameter> parameters, List<Node*> body)
@@ -38,10 +52,17 @@ namespace Compiler {
     /**
      * Debug the content of the parsed node.
      */
-    void Lambda::debug() {
-        print("Lambda{typed=" << (typed ? "true" : "false") << ", parameters=[");
+    void Lambda::debug(uint& index) {
+        index++;
+        println("Lambda {");
+
+        println(Strings::fill(index + 1, "    ") << "typed: " << (typed ? "true" : "false"));
+
+        println(Strings::fill(index + 1, "    ") << "parameters: [");
+
         for (uint i = 0; i < parameters.size(); i++) {
             auto param = parameters[i];
+            print(Strings::fill(index + 2, "    "));
             if (typed) {
                 print(param.type);
                 if (param.varargs)
@@ -49,16 +70,23 @@ namespace Compiler {
                 print(" ");
             }
             print(param.name);
-            if (i < parameters.size() - 1)
-                print(", ");
+            println("");
         }
-        print("], body={\n");
+
+        println(Strings::fill(index + 1, "    ") << "]");
+
+        println(Strings::fill(index + 1, "    ") << "body: {");
         for (uint i = 0; i < body.size(); i++) {
-            print("\t");
-            body[i]->debug();
+            print(Strings::fill(index + 2, "    "));
+            index++;
+            body[i]->debug(index);
             if (i < body.size() - 1)
-                println("; ");
+                println("");
+            index--;
         }
-        print("}}");
+        println(Strings::fill(index + 1, "    ") << "}");
+
+        print(Strings::fill(index, "    ") << "}");
+        index--;
     }
 }

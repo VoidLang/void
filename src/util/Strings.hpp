@@ -44,5 +44,13 @@ namespace Void {
          * @return utf-8 string
          */
         String fromUTF(UString utf);
+
+        /**
+         * Fill a new string with the given string n times.
+         * @param count fill count
+         * @param string fill source
+         * @return filled string content
+         */
+        String fill(uint count, String string);
     }
 }

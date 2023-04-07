@@ -15,7 +15,7 @@ namespace Compiler {
         LocalDeclareAssign,
         LocalDeclareDestruct,
         LocalAssign,
-        SingleValue,
+        Value,
         Operation,
         MethodCall,
         Group,
@@ -53,7 +53,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        virtual void debug();
+        virtual void debug(uint& index);
 
         /**
          * Build bytecode for this node.
@@ -76,7 +76,7 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };
 
     /**
@@ -92,6 +92,6 @@ namespace Compiler {
         /**
          * Debug the content of the parsed node.
          */
-        void debug() override;
+        void debug(uint& index) override;
     };
 }

@@ -12,7 +12,7 @@ namespace Compiler {
     /**
      * Debug the content of the parsed node.
      */
-    void LocalDeclare::debug() {
+    void LocalDeclare::debug(uint& index) {
         print("LocalDeclare{type=" << type << ", name=" << name << "}");
     }
 
@@ -24,10 +24,21 @@ namespace Compiler {
     /**
      * Debug the content of the parsed node.
      */
-    void LocalDeclareAssign::debug() {
-        print("LocalDeclareAssign{type=" << type << ", name=" << name << ", value=");
-        value->debug();
-        print("}");
+    void LocalDeclareAssign::debug(uint& index) {
+        index++;
+        println("LocalDeclareAssign {");
+
+        println(Strings::fill(index + 1, "    ") << "type: " << type);
+
+        println(Strings::fill(index + 1, "    ") << "name: " << name);
+
+        print(Strings::fill(index + 1, "    ") << "value: ");
+        value->debug(index);
+        if (value->type == NodeType::Value || value->type == NodeType::Template)
+            println("");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
     }
 
     LocalDeclareDestruct::LocalDeclareDestruct(List<UString> members, Node* value)
@@ -37,10 +48,19 @@ namespace Compiler {
     /**
      * Debug the content of the parsed node.
      */
-    void LocalDeclareDestruct::debug() {
-        print("LocalDeclareDestruct{members=[" << Strings::join(members, U", ") << "], value=");
-        value->debug();
-        print("}");
+    void LocalDeclareDestruct::debug(uint& index) {
+        index++;
+        println("LocalDeclareDestruct {");
+
+        println(Strings::fill(index + 1, "    ") << "members: " << Strings::join(members, U", "));
+
+        print(Strings::fill(index + 1, "    ") << "value: ");
+        value->debug(index);
+        if (value->type == NodeType::Value || value->type == NodeType::Template)
+            println("");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
     }
 
 
@@ -51,9 +71,18 @@ namespace Compiler {
     /**
      * Debug the content of the parsed node.
      */
-    void LocalAssign::debug() {
-        print("LocalAssign{name=" << name << ", value=");
-        value->debug();
-        print("}");
+    void LocalAssign::debug(uint& index) {
+        index++;
+        println("LocalAssign {");
+
+        println(Strings::fill(index + 1, "    ") << "name: " << name);
+
+        print(Strings::fill(index + 1, "    ") << "value: ");
+        value->debug(index);
+        if (value->type == NodeType::Value || value->type == NodeType::Template)
+            println("");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
     }
 }
