@@ -39,8 +39,15 @@ namespace Compiler {
      * Debug the content of the parsed node.
      */
     void Defer::debug(uint& index) {
-        print("Defer{");
+        index++;
+        println("Defer {");
+
+        print(Strings::fill(index + 1, "    "));
         instruction->debug(index);
-        print("}");
+        if (instruction->type == NodeType::Value || instruction->type == NodeType::Template)
+            println("");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
     }
 }
