@@ -73,6 +73,22 @@ namespace Compiler {
         void build(List<String>& bytecode) override;
     };
 
+    class SideOperation : public Node {
+    public:
+        UString target;
+
+        Node* operand;
+
+        bool left;
+
+        SideOperation(UString target, Node* operand, bool left);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug(uint& index) override;
+    };
+
     class Group : public Node {
     public:
         Node* value;

@@ -46,6 +46,30 @@ namespace Compiler {
     void Operation::build(List<String>& bytecode) {
     }
 
+    SideOperation::SideOperation(UString target, Node* operand, bool left)
+        : Node(NodeType::SideOperation), target(target), operand(operand), left(left)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void SideOperation::debug(uint& index) {
+        index++;
+        println("SideOperation {");
+
+        println(Strings::fill(index + 1, "    ") << "target: " << target);
+
+        println(Strings::fill(index + 1, "    ") << "side: " << (left ? "left" : "right"));
+        
+        print(Strings::fill(index + 1, "    ") << "operand: ");
+        operand->debug(index);
+        if (operand->type == NodeType::Value || operand->type == NodeType::Template)
+            println("");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
+    }
+
     /**
      * Debug the content of the parsed node.
      */

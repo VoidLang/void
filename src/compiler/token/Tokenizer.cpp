@@ -283,7 +283,7 @@ namespace Compiler {
      * @return new annotation token
      */
     Token Tokenizer::nextAnnotation() {
-        // skip the @ symbol
+        // skip the '@' symbol
         skip(1);
         // parse the name of the annotation
         Token token = nextIdentifier();
@@ -560,6 +560,7 @@ namespace Compiler {
     bool Tokenizer::isExpression(UString token) {
         return token == U"new"
             || token == U"class"
+            || token == U"struct"
             || token == U"enum"
             || token == U"interface"
             || token == U"for"

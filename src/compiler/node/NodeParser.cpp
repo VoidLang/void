@@ -570,21 +570,21 @@ namespace Compiler {
             return nextLocalDeclaration();
 
         // handle variable assignation (TODO and non-primitive local variable declaration)
-        else if (peek().is(TokenType::Identifier) && at(cursor + 1).is(TokenType::Operator, U"=")) 
+        else if (peek().is(TokenType::Identifier) && at(cursor + 1).is(TokenType::Operator, U"=") && !at(cursor + 2).is(TokenType::Operator, U"="))
             return nextLocalAssignation();
 
         // handle node grouping
         // let a = (b + c) + d
         //         ^ the open parenthesis indicate, that the following nodes should be placed in a node group
-        else if (peek().is(TokenType::Open)) 
+        else if (peek().is(TokenType::Open))
             return nextGroupOrTuple();
 
         // handle lambda function
-        else if (peek().is(TokenType::Operator, U"|")) 
+        else if (peek().is(TokenType::Operator, U"|"))
             return nextLambdaFunction();
 
         // handle string template
-        else if (peek().is(TokenType::Operator, U"$")) 
+        else if (peek().is(TokenType::Operator, U"$"))
             return nextStringTemplate();
 
         // handle literal constant or identifier
@@ -592,6 +592,11 @@ namespace Compiler {
         //            ^^^^^^^^^^ the literal token indicates, that a value is expected
         else if (peek().isLiteral() || peek().is(TokenType::Identifier)) 
             return nextLiteralOrMethodCall();
+
+        // handle single value operation
+        // TODO make sure the target operator is a single-value operator
+        else if (peek().is(TokenType::Operator))
+            return nextSingleOperator();
 
         // handle return statement
         else if (peek().is(TokenType::Expression, U"return")) 
@@ -861,6 +866,12 @@ namespace Compiler {
         //                 the two operands are groupped together by an Operation node
         else if (peek().is(2, TokenType::Operator, TokenType::Colon)) {
             UString target = parseOperator();
+            // handle right-side single-value operation
+            if (isRightOperator(target)) 
+                return new SideOperation(target, new Value(value), false);
+            // TODO make more proper error handling
+            if (!isComplexOperator(target))
+                error("Expected complex operator, but got " << target);
             return fixOperationTree(new Operation(new Value(value), target, nextExpression()));
         }
 
@@ -907,6 +918,9 @@ namespace Compiler {
             //                  ^ the operator indicates, that the method call should be groupped with the expression afterwards
             if (peek().is(TokenType::Operator)) {
                 UString target = parseOperator();
+                // TODO make more proper error handling
+                if (!isComplexOperator(target))
+                    error("Expected complex operator, but got " << target);
                 return fixOperationTree(new Operation(new MethodCall(value.value, arguments), target, nextExpression()));
             }
 
@@ -957,6 +971,9 @@ namespace Compiler {
             // handle operation after an index fetch
             if (peek().is(TokenType::Operator)) {
                 UString target = parseOperator();
+                // TODO make more proper error handling
+                if (!isComplexOperator(target))
+                    error("Expected complex operator, but got " << target);
                 return fixOperationTree(new Operation(new IndexFetch(value.value, index), target, nextExpression()));
             }
 
@@ -982,10 +999,31 @@ namespace Compiler {
         // handle operation after template string
         if (peek().is(TokenType::Operator)) {
             UString target = parseOperator();
+            // TODO make more proper error handling
+            if (!isComplexOperator(target))
+                error("Expected complex operator, but got " << target);
             return fixOperationTree(new Operation(new Template(value), target, nextExpression()));
         }
 
         return new Template(value);
+    }
+
+    /**
+     * Parse the next single value operator declaration.
+     * @return new single operator
+     */
+    Node* NodeParser::nextSingleOperator() {
+        // get the operator of the operation
+        UString target = parseOperator();
+        // parse the operand of the operation
+        Node* operand = nextExpression();
+        
+        // test if an invalid left operator was given
+        // TODO handle this properly
+        if (!isLeftOperator(target))
+            error("Expected left-side operator, but got " << target);
+
+        return new SideOperation(target, operand, true);
     }
 
     /**
@@ -1080,6 +1118,9 @@ namespace Compiler {
         //         ^ the operator indicates, that the method call should be groupped with the expression afterwards
         if (peek().is(TokenType::Operator)) {
             UString target = parseOperator();
+            // TODO make more proper error handling
+            if (!isComplexOperator(target))
+                error("Expected complex operator, but got " << target);
             return fixOperationTree(new Operation(new Group(value), target, nextExpression()));
         }
 
@@ -1509,6 +1550,60 @@ namespace Compiler {
             result += ':';
         }
         return result;
+    }
+
+    /**
+     * Test if the given operator is applicable for a left-right use.
+     * @return true if the operator expects two values
+     */
+    bool NodeParser::isComplexOperator(UString target) {
+        return target == U"+"
+            || target == U"+="
+            || target == U"-"
+            || target == U"-="
+            || target == U"*"
+            || target == U"*="
+            || target == U"/"
+            || target == U"/="
+            || target == U"&"
+            || target == U"&="
+            || target == U"|"
+            || target == U"|="
+            || target == U"&&"
+            || target == U"||"
+            || target == U"::"
+            || target == U"<"
+            || target == U"<="
+            || target == U">"
+            || target == U">="
+            || target == U"=="
+            || target == U">>"
+            || target == U">>>"
+            || target == U"<<" // TODO check triple shift operators
+            || target == U"??"
+            || target == U"?."
+            || target == U"?"
+            || target == U":";
+    }
+
+    /**
+     * Test if the given operator is applicable before a value.
+     * @return true if the operator expects a value on its right
+     */
+    bool NodeParser::isLeftOperator(UString target) {
+        return target == U"!"
+            || target == U"++"
+            || target == U"--"
+            || target == U"-";
+    }
+
+    /**
+     * Test if the given operator is applicable after a value.
+     * @return true if the operator expects a value on its left
+     */
+    bool NodeParser::isRightOperator(UString target) {
+        return target == U"++"
+            || target == U"--";
     }
 
     /**

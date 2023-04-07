@@ -17,6 +17,7 @@ namespace Compiler {
         LocalAssign,
         Value,
         Operation,
+        SideOperation,
         MethodCall,
         Group,
         Template,

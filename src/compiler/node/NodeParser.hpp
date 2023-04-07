@@ -186,6 +186,12 @@ namespace Compiler {
         Node* nextStringTemplate();
 
         /**
+         * Parse the next single value operator declaration.
+         * @return new single operator
+         */
+        Node* nextSingleOperator();
+
+        /**
          * Parse the next value return statement declaration.
          * @return new return statement
          */
@@ -266,6 +272,24 @@ namespace Compiler {
          * @return parsed operator
          */
         UString parseOperator();
+
+        /**
+         * Test if the given operator is applicable for a left-right use.
+         * @return true if the operator expects two values
+         */
+        bool isComplexOperator(UString target);
+
+        /**
+         * Test if the given operator is applicable before a value.
+         * @return true if the operator expects a value on its right
+         */
+        bool isLeftOperator(UString target);
+
+        /**
+         * Test if the given operator is applicable after a value.
+         * @return true if the operator expects a value on its left
+         */
+        bool isRightOperator(UString target);
 
         /**
          * Test if there are variadic arguments declared.
