@@ -522,6 +522,10 @@ namespace Compiler {
 
         println("}");
 
+        // handle auto-inserted semicolon at the end or the body
+        if (peek().is(TokenType::Semicolon, U"auto"))
+            get();
+
         return new TypeNode();
     }
 
@@ -557,6 +561,12 @@ namespace Compiler {
         // let myVariable = 100
         // ^^^ the "let" keyword indicates that, the local variable declaration has been started
         if (peek().is(TokenType::Type))
+            return nextLocalDeclaration();
+
+        else if (peek().is(TokenType::Identifier) && at(cursor + 1).is(TokenType::Identifier))
+            return nextLocalDeclaration();
+
+        else if (peek().is(TokenType::Identifier) && at(cursor + 1).is(TokenType::Operator, U"<"))
             return nextLocalDeclaration();
 
         // handle variable assignation (TODO and non-primitive local variable declaration)
@@ -648,6 +658,11 @@ namespace Compiler {
             return new LocalDeclareDestruct(members, value);
         }
 
+        // parse the generic tokens of the variable type
+        List<Token> typeGenerics; 
+        if (type.is(TokenType::Identifier))
+            typeGenerics = parseGenerics();
+
         // get the name of the local variable
         // let variable = "Hello, World"
         //     ^^^^^^^^ the identifier indicates the name of the local variable
@@ -658,7 +673,7 @@ namespace Compiler {
         //          ^ the (auto-inserted) semicolon indicates that the local variable is not initialized by defualt
         if (peek().is(TokenType::Semicolon)) {
             get();
-            return new LocalDeclare(type, name);
+            return new LocalDeclare(type, typeGenerics, name);
         }
 
         // handle the assignation of the local variable
@@ -677,7 +692,7 @@ namespace Compiler {
         if (peek().is(TokenType::Semicolon))
             get();
 
-        return new LocalDeclareAssign(type, name, value);
+        return new LocalDeclareAssign(type, typeGenerics, name, value);
     }
 
     /**

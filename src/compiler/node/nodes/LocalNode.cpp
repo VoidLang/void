@@ -5,20 +5,35 @@
 using namespace Void;
 
 namespace Compiler {
-    LocalDeclare::LocalDeclare(Token type, UString name)
-        : Node(NodeType::LocalDeclare), type(type), name(name)
+    LocalDeclare::LocalDeclare(Token type, List<Token> generics, UString name)
+        : Node(NodeType::LocalDeclare), type(type), generics(generics), name(name)
     { }
 
     /**
      * Debug the content of the parsed node.
      */
     void LocalDeclare::debug(uint& index) {
-        print("LocalDeclare{type=" << type << ", name=" << name << "}");
+        index++;
+        println("LocalDeclare {");
+
+        println(Strings::fill(index + 1, "    ") << "type: " << type);
+
+        if (!generics.empty()) {
+            print(Strings::fill(index + 1, "    ") << "generics: " );
+            for (auto gen : generics) 
+                print(gen.value);
+            println("");
+        }
+
+        println(Strings::fill(index + 1, "    ") << "name: " << name);
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
     }
 
 
-    LocalDeclareAssign::LocalDeclareAssign(Token type, UString name, Node* value)
-        : Node(NodeType::LocalDeclareAssign), type(type), name(name), value(value)
+    LocalDeclareAssign::LocalDeclareAssign(Token type, List<Token> generics, UString name, Node* value)
+        : Node(NodeType::LocalDeclareAssign), generics(generics), type(type), name(name), value(value)
     { }
 
     /**
@@ -29,6 +44,13 @@ namespace Compiler {
         println("LocalDeclareAssign {");
 
         println(Strings::fill(index + 1, "    ") << "type: " << type);
+
+        if (!generics.empty()) {
+            print(Strings::fill(index + 1, "    ") << "generics: ");
+            for (auto gen : generics)
+                print(gen.value);
+            println("");
+        }
 
         println(Strings::fill(index + 1, "    ") << "name: " << name);
 

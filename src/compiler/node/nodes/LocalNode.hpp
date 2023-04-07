@@ -9,9 +9,11 @@ namespace Compiler {
     public:
         Token type;
 
+        List<Token> generics;
+
         UString name;
 
-        LocalDeclare(Token type, UString name);
+        LocalDeclare(Token type, List<Token> generics, UString name);
 
         /**
          * Debug the content of the parsed node.
@@ -24,11 +26,13 @@ namespace Compiler {
     public:
         Token type;
 
+        List<Token> generics;
+
         UString name;
 
         Node* value;
 
-        LocalDeclareAssign(Token type, UString name, Node* value);
+        LocalDeclareAssign(Token type, List<Token> generics, UString name, Node* value);
 
         /**
          * Debug the content of the parsed node.
