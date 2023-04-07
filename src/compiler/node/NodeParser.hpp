@@ -168,6 +168,24 @@ namespace Compiler {
         Node* nextLocalAssignation();
 
         /**
+         * Parse the next if statement declaration.
+         * @return new if statement
+         */
+        Node* nextIfStatement();
+
+        /**
+         * Parse the next else if statement declaration.
+         * @return new else if statement
+         */
+        Node* nextElseIfStatement();
+
+        /**
+         * Prase the next else statement declaration.
+         * @return new else statement
+         */
+        Node* nextElseStatement();
+
+        /**
          * Check if the first operator has a predecende priority over the second operator.
          * @param first first operator to check
          * @param second second operator to check

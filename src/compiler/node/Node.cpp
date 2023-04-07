@@ -23,6 +23,8 @@ namespace Compiler {
             "Defer",
             "Tuple",
             "If",
+            "ElseIf",
+            "Else",
             "Error",
             "Finish"
         };
@@ -57,7 +59,7 @@ namespace Compiler {
      */
     ErrorNode::ErrorNode()
         : Node(NodeType::Error)
-    { }
+    { exit(501); } // TODO handle exception instead of panicing
 
     /**
      * Debug the content of the parsed node.

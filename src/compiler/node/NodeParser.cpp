@@ -702,8 +702,8 @@ namespace Compiler {
             // parse the body of the lambda function
             List<Node*> body;
 
-            // check if multiple instruction should be assigned for the body
-            // users.forEach(|u| { /* do something*/ }
+            // check if multiple instructions should be assigned for the body
+            // users.forEach(|u| { /* do something */ }
             //                   ^ the open curly bracket indicates, that the lambda body has multiple instructions inside
             if (peek().is(TokenType::Begin)) {
                 get();
@@ -901,51 +901,8 @@ namespace Compiler {
         }
 
         // handle if statement
-        else if (peek().is(TokenType::Expression, U"if")) {
-            // skip the "if" keyword
-            get();
-
-            // handle the beginning of the condition
-            get(TokenType::Open);
-
-            // parse the statement condition
-            // TODO support if let, instanceof simplifier
-            Node* condition = nextExpression();
-
-            // handle the ending of the condition
-            get(TokenType::Close);
-
-            // handle auto-inserted semicolon
-            if (peek().is(TokenType::Semicolon, U"auto")) // make sure to only handle auto-inserted semicolons here, as manually inserting 
-                get();                                    // one would close the if block, therefore no else cases could be added
-
-            // parse the body of the if statement
-            List<Node*> body;
-
-            // check if multiple instruction should be assigned for the body
-            // if (condition) { /* do something*/ }
-            //    ^ the open curly bracket indicates, that the lambda body has multiple instructions inside
-            if (peek().is(TokenType::Begin)) {
-                get();
-                // parse the lamba body instructions
-                while (!peek().is(TokenType::End))
-                    body.push_back(nextExpression());
-                get();
-            }
-
-            // handle single-instruction if statement
-            // if (foo) bar()
-            //          ^ if there is no open curly bracket after the condition, it means
-            //            that there is only one instruction for the statement body
-            else /* there is no '{' after parameter list */ 
-                body.push_back(nextExpression());
-
-            // skip the auto-inserted semicolon
-            if (peek().is(TokenType::Semicolon))
-                get();
-
-            return new If(condition, body);
-        }
+        else if (peek().is(TokenType::Expression, U"if")) 
+            return nextIfStatement();
 
         // TODO handle local variable assignation
         // handle unexpected token
@@ -1051,6 +1008,187 @@ namespace Compiler {
             get();
 
         return new LocalAssign(name, value);
+    }
+
+    /**
+     * Parse the next if statement declaration.
+     * @return new if statement
+     */
+    Node* NodeParser::nextIfStatement() {
+        // skip the "if" keyword
+        get(TokenType::Expression, U"if");
+
+        // handle the beginning of the condition
+        get(TokenType::Open);
+
+        // parse the statement condition
+        // TODO support if let, instanceof simplifier
+        Node* condition = nextExpression();
+
+        // handle the ending of the condition
+        get(TokenType::Close);
+
+        // handle auto-inserted semicolon after condition
+        if (peek().is(TokenType::Semicolon, U"auto")) // make sure to only handle auto-inserted semicolons here, as manually inserting 
+            get();                                    // one would meanm the statement has no body: if (foo); hello();
+                                                      //                                                    ^ statement terminated here
+
+        // handle bodyless if statement
+        // tbh, I'm not quite sure why is this allowed in so many languages, but I'll just support doing it
+        else if (peek().is(TokenType::Semicolon)) {
+            get();
+            return new If(condition, List<Node*>());
+        }
+
+        // parse the body of the if statement
+        List<Node*> body;
+
+        // check if multiple instructions should be assigned for the body
+        // if (condition) { /* do something */ }
+        //                ^ the open curly bracket indicates, that the statement body has multiple instructions inside
+        if (peek().is(TokenType::Begin)) {
+            get();
+            // parse the if statement instructions
+            while (!peek().is(TokenType::End))
+                body.push_back(nextExpression());
+            get();
+        }
+
+        // handle single-instruction if statement
+        // if (foo) bar()
+        //          ^ if there is no open curly bracket after the condition, it means
+        //            that there is only one instruction for the statement body
+        else /* there is no '{' after the condition */
+            body.push_back(nextExpression());
+
+        // parse the if statement
+        If* statement = new If(condition, body);
+
+        // skip the auto-inserted semicolon after the if statement body
+        if (peek().is(TokenType::Semicolon, U"auto"))
+            get();
+
+        // handle else or else if cases
+        if (peek().is(TokenType::Expression, U"else")) {
+            // handle else if cases
+            if (at(cursor + 1).is(TokenType::Expression, U"if")) {
+            parseElseIf:
+                // parse the next else if case
+                Node* node = nextElseIfStatement();
+                // register the case for the if statement
+                statement->elseIfs.push_back(dynamic_cast<ElseIf*>(node));
+
+                // check if there are more else if cases to be parsed
+                if (peek().is(TokenType::Expression, U"else") && at(cursor + 1).is(TokenType::Expression, U"if")) 
+                    goto parseElseIf;
+            }
+
+            // check if an else case still follows
+            if (peek().is(TokenType::Expression, U"else")) {
+                // parse the else statement
+                Node* node = nextElseStatement();
+                // register the case for the if statement
+                statement->elseCase = dynamic_cast<Else*>(node);
+            }
+        }
+
+        return statement;
+    }
+
+    /**
+     * Parse the next else if statement declaration.
+     * @return new else if statement
+     */
+    Node* NodeParser::nextElseIfStatement() {
+        // skip the "else" keyword
+        get(TokenType::Expression, U"else");
+        // skip the "if" keyword
+        get(TokenType::Expression, U"if");
+
+        // handle the beginning of the condition
+        get(TokenType::Open);
+
+        // parse the statement condition
+        // TODO support else if let, instanceof simplifier
+        Node* condition = nextExpression();
+
+        // handle the ending of the condition
+        get(TokenType::Close);
+
+        // handle auto-inserted semicolon after condition
+        if (peek().is(TokenType::Semicolon, U"auto")) // make sure to only handle auto-inserted semicolons here, as manually inserting 
+            get();                                    // one would meanm the statement has no body: else if (foo); hello();
+                                                      //                                                         ^ statement terminated here
+
+        // handle bodyless else if statement
+        // tbh, I'm not quite sure why is this allowed in so many languages, but I'll just support doing it
+        else if (peek().is(TokenType::Semicolon)) {
+            get();
+            return new ElseIf(condition, List<Node*>());
+        }
+
+        // parse the body of the else if statement
+        List<Node*> body;
+
+        // check if multiple instructions should be assigned for the body
+        // else if (condition) { /* do something */ }
+        //                     ^ the open curly bracket indicates, that the statement body has multiple instructions inside
+        if (peek().is(TokenType::Begin)) {
+            get();
+            // parse the else if statement instructions
+            while (!peek().is(TokenType::End))
+                body.push_back(nextExpression());
+            get();
+        }
+
+        // handle single-instruction else if statement
+        // else if (foo) bar()
+        //               ^ if there is no open curly bracket after the condition, it means
+        //               that there is only one instruction for the statement body
+        else /* there is no '{' after the condition */
+            body.push_back(nextExpression());
+
+        // skip the auto-inserted semicolon after the else if statement body
+        if (peek().is(TokenType::Semicolon, U"auto"))
+            get();
+
+        return new ElseIf(condition, body);
+    }
+
+    /**
+     * Prase the next else statement declaration.
+     * @return new else statement
+     */
+    Node* NodeParser::nextElseStatement() {
+        // skip the "else" keyword
+        get(TokenType::Expression, U"else");
+
+        // parse the body of the else statement
+        List<Node*> body;
+
+        // check if multiple instructions should be assigned for the body
+        // else { /* do something */ }
+        //      ^ the open curly bracket indicates, that the statement body has multiple instructions inside
+        if (peek().is(TokenType::Begin)) {
+            get();
+            // parse the else statement instructions
+            while (!peek().is(TokenType::End))
+                body.push_back(nextExpression());
+            get();
+        }
+
+        // handle single-instruction else statement
+        // else bar()
+        //      ^ if there is no open curly bracket after the condition, it means
+        //      that there is only one instruction for the statement body
+        else /* there is no '{' after the "else" keyword */
+            body.push_back(nextExpression());
+
+        // skip the auto-inserted semicolon after the else statement body
+        if (peek().is(TokenType::Semicolon, U"auto"))
+            get();
+
+        return new Else(body);
     }
 
     /**

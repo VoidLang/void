@@ -80,6 +80,77 @@ namespace Compiler {
         println(Strings::fill(index + 1, "    ") << "}");
 
         println(Strings::fill(index, "    ") << "}");
+
+        index--;
+
+        for (auto elseIf : elseIfs) {
+            print(Strings::fill(index + 1, "    "));
+            elseIf->debug(index);
+        }
+
+        if (elseCase != nullptr) {
+            print(Strings::fill(index + 1, "    "));
+            elseCase->debug(index);
+        }
+    }
+
+
+    ElseIf::ElseIf(Node* condition, List<Node*> body) 
+        : Node(NodeType::ElseIf), condition(condition), body(body)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void ElseIf::debug(uint& index) {
+        index++;
+        println("ElseIf {");
+
+        print(Strings::fill(index + 1, "    ") << "condition: ");
+        condition->debug(index);
+        if (condition->type == NodeType::Value || condition->type == NodeType::Template)
+            println("");
+
+        println(Strings::fill(index + 1, "    ") << "body: {");
+        for (uint i = 0; i < body.size(); i++) {
+            print(Strings::fill(index + 2, "    "));
+            auto element = body[i];
+            index++;
+            element->debug(index);
+            index--;
+            if (element->type == NodeType::Value || element->type == NodeType::Template)
+                println("");
+        }
+        println(Strings::fill(index + 1, "    ") << "}");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
+    }
+
+    Else::Else(List<Node*> body)
+        : Node(NodeType::Else), body(body)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void Else::debug(uint& index) {
+        index++;
+        println("Else {");
+
+        println(Strings::fill(index + 1, "    ") << "body: {");
+        for (uint i = 0; i < body.size(); i++) {
+            print(Strings::fill(index + 2, "    "));
+            auto element = body[i];
+            index++;
+            element->debug(index);
+            index--;
+            if (element->type == NodeType::Value || element->type == NodeType::Template)
+                println("");
+        }
+        println(Strings::fill(index + 1, "    ") << "}");
+
+        println(Strings::fill(index, "    ") << "}");
         index--;
     }
 }
