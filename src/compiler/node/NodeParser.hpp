@@ -262,6 +262,12 @@ namespace Compiler {
         List<UString> parseModifiers(NodeType type);
 
         /**
+         * Parse the next operator target.
+         * @return parsed operator
+         */
+        UString parseOperator();
+
+        /**
          * Test if there are variadic arguments declared.
          * @return true if varargs are declared
          */

@@ -844,8 +844,8 @@ namespace Compiler {
         // let var = 100 + 
         //               ^ the operator after a literal indicates, that there are more expressions to be parsed
         //                 the two operands are groupped together by an Operation node
-        else if (peek().is(TokenType::Operator)) {
-            UString target = get().value;
+        else if (peek().is(2, TokenType::Operator, TokenType::Colon)) {
+            UString target = parseOperator();
             return fixOperationTree(new Operation(new Value(value), target, nextExpression()));
         }
 
@@ -891,7 +891,7 @@ namespace Compiler {
             // outer(inner(123) + 2)
             //                  ^ the operator indicates, that the method call should be groupped with the expression afterwards
             if (peek().is(TokenType::Operator)) {
-                UString target = get().value;
+                UString target = parseOperator();
                 return fixOperationTree(new Operation(new MethodCall(value.value, arguments), target, nextExpression()));
             }
 
@@ -941,7 +941,7 @@ namespace Compiler {
 
             // handle operation after an index fetch
             if (peek().is(TokenType::Operator)) {
-                UString target = get().value;
+                UString target = parseOperator();
                 return fixOperationTree(new Operation(new IndexFetch(value.value, index), target, nextExpression()));
             }
 
@@ -966,7 +966,7 @@ namespace Compiler {
 
         // handle operation after template string
         if (peek().is(TokenType::Operator)) {
-            UString target = get().value;
+            UString target = parseOperator();
             return fixOperationTree(new Operation(new Template(value), target, nextExpression()));
         }
 
@@ -1064,7 +1064,7 @@ namespace Compiler {
         // (2 + 3) + 7
         //         ^ the operator indicates, that the method call should be groupped with the expression afterwards
         if (peek().is(TokenType::Operator)) {
-            UString target = get().value;
+            UString target = parseOperator();
             return fixOperationTree(new Operation(new Group(value), target, nextExpression()));
         }
 
@@ -1479,6 +1479,21 @@ namespace Compiler {
             modifiers.push_back(get().value);
         }
         return modifiers;
+    }
+
+    /**
+     * Parse the next operator target.
+     * @return parsed operator
+     */
+    UString NodeParser::parseOperator() {
+        UString result;
+        while (peek().is(TokenType::Operator)) 
+            result += get().value;
+        while (peek().is(TokenType::Colon)) {
+            get();
+            result += ':';
+        }
+        return result;
     }
 
     /**
