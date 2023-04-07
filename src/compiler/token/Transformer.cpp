@@ -46,7 +46,7 @@ namespace Compiler {
             // place a semicolon if the token before the new line is one of the registered tokens, 
             // and the token after the new line is not one of the forbidden tokens
             if (requiredBefore && !forbiddenAfter)
-                result.push_back(Token::of(TokenType::Semicolon));
+                result.push_back(Token::of(TokenType::Semicolon, U"auto"));
             // if the requirements do not meet, we are just going to ignore the token
             // there is no need to put a semicolon, because it seems like the expression
             // continues

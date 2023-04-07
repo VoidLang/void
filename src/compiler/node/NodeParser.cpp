@@ -915,6 +915,9 @@ namespace Compiler {
             // handle the ending of the condition
             get(TokenType::Close);
 
+            // handle auto-inserted semicolon
+            if (peek().is(TokenType::Semicolon, U"auto")) // make sure to only handle auto-inserted semicolons here, as manually inserting 
+                get();                                    // one would close the if block, therefore no else cases could be added
 
             // parse the body of the if statement
             List<Node*> body;
@@ -934,7 +937,7 @@ namespace Compiler {
             // if (foo) bar()
             //          ^ if there is no open curly bracket after the condition, it means
             //            that there is only one instruction for the statement body
-            else /* there is no '{' after parameter list */
+            else /* there is no '{' after parameter list */ 
                 body.push_back(nextExpression());
 
             // skip the auto-inserted semicolon

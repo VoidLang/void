@@ -34,9 +34,11 @@ namespace Compiler {
         for (uint i = 0; i < arguments.size(); i++) {
             print(Strings::fill(index + 2, "    "));
             index++;
-            arguments[i]->debug(index);
+            auto arg = arguments[i];
+            arg->debug(index);
             index--;
-            println("");
+            if (arg->type == NodeType::Value || arg->type == NodeType::Template)
+                println("");
         }
 
         println(Strings::fill(index + 1, "    ") << "]");
