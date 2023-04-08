@@ -614,6 +614,10 @@ namespace Compiler {
         else if (peek().is(TokenType::Expression, U"while"))
             return nextWhileStatement();
 
+        // handle do-while statement
+        else if (peek().is(TokenType::Expression, U"do"))
+            return nextDoWhileStatement();
+
         // TODO handle local variable assignation
         // handle unexpected token
         Token error = peek();
@@ -1230,8 +1234,7 @@ namespace Compiler {
         // skip the "while" keyword
         get(TokenType::Expression, U"while");
 
-        // parse the statement condition
-        // TODO support while let, instanceof simplifier
+        // parse the condition of the while statement
         Node* condition = parseCondition();
 
         // handle bodyless while statement
@@ -1245,6 +1248,25 @@ namespace Compiler {
         List<Node*> body = parseStatementBody();
 
         return new While(condition, body);
+    }
+
+    /**
+     * Parse the next do-while statement declaration.
+     */
+    Node* NodeParser::nextDoWhileStatement() {
+        // skip the "do" keyword
+        get(TokenType::Expression, U"do");
+
+        // parse the body of the do-while statement
+        List<Node*> body = parseStatementBody();
+
+        // skip the "while" keyword
+        get(TokenType::Expression, U"while");
+
+        // parse the condition of the do-while statement
+        Node* condition = parseCondition();
+
+        return new DoWhile(body, condition);
     }
 
     /**

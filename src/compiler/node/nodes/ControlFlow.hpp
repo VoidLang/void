@@ -87,4 +87,18 @@ namespace Compiler {
          */
         void debug(uint& index) override;
     };
+
+    class DoWhile : public Node {
+    public:
+        List<Node*> body;
+        
+        Node* condition;
+
+        DoWhile(List<Node*> body, Node* condition);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug(uint& index) override;
+    };
 }

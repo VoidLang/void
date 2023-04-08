@@ -185,4 +185,36 @@ namespace Compiler {
         println(Strings::fill(index, "    ") << "}");
         index--;
     }
+
+    DoWhile::DoWhile(List<Node*> body, Node* condition) 
+        : Node(NodeType::DoWhile), body(body), condition(condition)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void DoWhile::debug(uint& index) {
+        index++;
+        println("DoWhile {");
+
+        println(Strings::fill(index + 1, "    ") << "body: {");
+        for (uint i = 0; i < body.size(); i++) {
+            print(Strings::fill(index + 2, "    "));
+            auto element = body[i];
+            index++;
+            element->debug(index);
+            index--;
+            if (element->type == NodeType::Value || element->type == NodeType::Template)
+                println("");
+        }
+        println(Strings::fill(index + 1, "    ") << "}");
+
+        print(Strings::fill(index + 1, "    ") << "condition: ");
+        condition->debug(index);
+        if (condition->type == NodeType::Value || condition->type == NodeType::Template)
+            println("");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
+    }
 }
