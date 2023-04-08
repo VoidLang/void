@@ -1371,7 +1371,7 @@ namespace Compiler {
      */
     Node* NodeParser::nextImport() {
         // handle package import
-        get(TokenType::String, U"import");
+        get(TokenType::Info, U"import");
         // get the name of the package
         UString name = get(TokenType::String).value;
         // ensure that the package is ended by a semicolon
