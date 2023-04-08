@@ -302,5 +302,17 @@ namespace Compiler {
          * @return true if varargs are declared
          */
         bool testVarargs();
+
+        /**
+         * Parse the next condition of a condition block, such as if, else if, while.
+         * @return new conditional node
+         */
+        Node* parseCondition();
+
+        /**
+         * Parse the next block of instructions that belong to a block, such as if, else if, while.
+         * @return new block statement body
+         */
+        List<Node*> parseStatementBody();
     };
 }

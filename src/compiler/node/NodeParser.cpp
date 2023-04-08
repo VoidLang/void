@@ -1139,55 +1139,21 @@ namespace Compiler {
         // skip the "if" keyword
         get(TokenType::Expression, U"if");
 
-        // handle the beginning of the condition
-        get(TokenType::Open);
-
         // parse the statement condition
-        // TODO support if let, instanceof simplifier
-        Node* condition = nextExpression();
-
-        // handle the ending of the condition
-        get(TokenType::Close);
-
-        // handle auto-inserted semicolon after condition
-        if (peek().is(TokenType::Semicolon, U"auto")) // make sure to only handle auto-inserted semicolons here, as manually inserting 
-            get();                                    // one would meanm the statement has no body: if (foo); hello();
-                                                      //                                                    ^ statement terminated here
+        Node* condition = parseCondition();
 
         // handle bodyless if statement
         // tbh, I'm not quite sure why is this allowed in so many languages, but I'll just support doing it
-        else if (peek().is(TokenType::Semicolon)) {
+        if (peek().is(TokenType::Semicolon)) {
             get();
             return new If(condition, List<Node*>());
         }
 
         // parse the body of the if statement
-        List<Node*> body;
-
-        // check if multiple instructions should be assigned for the body
-        // if (condition) { /* do something */ }
-        //                ^ the open curly bracket indicates, that the statement body has multiple instructions inside
-        if (peek().is(TokenType::Begin)) {
-            get();
-            // parse the if statement instructions
-            while (!peek().is(TokenType::End))
-                body.push_back(nextExpression());
-            get();
-        }
-
-        // handle single-instruction if statement
-        // if (foo) bar()
-        //          ^ if there is no open curly bracket after the condition, it means
-        //            that there is only one instruction for the statement body
-        else /* there is no '{' after the condition */
-            body.push_back(nextExpression());
+        List<Node*> body = parseStatementBody();
 
         // parse the if statement
         If* statement = new If(condition, body);
-
-        // skip the auto-inserted semicolon after the if statement body
-        if (peek().is(TokenType::Semicolon, U"auto"))
-            get();
 
         // handle else or else if cases
         if (peek().is(TokenType::Expression, U"else")) {
@@ -1226,52 +1192,18 @@ namespace Compiler {
         // skip the "if" keyword
         get(TokenType::Expression, U"if");
 
-        // handle the beginning of the condition
-        get(TokenType::Open);
-
         // parse the statement condition
-        // TODO support else if let, instanceof simplifier
-        Node* condition = nextExpression();
-
-        // handle the ending of the condition
-        get(TokenType::Close);
-
-        // handle auto-inserted semicolon after condition
-        if (peek().is(TokenType::Semicolon, U"auto")) // make sure to only handle auto-inserted semicolons here, as manually inserting 
-            get();                                    // one would meanm the statement has no body: else if (foo); hello();
-                                                      //                                                         ^ statement terminated here
+        Node* condition = parseCondition();
 
         // handle bodyless else if statement
         // tbh, I'm not quite sure why is this allowed in so many languages, but I'll just support doing it
-        else if (peek().is(TokenType::Semicolon)) {
+        if (peek().is(TokenType::Semicolon)) {
             get();
             return new ElseIf(condition, List<Node*>());
         }
 
         // parse the body of the else if statement
-        List<Node*> body;
-
-        // check if multiple instructions should be assigned for the body
-        // else if (condition) { /* do something */ }
-        //                     ^ the open curly bracket indicates, that the statement body has multiple instructions inside
-        if (peek().is(TokenType::Begin)) {
-            get();
-            // parse the else if statement instructions
-            while (!peek().is(TokenType::End))
-                body.push_back(nextExpression());
-            get();
-        }
-
-        // handle single-instruction else if statement
-        // else if (foo) bar()
-        //               ^ if there is no open curly bracket after the condition, it means
-        //               that there is only one instruction for the statement body
-        else /* there is no '{' after the condition */
-            body.push_back(nextExpression());
-
-        // skip the auto-inserted semicolon after the else if statement body
-        if (peek().is(TokenType::Semicolon, U"auto"))
-            get();
+        List<Node*> body = parseStatementBody();
 
         return new ElseIf(condition, body);
     }
@@ -1285,29 +1217,7 @@ namespace Compiler {
         get(TokenType::Expression, U"else");
 
         // parse the body of the else statement
-        List<Node*> body;
-
-        // check if multiple instructions should be assigned for the body
-        // else { /* do something */ }
-        //      ^ the open curly bracket indicates, that the statement body has multiple instructions inside
-        if (peek().is(TokenType::Begin)) {
-            get();
-            // parse the else statement instructions
-            while (!peek().is(TokenType::End))
-                body.push_back(nextExpression());
-            get();
-        }
-
-        // handle single-instruction else statement
-        // else bar()
-        //      ^ if there is no open curly bracket after the condition, it means
-        //      that there is only one instruction for the statement body
-        else /* there is no '{' after the "else" keyword */
-            body.push_back(nextExpression());
-
-        // skip the auto-inserted semicolon after the else statement body
-        if (peek().is(TokenType::Semicolon, U"auto"))
-            get();
+        List<Node*> body = parseStatementBody();
 
         return new Else(body);
     }
@@ -1320,52 +1230,19 @@ namespace Compiler {
         // skip the "while" keyword
         get(TokenType::Expression, U"while");
 
-        // handle the beginning of the condition
-        get(TokenType::Open);
-
         // parse the statement condition
         // TODO support while let, instanceof simplifier
-        Node* condition = nextExpression();
-
-        // handle the ending of the condition
-        get(TokenType::Close);
-
-        // handle auto-inserted semicolon after condition
-        if (peek().is(TokenType::Semicolon, U"auto")) // make sure to only handle auto-inserted semicolons here, as manually inserting 
-            get();                                    // one would meanm the statement has no body: while (foo); hello();
-                                                      //                                                       ^ statement terminated here
+        Node* condition = parseCondition();
 
         // handle bodyless while statement
         // tbh, I'm not quite sure why is this allowed in so many languages, but I'll just support doing it
-        else if (peek().is(TokenType::Semicolon)) {
+        if (peek().is(TokenType::Semicolon)) {
             get();
             return new While(condition, List<Node*>());
         }
 
         // parse the body of the while statement
-        List<Node*> body;
-
-        // check if multiple instructions should be assigned for the body
-        // while (condition) { /* do something */ }
-        //                   ^ the open curly bracket indicates, that the statement body has multiple instructions inside
-        if (peek().is(TokenType::Begin)) {
-            get();
-            // parse the while statement instructions
-            while (!peek().is(TokenType::End))
-                body.push_back(nextExpression());
-            get();
-        }
-
-        // handle single-instruction if statement
-        // while (foo) bar()
-        //             ^ if there is no open curly bracket after the condition, it means
-        //             that there is only one instruction for the statement body
-        else /* there is no '{' after the condition */
-            body.push_back(nextExpression());
-
-        // skip the auto-inserted semicolon after the if statement body
-        if (peek().is(TokenType::Semicolon, U"auto"))
-            get();
+        List<Node*> body = parseStatementBody();
 
         return new While(condition, body);
     }
@@ -1681,5 +1558,62 @@ namespace Compiler {
         get(TokenType::Operator, U".");
         get(TokenType::Operator, U".");
         return true;
+    }
+
+    /**
+     * Parse the next condition of a condition block, such as if, else if, while.
+     * @return new conditional node
+     */
+    Node* NodeParser::parseCondition() {
+        // handle the beginning of the condition
+        get(TokenType::Open);
+
+        // parse the statement condition
+        // TODO support conditional let, instanceof simplifier
+        Node* condition = nextExpression();
+
+        // handle the ending of the condition
+        get(TokenType::Close);
+
+        // handle auto-inserted semicolon after condition
+        if (peek().is(TokenType::Semicolon, U"auto")) // make sure to only handle auto-inserted semicolons here, as manually inserting 
+            get();                                    // one would meanm the statement has no body: 
+                                                      // <expression> (condition); outer();
+                                                      //                         ^ statement terminated here
+        return condition;
+    }
+
+    /**
+     * Parse the next block of instructions that belong to a block, such as if, else if, while.
+     * @return new block statement body
+     */
+    List<Node*> NodeParser::parseStatementBody() {
+        // parse the body of the statement
+        List<Node*> body;
+
+        // check if multiple instructions should be assigned for the body
+        // <expression> (condition) { /* do something */ }
+        //                   ^ the open curly bracket indicates, that the statement body has multiple instructions inside
+        if (peek().is(TokenType::Begin)) {
+            get();
+            // parse the while statement instructions
+            while (!peek().is(TokenType::End))
+                body.push_back(nextExpression());
+            get();
+        }
+
+        // handle single-instruction statement
+        // <expression> (condition) foo()
+        //                          ^ if there is no open curly bracket after the condition, it means
+        //                            that there is only one instruction for the statement body
+        else /* there is no '{' after the condition */
+            body.push_back(nextExpression());
+        
+        // skip the auto-inserted semicolon after  statement body
+        // TODO might wanna ignore manually inserted semicolon as well
+        if (peek().is(TokenType::Semicolon, U"auto"))
+            get();
+
+        return body;
     }
 }
