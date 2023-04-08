@@ -73,4 +73,18 @@ namespace Compiler {
          */
         void debug(uint& index) override;
     };
+
+    class While : public Node {
+    public:
+        Node* condition;
+
+        List<Node*> body;
+
+        While(Node* condition, List<Node*> body);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug(uint& index) override;
+    };
 }

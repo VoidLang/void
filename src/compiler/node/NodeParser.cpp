@@ -590,7 +590,7 @@ namespace Compiler {
         // handle literal constant or identifier
         // let name = "John Doe"
         //            ^^^^^^^^^^ the literal token indicates, that a value is expected
-        else if (peek().isLiteral() || peek().is(TokenType::Identifier)) 
+        else if (peek().isLiteral() || peek().is(TokenType::Identifier))
             return nextLiteralOrMethodCall();
 
         // handle single value operation
@@ -599,16 +599,20 @@ namespace Compiler {
             return nextSingleOperator();
 
         // handle return statement
-        else if (peek().is(TokenType::Expression, U"return")) 
+        else if (peek().is(TokenType::Expression, U"return"))
             return nextReturnStatement();
 
         // handle instruction deferring
-        else if (peek().is(TokenType::Expression, U"defer")) 
+        else if (peek().is(TokenType::Expression, U"defer"))
             return nextDeferStatement();
 
         // handle if statement
-        else if (peek().is(TokenType::Expression, U"if")) 
+        else if (peek().is(TokenType::Expression, U"if"))
             return nextIfStatement();
+
+        // handle while statement
+        else if (peek().is(TokenType::Expression, U"while"))
+            return nextWhileStatement();
 
         // TODO handle local variable assignation
         // handle unexpected token
@@ -1306,6 +1310,64 @@ namespace Compiler {
             get();
 
         return new Else(body);
+    }
+
+    /**
+     * Parse the next while loop statement declaration.
+     * @return new while statement
+     */
+    Node* NodeParser::nextWhileStatement() {
+        // skip the "while" keyword
+        get(TokenType::Expression, U"while");
+
+        // handle the beginning of the condition
+        get(TokenType::Open);
+
+        // parse the statement condition
+        // TODO support while let, instanceof simplifier
+        Node* condition = nextExpression();
+
+        // handle the ending of the condition
+        get(TokenType::Close);
+
+        // handle auto-inserted semicolon after condition
+        if (peek().is(TokenType::Semicolon, U"auto")) // make sure to only handle auto-inserted semicolons here, as manually inserting 
+            get();                                    // one would meanm the statement has no body: while (foo); hello();
+                                                      //                                                       ^ statement terminated here
+
+        // handle bodyless while statement
+        // tbh, I'm not quite sure why is this allowed in so many languages, but I'll just support doing it
+        else if (peek().is(TokenType::Semicolon)) {
+            get();
+            return new While(condition, List<Node*>());
+        }
+
+        // parse the body of the while statement
+        List<Node*> body;
+
+        // check if multiple instructions should be assigned for the body
+        // while (condition) { /* do something */ }
+        //                   ^ the open curly bracket indicates, that the statement body has multiple instructions inside
+        if (peek().is(TokenType::Begin)) {
+            get();
+            // parse the while statement instructions
+            while (!peek().is(TokenType::End))
+                body.push_back(nextExpression());
+            get();
+        }
+
+        // handle single-instruction if statement
+        // while (foo) bar()
+        //             ^ if there is no open curly bracket after the condition, it means
+        //             that there is only one instruction for the statement body
+        else /* there is no '{' after the condition */
+            body.push_back(nextExpression());
+
+        // skip the auto-inserted semicolon after the if statement body
+        if (peek().is(TokenType::Semicolon, U"auto"))
+            get();
+
+        return new While(condition, body);
     }
 
     /**

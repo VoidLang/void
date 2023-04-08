@@ -228,6 +228,12 @@ namespace Compiler {
         Node* nextElseStatement();
 
         /**
+         * Parse the next while loop statement declaration.
+         * @return new while statement
+         */
+        Node* nextWhileStatement();
+
+        /**
          * Check if the first operator has a predecende priority over the second operator.
          * @param first first operator to check
          * @param second second operator to check

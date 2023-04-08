@@ -26,6 +26,10 @@ namespace Compiler {
             "If",
             "ElseIf",
             "Else",
+            "While",
+            "DoWhile",
+            "For",
+            "ForEach",
             "Error",
             "Finish"
         };
