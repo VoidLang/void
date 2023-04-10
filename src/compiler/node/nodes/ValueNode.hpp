@@ -160,4 +160,40 @@ namespace Compiler {
          */
         void debug(uint& index) override;
     };
+
+    enum ConstructType {
+        Default, //  new Foo()
+        Struct,  // new Bar { x: true, y: 2 }
+        Abstract //  new Baz() { @Override void foo() { } }
+    };
+
+    class Initializator : public Node {
+    public:
+        TreeMap<UString, Node*> members;
+
+        Initializator(TreeMap<UString, Node*> members);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug(uint& index) override;
+    };
+
+    class NewNode : public Node {
+    public:
+        UString name;
+
+        ConstructType type;
+
+        List<Node*> arguments;
+
+        Node* initializator;
+
+        NewNode(UString name, ConstructType type, List<Node*> arguments, Node* initializator);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug(uint& index) override;
+    };
 }

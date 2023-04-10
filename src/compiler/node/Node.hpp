@@ -8,6 +8,7 @@ namespace Compiler {
      */
     enum class NodeType {
         Method,
+        Field,
         Package,
         Import,
         Type,
@@ -16,6 +17,8 @@ namespace Compiler {
         LocalDeclareDestruct,
         LocalAssign,
         Value,
+        New,
+        Initializator,
         Operation,
         SideOperation,
         MethodCall,

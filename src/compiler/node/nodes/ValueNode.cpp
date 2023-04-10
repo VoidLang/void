@@ -194,14 +194,72 @@ namespace Compiler {
     void Tuple::debug(uint& index) {
         index++;
         println("Tuple [");
-        for (uint i = 0; i < members.size(); i++) {
+
+        for (auto member : members) {
             print(Strings::fill(index + 1, "    "));
-            auto member = members[i];
             member->debug(index);
             if (member->type == NodeType::Value || member->type == NodeType::Template)
                 println("");
         }
+
         println(Strings::fill(index, "    ") << "]");
+        index--;
+    }
+
+    Initializator::Initializator(TreeMap<UString, Node*> members) 
+        : Node(NodeType::Initializator), members(members)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void Initializator::debug(uint& index) {
+        index++;
+        println("Initialiaztor {");
+
+        for (auto& [key, value] : members) {
+            print(Strings::fill(index + 1, "    ") << key << ": ");
+            value->debug(index);
+            if (value->type == NodeType::Value || value->type == NodeType::Template)
+                println("");
+        }
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
+    }
+
+    NewNode::NewNode(UString name, ConstructType type, List<Node*> arguments, Node* initializator)
+        : Node(NodeType::New), name(name), type(type), arguments(arguments), initializator(initializator)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void NewNode::debug(uint& index) {
+        index++;
+        println("New {");
+
+        println(Strings::fill(index + 1, "    ") << "name: " << name);
+
+        println(Strings::fill(index + 1, "    ") << "type: " << (type == ConstructType::Default ? "default" : "struct"));
+
+        println(Strings::fill(index + 1, "    ") << "arguments: [");
+        for (auto argument : arguments) {
+            print(Strings::fill(index + 2, "    "));
+            index++;
+            argument->debug(index);
+            index--;
+            if (argument->type == NodeType::Value || argument->type == NodeType::Template)
+                println("");
+        }
+        println(Strings::fill(index + 1, "    ") << "]");
+
+        if (initializator != nullptr) {
+            print(Strings::fill(index + 1, "    ") << "initializator: ");
+            initializator->debug(index);
+        }
+
+        println(Strings::fill(index, "    ") << "}");
         index--;
     }
 }

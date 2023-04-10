@@ -4,6 +4,7 @@ namespace Compiler {
     OutputStream& operator<<(OutputStream& stream, NodeType& type) {
         static const char* const NAMES[] = {
             "Method",
+            "Field",
             "Package",
             "Import",
             "Type",
@@ -12,6 +13,8 @@ namespace Compiler {
             "LocalDeclareDestruct",
             "LocalAssign",
             "Value",
+            "New",
+            "Initializator",
             "Operation",
             "SideOperation",
             "MethodCall",

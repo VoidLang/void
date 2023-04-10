@@ -483,6 +483,14 @@ namespace Compiler {
     }
 
     /**
+     * Parse the next field node.
+     * @return new field node
+     */
+    Node* NodeParser::nextField() {
+        return new ErrorNode();
+    }
+
+    /**
      * Parse the next type declaration.
      * @return new declared type
      */
@@ -535,8 +543,10 @@ namespace Compiler {
      */
     Node* NodeParser::nextTypeOrMethod() {
         // handle package method declaration
-        if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier))
+        if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier)) {
+            
             return nextMethod();
+        }
         // handle multi-return method
         else if (peek().is(TokenType::Open))
             return nextMethod();
@@ -617,6 +627,10 @@ namespace Compiler {
         // handle do-while statement
         else if (peek().is(TokenType::Expression, U"do"))
             return nextDoWhileStatement();
+
+        // handle new statement
+        else if (peek().is(TokenType::Expression, U"new"))
+            return nextNewStatement();
 
         // TODO handle local variable assignation
         // handle unexpected token
@@ -875,7 +889,7 @@ namespace Compiler {
         else if (peek().is(2, TokenType::Operator, TokenType::Colon)) {
             UString target = parseOperator();
             // handle right-side single-value operation
-            if (isRightOperator(target)) 
+            if (isRightOperator(target))
                 return new SideOperation(target, new Value(value), false);
             // TODO make more proper error handling
             if (!isComplexOperator(target))
@@ -888,34 +902,12 @@ namespace Compiler {
         //        ^ the open parenthesis token after an identifier indicates, that a method call is expected
         else if (peek().is(TokenType::Open)) {
             // TODO make sure "value" is an identifier
-            // skip the '(' char
-            get();
-            // handle method arguments
-            // foo(123)
-            //     ^^^ the tokens in between parenthesis are the arguments of the method call
-            List<Node*> arguments;
-            if (!peek().is(TokenType::Close)) {
-            parseArgument:
-                // register the parsed method argument expression
-                arguments.push_back(nextExpression());
-                // check for more arguments
-                // bar(4.5, true, "hello")
-                //        ^ the comma indicates, that there are more arguments to be parsed
-                if (peek().is(TokenType::Comma)) {
-                    // skip the ',' char
-                    get();
-                    // expect another method argument
-                    goto parseArgument;
-                }
-            }
-            // handle method call ending
-            // baz("John Doe")
-            //               ^ the close parenthesis indicates, that the method call has been ended
-            get(TokenType::Close);
+
+            List<Node*> arguments = parseArguments();
 
             // check if the method call is used as a statement or isn't expecting to be passed in a nested context
             // let result = calculateHash("my input"); 
-            //                                       ^ the (auto-inserted) semicolon indicates, that the method call does not have any
+            //                                       ^ the semicolon indicates, that the method call does not have any
             //                                         expressions after. unlike: let res = foo() + bar
             //                                         let test = baz(); <- method call value is terminated, not expecting anything afterwards
             if (peek().is(TokenType::Semicolon))
@@ -949,8 +941,14 @@ namespace Compiler {
 
         // handle index closing or array end
         // foo[10] = 404
-        //       ^ the closing square bracket indicates, that the expression has been terminatedd
+        //       ^ the closing square bracket indicates, that the expression has been terminated
         else if (peek().is(TokenType::Stop))
+            return new Value(value);
+
+        // handle initializator end
+        // new Pair { key: "value" }
+        //                         ^ the closing vracket indicates, that the initializator has been terminated
+        else if (peek().is(TokenType::End))
             return new Value(value);
 
         // handle indexing
@@ -1270,6 +1268,111 @@ namespace Compiler {
     }
 
     /**
+     * Parse the new statement declaration.
+     * @return new "new" statement
+     */
+    Node* NodeParser::nextNewStatement() {
+        // skip the "new" keyword
+        get(TokenType::Expression, U"new");
+
+        // get the name of the target type
+        UString name = get(TokenType::Identifier).value;
+
+        // TODO enum ConstructType { 
+        //     DEFAULT -> new Foo() 
+        //     STRUCT, -> new Bar { x: true, y: 2 }
+        //     ABSTRACT -> new Baz() { @Override void foo() { } }
+        // }
+        ConstructType type = ConstructType::Default;
+
+        // ignore the auto-inserted semicolon
+        if (peek().is(TokenType::Semicolon, U"auto"))
+            get();
+
+        // check if the new keyword has an argument list
+        List<Node*> arguments;
+        if (peek().is(TokenType::Open))
+            arguments = parseArguments();
+
+        // ignore the auto-inserted semicolon
+        if (peek().is(TokenType::Semicolon, U"auto"))
+            get();
+
+        // check if the new keyword has an initializator
+        Node* initializator = nullptr;
+        if (peek().is(TokenType::Begin)) {
+            type = ConstructType::Struct;
+            initializator = nextInitializator();
+        }
+
+        Node* node = new NewNode(name, type, arguments, initializator);
+
+        // handle operation after constructor
+        if (peek().is(TokenType::Operator)) {
+            UString target = parseOperator();
+            return new Operation(node, target, nextExpression());
+        }
+
+        // check if the method call is used as a statement or isn't expecting to be passed in a nested context
+        // let result = new Foo("my input"); 
+        //                                 ^ the semicolon indicates, that the method call does not have any
+        //                                  expressions after. unlike: let res = foo() + bar
+        //                                  let test = new Foo(); <- method call value is terminated, not expecting anything afterwards
+        if (peek().is(TokenType::Semicolon))
+            get();
+
+        return node;
+    }
+
+    /**
+     * Parse the next structure initializator declaration.
+     * @return new structure initializatior
+     */
+    Node* NodeParser::nextInitializator() {
+        // skip the '{' symbol
+        get(TokenType::Begin);
+
+        // parse the members of the initializator
+        TreeMap<UString, Node*> members;
+        if (!peek().is(TokenType::End)) {
+        parseMember:
+            // parse the key of the member
+            UString key = get(TokenType::Identifier).value;
+
+            // handle the separator ':' symbol of the key-value pair
+            get(TokenType::Colon);
+
+            // parse the value of the member
+            Node* value;
+            // check if the value is also an initializer
+            if (peek().is(TokenType::Begin))
+                value = nextInitializator();
+            // handle regular initializator value
+            else
+                value = nextExpression();
+
+            // register the initializator member
+            // TODO warn for duplicate members
+            members[key] = value;
+
+            // check if there are are more members yet to be parsed
+            if (peek().is(TokenType::Comma)) {
+                get();
+                goto parseMember;
+            }
+
+            // handle auto-inserted semicolon
+            if (peek().is(TokenType::Semicolon, U"auto"))
+                get();
+        }
+
+        // skip the '}' symbol
+        get(TokenType::End);
+
+        return new Initializator(members);
+    }
+
+    /**
      * Check if the first operator has a predecende priority over the second operator.
      * @param first first operator to check
      * @param second second operator to check
@@ -1416,7 +1519,6 @@ namespace Compiler {
         return generics;
     }
 
-
     /**
      * Parse the generic names of a method or type.
      * @return generic type names
@@ -1544,7 +1646,8 @@ namespace Compiler {
             || target == U"??"
             || target == U"?."
             || target == U"?"
-            || target == U":";
+            || target == U":"
+            || target == U".";
     }
 
     /**
@@ -1637,5 +1740,38 @@ namespace Compiler {
             get();
 
         return body;
+    }
+
+    /**
+     * Parse the next argument list declaration.
+     * @return new argument list
+     */
+    List<Node*> NodeParser::parseArguments() {
+        // skip the '(' char
+        get(TokenType::Open);
+        // handle method arguments
+        // foo(123)
+        //     ^^^ the tokens in between parenthesis are the arguments
+        List<Node*> arguments;
+        if (!peek().is(TokenType::Close)) {
+        parseArgument:
+            // register the parsed argument expression
+            arguments.push_back(nextExpression());
+            // check for more arguments
+            // bar(4.5, true, "hello")
+            //        ^ the comma indicates, that there are more arguments to be parsed
+            if (peek().is(TokenType::Comma)) {
+                // skip the ',' char
+                get();
+                // expect another method argument
+                goto parseArgument;
+            }
+        }
+        // handle argument list ending
+        // baz("John Doe")
+        //               ^ the close parenthesis indicates, that the argument listhas been ended
+        get(TokenType::Close);
+
+        return arguments;
     }
 }

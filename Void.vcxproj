@@ -23,6 +23,7 @@
     <ClInclude Include="src\compiler\node\Node.hpp" />
     <ClInclude Include="src\compiler\node\NodeParser.hpp" />
     <ClInclude Include="src\compiler\node\nodes\ControlFlow.hpp" />
+    <ClInclude Include="src\compiler\node\nodes\FieldNode.hpp" />
     <ClInclude Include="src\compiler\node\nodes\FileInfo.hpp" />
     <ClInclude Include="src\compiler\node\nodes\LocalNode.hpp" />
     <ClInclude Include="src\compiler\node\nodes\MethodNode.hpp" />

@@ -132,6 +132,12 @@ namespace Compiler {
         Node* nextMethod();
 
         /**
+         * Parse the next field node.
+         * @return new field node
+         */
+        Node* nextField();
+
+        /**
          * Parse the next type declaration.
          * @return new declared type
          */
@@ -239,6 +245,18 @@ namespace Compiler {
         Node* nextDoWhileStatement();
 
         /**
+         * Parse the new statement declaration.
+         * @return new "new" statement
+         */
+        Node* nextNewStatement();
+
+        /**
+         * Parse the next structure initializator declaration.
+         * @return new structure initializatior
+         */
+        Node* nextInitializator();
+
+        /**
          * Check if the first operator has a predecende priority over the second operator.
          * @param first first operator to check
          * @param second second operator to check
@@ -319,5 +337,11 @@ namespace Compiler {
          * @return new block statement body
          */
         List<Node*> parseStatementBody();
+
+        /**
+         * Parse the next argument list declaration.
+         * @return new argument list
+         */
+        List<Node*> parseArguments();
     };
 }
