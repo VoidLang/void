@@ -572,8 +572,28 @@ namespace Compiler {
 
         }
 
-        else if (peek().is(TokenType::Begin)) {
+        else if (peek().is(TokenType::Open)) {
+            // parse the fields of the tuple struct
+            List<Parameter> parameters;
+            bool typed = false;
+            parseParameters(Token::of(TokenType::Open, U"("), Token::of(TokenType::Close, U")"), parameters, typed);
 
+            // handle semicolon after the declaration
+            if (peek().is(TokenType::Semicolon))
+                get();
+
+            print("(");
+            for (uint i = 0; i < parameters.size(); i++) {
+                auto param = parameters[i];
+                if (typed)
+                    print(param.type.value << " ");
+                print(param.name);
+                if (i < parameters.size() - 1)
+                    print(", ");
+            }
+            println(")");
+
+            return new TupleStruct(modifiers, name, genericNames, typed, parameters);
         }
 
         // handle unexpected token
@@ -1875,7 +1895,7 @@ namespace Compiler {
             // handle parameter list ending
             // foo(|x, y, z| baz(x  - y + z))
             //             ^ the "|" operator indicates, that the lambda parameter list has been ended
-            get(TokenType::Operator, U"|");
+            get(end.type, end.value);
         }
     }
 }

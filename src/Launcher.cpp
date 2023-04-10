@@ -158,6 +158,8 @@ namespace Void {
 
         for (Token token : tokens) 
             println(std::setw(12) << token);
+
+        println("\n--- DEBUG: ---\n");
         
         NodeParser parser(tokens);
         while (true) {
