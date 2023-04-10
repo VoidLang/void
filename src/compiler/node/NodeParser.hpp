@@ -4,7 +4,17 @@
 #include "../token/Token.hpp"
 #include "Node.hpp"
 
+#include "nodes/MethodNode.hpp"
+#include "nodes/FileInfo.hpp"
+#include "nodes/TypeNode.hpp"
+#include "nodes/LocalNode.hpp"
+#include "nodes/ValueNode.hpp"
+#include "nodes/ControlFlow.hpp"
+
 namespace Compiler {
+    /**
+     * The map of the operation's precedences and associativities.
+     */
     static TreeMap<UString, Pair<int, int>> OPERATION_INFO = {
         {U"+", {1, 0}},
         {U"-", {1, 0}},
@@ -142,6 +152,60 @@ namespace Compiler {
          * @return new declared type
          */
         Node* nextType();
+
+        /**
+         * Parse the next class type declaration.
+         * @param modifiers type access modifiers
+         * @param name type name
+         * @param genericNames type generic names
+         * @return new declared class
+         */
+        Node* nextClass(List<UString> modifiers, UString name, List<UString> genericNames);
+
+        /**
+         * Parse the next struct type declaration.
+         * @param modifiers type access modifiers
+         * @param name type name
+         * @param genericNames type generic names
+         * @return new declared struct
+         */
+        Node* nextStruct(List<UString> modifiers, UString name, List<UString> genericNames);
+
+        /**
+         * Parse the next tuple struct type declaration.
+         * @param modifiers type access modifiers
+         * @param name type name
+         * @param genericNames type generic names
+         * @return new declared tuple struct
+         */
+        Node* nextTupleStruct(List<UString> modifiers, UString name, List<UString> genericNames);
+
+        /**
+         * Parse the next class enum type declaration.
+         * @param modifiers type access modifiers
+         * @param name type name
+         * @param genericNames type generic names
+         * @return new declared enum
+         */
+        Node* nextEnum(List<UString> modifiers, UString name, List<UString> genericNames);
+
+        /**
+         * Parse the next interface type declaration.
+         * @param modifiers type access modifiers
+         * @param name type name
+         * @param genericNames type generic names
+         * @return new declared interface
+         */
+        Node* nextInterface(List<UString> modifiers, UString name, List<UString> genericNames);
+
+        /**
+         * Parse the next annotation type declaration.
+         * @param modifiers type access modifiers
+         * @param name type name
+         * @param genericNames type generic names
+         * @return new declared annotation
+         */
+        Node* nextAnnotation(List<UString> modifiers, UString name, List<UString> genericNames);
 
         /**
          * Parse the next type or method declaration.
@@ -343,5 +407,13 @@ namespace Compiler {
          * @return new argument list
          */
         List<Node*> parseArguments();
+
+        /**
+         * Parse the next parameter list declaration.
+         * @param begin parameter list prefix
+         * @param end parameter list suffix
+         * @return new parameter list
+         */
+        void parseParameters(Token begin, Token end, List<Parameter>& parameters, bool& typed);
     };
 }

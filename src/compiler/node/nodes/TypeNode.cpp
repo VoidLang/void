@@ -1,7 +1,7 @@
 #include "TypeNode.hpp"
 
 namespace Compiler {
-    TypeNode::TypeNode()
-        : Node(NodeType::Type)
+    TypeNode::TypeNode(NodeType type)
+        : Node(type)
     { }
 }

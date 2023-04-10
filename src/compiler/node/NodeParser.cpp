@@ -1,11 +1,5 @@
 #include "NodeParser.hpp"
 #include "../../util/Strings.hpp"
-#include "nodes/MethodNode.hpp"
-#include "nodes/FileInfo.hpp"
-#include "nodes/TypeNode.hpp"
-#include "nodes/LocalNode.hpp"
-#include "nodes/ValueNode.hpp"
-#include "nodes/ControlFlow.hpp"
 
 using namespace Void;
 
@@ -513,16 +507,44 @@ namespace Compiler {
         //                       ^^^ the generic names are placed in between angle brackets
         List<UString> genericNames = parseGenericNames();
 
+        print(kind << " " << name);
+        if (!genericNames.empty())
+            print("<" << Strings::join(genericNames, U",") << ">");
+
         // TODO generic type implementation (where T implements MyType)
 
+        // handle type-specific body parsing
+        if (kind == U"class")
+            return nextClass(modifiers, name, genericNames);
+        else if (kind == U"struct")
+            return nextStruct(modifiers, name, genericNames);
+        else if (kind == U"enum")
+            return nextEnum(modifiers, name, genericNames);
+        else if (kind == U"interface")
+            return nextInterface(modifiers, name, genericNames);
+
+        // handle unexpected token
+        Token error = peek();
+        println("Error (Type) " << error);
+        return new ErrorNode();
+    }
+
+    /**
+     * Parse the next class type declaration.
+     * @param modifiers type access modifiers
+     * @param name type name
+     * @param genericNames type generic names
+     * @return new declared class
+     */
+    Node* NodeParser::nextClass(List<UString> modifiers, UString name, List<UString> genericNames) {
         // handle type body begin
         get(TokenType::Begin);
 
-        println(kind << " " << name << " {");
+        println(" {");
 
         // parse the body of the type
         List<Node*> nodes;
-        while (!peek().is(TokenType::End)) 
+        while (!peek().is(TokenType::End))
             nodes.push_back(nextContent());
 
         // handle type body end
@@ -534,7 +556,74 @@ namespace Compiler {
         if (peek().is(TokenType::Semicolon, U"auto"))
             get();
 
-        return new TypeNode();
+        return new ErrorNode();
+    }
+
+    /**
+     * Parse the next struct type declaration.
+     * @param modifiers type access modifiers
+     * @param name type name
+     * @param genericNames type generic names
+     * @return new declared struct
+     */
+    Node* NodeParser::nextStruct(List<UString> modifiers, UString name, List<UString> genericNames) {
+        // handle normal struct
+        if (peek().is(TokenType::Begin)) {
+
+        }
+
+        else if (peek().is(TokenType::Begin)) {
+
+        }
+
+        // handle unexpected token
+        Token error = peek();
+        println("Error (Struct) " << error);
+        return new ErrorNode();
+    }
+
+    /**
+     * Parse the next tuple struct type declaration.
+     * @param modifiers type access modifiers
+     * @param name type name
+     * @param genericNames type generic names
+     * @return new declared tuple struct
+     */
+    Node* NodeParser::nextTupleStruct(List<UString> modifiers, UString name, List<UString> genericNames) {
+        return new ErrorNode();
+    }
+
+    /**
+     * Parse the next class enum type declaration.
+     * @param modifiers type access modifiers
+     * @param name type name
+     * @param genericNames type generic names
+     * @return new declared enum
+     */
+    Node* NodeParser::nextEnum(List<UString> modifiers, UString name, List<UString> genericNames) {
+        return new ErrorNode();
+    }
+
+    /**
+     * Parse the next interface type declaration.
+     * @param modifiers type access modifiers
+     * @param name type name
+     * @param genericNames type generic names
+     * @return new declared interface
+     */
+    Node* NodeParser::nextInterface(List<UString> modifiers, UString name, List<UString> genericNames) {
+        return new ErrorNode();
+    }
+
+    /**
+     * Parse the next annotation type declaration.
+     * @param modifiers type access modifiers
+     * @param name type name
+     * @param genericNames type generic names
+     * @return new declared annotation
+     */
+    Node* NodeParser::nextAnnotation(List<UString> modifiers, UString name, List<UString> genericNames) {
+        return new ErrorNode();
     }
 
     /**
@@ -543,10 +632,8 @@ namespace Compiler {
      */
     Node* NodeParser::nextTypeOrMethod() {
         // handle package method declaration
-        if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier)) {
-            
+        if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier)) 
             return nextMethod();
-        }
         // handle multi-return method
         else if (peek().is(TokenType::Open))
             return nextMethod();
@@ -748,112 +835,14 @@ namespace Compiler {
      * @return new lambda function
      */
     Node* NodeParser::nextLambdaFunction() {
-        // skip the '|' sign
-        get(TokenType::Operator, U"|");
-
         // parse the parameters of the lamba function
         List<Parameter> parameters;
-
-        // determine if types are declared in the lambda's parameter list
-        // this must be tracked, because if one parameter sets a type, all
-        // of the other parameters must set types as well
         bool typed = false;
-
-        if (!peek().is(TokenType::Operator, U"|")) {
-        parseParameter:
-            // get the next parameter
-            // call(|x| println(x))
-            //       ^ here this is just an identifier, which is the name of a lamba parameter
-            // let other = |int x| println(x)
-            //              ^^^^^ here a type is specified as well, expecting all the arguments to be typed
-            Token token = get(2, TokenType::Identifier, TokenType::Type);
-
-            // check if the parameter has a type
-            // let foo = |int x| println(x)
-            //            ^^^ the type token indicates, that the lambda function must declare a type for all of the parameters
-            if (token.is(TokenType::Type)) {
-                // TODO make sure value is not "let"
-                // TODO make sure only the last argument is variadic
-                typed = true;
-
-                // test if the type is variadic
-                // let callback = |float... f| print(f[0])
-                //                      ^^^ these dots indicate, that the parameter type is variadic
-                bool varargs = testVarargs();
-
-                // get the name of the parameter
-                // |int foo| bar(foo)
-                //      ^^^ the identifier is the name of the parameter
-                UString name = get(TokenType::Identifier).value;
-
-                // register the lambda parameter
-                parameters.push_back(Parameter(token, List<Token>(), varargs, name));
-            }
-
-            // check if the type was an identifier and a parameter identifier is following it
-            // let func = |User u| u.login()
-            //             ^^^^ if two identifiers follow each other, the first one is the type, 
-            //                  the second one is the name of the parameter
-            else if (peek().is(TokenType::Identifier)) /* assuming token is identifier */ {
-                typed = true;
-                // TODO parse type generic tokens
-
-                // test if the type is variadic
-                bool varargs = testVarargs();
-
-                // get the name of the parameter
-                // |Foo foo| bar(foo)
-                //      ^^^ the identifier is the name of the parameter
-                UString name = get(TokenType::Identifier).value;
-
-                // register the lambda parameter
-                parameters.push_back(Parameter(token, List<Token>(), varargs, name));
-            }
-            // check if only the parameter name was given
-            else /* assuming token is identifier */ {
-                // check if types were given previously, but is missing from here
-                if (typed)
-                    error("Inconsistent lambda parameter type declaration");
-
-                // register the lambda parameter
-                parameters.push_back(Parameter(Token::of(TokenType::None), List<Token>(), false, token.value));
-            }
-
-            // handle more parameters
-            // data.enumerate(|index, value| bar())
-            //                      ^ the comma indicates, that more lambda parameters are yet to be parsed
-            if (peek().is(TokenType::Comma)) {
-                // skip the '^' sign
-                get();
-                goto parseParameter;
-            }
-
-            // handle parameter list ending
-            // foo(|x, y, z| baz(x  - y + z))
-            //             ^ the "|" operator indicates, that the lambda parameter list has been ended
-            get(TokenType::Operator, U"|");
-        }
+        Token token = Token::of(TokenType::Operator, U"|");
+        parseParameters(token, token, parameters, typed);
 
         // parse the body of the lambda function
-        List<Node*> body;
-
-        // check if multiple instructions should be assigned for the body
-        // users.forEach(|u| { /* do something */ }
-        //                   ^ the open curly bracket indicates, that the lambda body has multiple instructions inside
-        if (peek().is(TokenType::Begin)) {
-            get();
-            // parse the lamba body instructions
-            while (!peek().is(TokenType::End))
-                body.push_back(nextExpression());
-            get();
-        }
-
-        // handle single-instruction lambda function
-        // get(|req, res| res.send("hello))
-        //                ^ if there is no open curly bracket after the lambda parameter list, it means
-        //                  that there is only one instruction for the lambda body
-        else /* there is no '{' after parameter list */
-            body.push_back(nextExpression());
+        List<Node*> body = parseStatementBody();
 
         return new Lambda(typed, parameters, body);
     }
@@ -1316,8 +1305,8 @@ namespace Compiler {
         // check if the method call is used as a statement or isn't expecting to be passed in a nested context
         // let result = new Foo("my input"); 
         //                                 ^ the semicolon indicates, that the method call does not have any
-        //                                  expressions after. unlike: let res = foo() + bar
-        //                                  let test = new Foo(); <- method call value is terminated, not expecting anything afterwards
+        //                                   expressions after. unlike: let res = foo() + bar
+        //                                   let test = new Foo(); <- method call value is terminated, not expecting anything afterwards
         if (peek().is(TokenType::Semicolon))
             get();
 
@@ -1434,15 +1423,32 @@ namespace Compiler {
      * @return new declared type, method or field
      */
     Node* NodeParser::nextContent() {
-        // handle package method declaration
-        if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier))
-            return nextMethod();
+        // handle method or field declaration
+        if (peek().is(2, TokenType::Type, TokenType::Identifier) && at(cursor + 1).is(TokenType::Identifier)) {
+            if (at(cursor + 2).is(TokenType::Open))
+                return nextMethod();
+            return nextField();
+        }
         // handle multi-return method
         else if (peek().is(TokenType::Open))
             return nextMethod();
-        // handle package method or class declaration
-        else if (peek().is(TokenType::Modifier))
-            return nextMethod();
+        // handle method or type declaration
+        else if (peek().is(TokenType::Modifier)) {
+            // temporarily skip the modifiers before the declaration
+            uint index = cursor;
+            while (at(index).is(TokenType::Modifier))
+                index++;
+            // handle type decleration
+            if (at(index).is(TokenType::Expression))
+                return nextType();
+            // handle method or field declaration
+            else if (at(index).is(2, TokenType::Type, TokenType::Identifier) && at(index + 1).is(TokenType::Identifier)) {
+                // handle method declaration
+                if (at(index + 2).is(TokenType::Open))
+                    return nextMethod();
+                return nextField();
+            }
+        }
         // handle package type declaration
         else if (peek().is(TokenType::Expression))
             return nextType();
@@ -1773,5 +1779,103 @@ namespace Compiler {
         get(TokenType::Close);
 
         return arguments;
+    }
+
+    /**
+     * Parse the next parameter list declaration.
+     * @param begin parameter list prefix
+     * @param end parameter list suffix
+     * @return new parameter list
+     */
+    void NodeParser::parseParameters(Token begin, Token end, List<Parameter>& parameters, bool& typed) {
+        // skip the parameter list prefix
+        get(begin.type, begin.value);
+
+        // determine if weren't are declared in the lambda's parameter list
+        // this must be tracked, because if one parameter sets a type, all
+        // of the other parameters must set types as well
+        bool noTyped = false;
+
+        if (!peek().is(end.type, end.value)) {
+        parseParameter:
+            // get the next parameter
+            // call(|x| println(x))
+            //       ^ here this is just an identifier, which is the name of a lamba parameter
+            // let other = |int x| println(x)
+            //              ^^^^^ here a type is specified as well, expecting all the arguments to be typed
+            Token token = get(2, TokenType::Identifier, TokenType::Type);
+
+            // check if the parameter has a type
+            // let foo = |int x| println(x)
+            //            ^^^ the type token indicates, that the lambda function must declare a type for all of the parameters
+            if (token.is(TokenType::Type)) {
+                // TODO make sure value is not "let"
+                // TODO make sure only the last argument is variadic
+                typed = true;
+
+                // test if the type is variadic
+                // let callback = |float... f| print(f[0])
+                //                      ^^^ these dots indicate, that the parameter type is variadic
+                bool varargs = testVarargs();
+
+                // get the name of the parameter
+                // |int foo| bar(foo)
+                //      ^^^ the identifier is the name of the parameter
+                UString name = get(TokenType::Identifier).value;
+
+                // register the lambda parameter
+                parameters.push_back(Parameter(token, List<Token>(), varargs, name));
+
+                if (noTyped) 
+                    error("Inconsistent lambda parameter type declaration");
+            }
+
+            // check if the type was an identifier and a parameter identifier is following it
+            // let func = |User u| u.login()
+            //             ^^^^ if two identifiers follow each other, the first one is the type, 
+            //                  the second one is the name of the parameter
+            else if (peek().is(TokenType::Identifier)) /* assuming token is identifier */ {
+                typed = true;
+                // TODO parse type generic tokens
+
+                // test if the type is variadic
+                bool varargs = testVarargs();
+
+                // get the name of the parameter
+                // |Foo foo| bar(foo)
+                //      ^^^ the identifier is the name of the parameter
+                UString name = get(TokenType::Identifier).value;
+
+                // register the lambda parameter
+                parameters.push_back(Parameter(token, List<Token>(), varargs, name));
+
+                if (noTyped)
+                    error("Inconsistent lambda parameter type declaration");
+            }
+            // check if only the parameter name was given
+            else /* assuming token is identifier */ {
+                // check if types were given previously, but is missing from here
+                if (typed)
+                    error("Inconsistent lambda parameter type declaration");
+
+                noTyped = true;
+                // register the lambda parameter
+                parameters.push_back(Parameter(Token::of(TokenType::None), List<Token>(), false, token.value));
+            }
+
+            // handle more parameters
+            // data.enumerate(|index, value| bar())
+            //                      ^ the comma indicates, that more lambda parameters are yet to be parsed
+            if (peek().is(TokenType::Comma)) {
+                // skip the '^' sign
+                get();
+                goto parseParameter;
+            }
+
+            // handle parameter list ending
+            // foo(|x, y, z| baz(x  - y + z))
+            //             ^ the "|" operator indicates, that the lambda parameter list has been ended
+            get(TokenType::Operator, U"|");
+        }
     }
 }

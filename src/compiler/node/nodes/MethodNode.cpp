@@ -30,10 +30,9 @@ namespace Compiler {
         println(Strings::fill(index + 1, "    ") << "name: " << name);
 
         println(Strings::fill(index + 1, "    ") << "arguments: [");
-        for (uint i = 0; i < arguments.size(); i++) {
+        for (auto arg : arguments) {
             print(Strings::fill(index + 2, "    "));
             index++;
-            auto arg = arguments[i];
             arg->debug(index);
             index--;
             if (arg->type == NodeType::Value || arg->type == NodeType::Template)
@@ -60,8 +59,7 @@ namespace Compiler {
 
         println(Strings::fill(index + 1, "    ") << "parameters: [");
 
-        for (uint i = 0; i < parameters.size(); i++) {
-            auto param = parameters[i];
+        for (auto param : parameters) {
             print(Strings::fill(index + 2, "    "));
             if (typed) {
                 print(param.type);
@@ -76,11 +74,11 @@ namespace Compiler {
         println(Strings::fill(index + 1, "    ") << "]");
 
         println(Strings::fill(index + 1, "    ") << "body: {");
-        for (uint i = 0; i < body.size(); i++) {
+        for (auto element : body) {
             print(Strings::fill(index + 2, "    "));
             index++;
-            body[i]->debug(index);
-            if (i < body.size() - 1)
+            element->debug(index);
+            if (element->type == NodeType::Value || element->type == NodeType::Template)
                 println("");
             index--;
         }
