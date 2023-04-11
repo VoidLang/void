@@ -29,10 +29,8 @@ namespace Compiler {
         ReturnType(Token type, List<Token> generics, Option<UString> name);
     };
 
-    class MethodNode : public Node {
+    class MethodNode : public Modifiable {
     public:
-        List<UString> modifiers;
-
         List<ReturnType> returnTypes;
 
         UString name;
@@ -41,7 +39,7 @@ namespace Compiler {
 
         List<Node*> body;
 
-        MethodNode(List<UString> modifiers, List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body);
+        MethodNode(List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body);
     };
 
     class MethodCall : public Node {

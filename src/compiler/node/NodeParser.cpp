@@ -20,11 +20,14 @@ namespace Compiler {
         if (peek().is(TokenType::Finish))
             return new FinishNode();
         // handle package declaration
-        else if (peek().is(TokenType::Info, U"package")) 
+        else if (peek().is(TokenType::Info, U"package"))
             return nextPackage();
         // handle package import
-        else if (peek().is(TokenType::Info, U"import")) 
+        else if (peek().is(TokenType::Info, U"import"))
             return nextImport();
+        // handle modifier list or block declaration
+        else if (peek().is(TokenType::Modifier))
+            return nextModifiers();
         // handle method or type declaration
         else if (peek().is(5, TokenType::Type, TokenType::Identifier, TokenType::Open, TokenType::Modifier, TokenType::Expression))
             return nextTypeOrMethod();
@@ -224,9 +227,6 @@ namespace Compiler {
      * @return new method node
      */
     Node* NodeParser::nextMethod() {
-        // handle method modifiers
-        List<UString> modifiers = parseModifiers(NodeType::Method);
-
         // handle method multi-return types
         // this syntax looks something like this:
         // (int, String) fetchURL(String url)
@@ -410,9 +410,6 @@ namespace Compiler {
         if (peek().is(TokenType::Semicolon))
             get();
 
-        if (!modifiers.empty())
-            print(Strings::join(modifiers, U" ") << " ");
-
         if (returnTypes.size() > 1)
             print("(");
         for (uint i = 0; i < returnTypes.size(); i++) {
@@ -473,7 +470,7 @@ namespace Compiler {
         if (peek().is(TokenType::Semicolon))
             get();
         
-        return new MethodNode(modifiers, returnTypes, name, parameters, List<Node*>());
+        return new MethodNode(returnTypes, name, parameters, List<Node*>());
     }
 
     /**
@@ -489,9 +486,6 @@ namespace Compiler {
      * @return new declared type
      */
     Node* NodeParser::nextType() {
-        // handle method modifiers
-        List<UString> modifiers = parseModifiers(NodeType::Method);
-
         // get the kind of the type
         // class MyClass {
         // ^^^^^ the expression indicates the kind of the type
@@ -515,13 +509,13 @@ namespace Compiler {
 
         // handle type-specific body parsing
         if (kind == U"class")
-            return nextClass(modifiers, name, genericNames);
+            return nextClass(name, genericNames);
         else if (kind == U"struct")
-            return nextStruct(modifiers, name, genericNames);
+            return nextStruct(name, genericNames);
         else if (kind == U"enum")
-            return nextEnum(modifiers, name, genericNames);
+            return nextEnum(name, genericNames);
         else if (kind == U"interface")
-            return nextInterface(modifiers, name, genericNames);
+            return nextInterface(name, genericNames);
 
         // handle unexpected token
         Token error = peek();
@@ -536,7 +530,7 @@ namespace Compiler {
      * @param genericNames type generic names
      * @return new declared class
      */
-    Node* NodeParser::nextClass(List<UString> modifiers, UString name, List<UString> genericNames) {
+    Node* NodeParser::nextClass(UString name, List<UString> genericNames) {
         // handle type body begin
         get(TokenType::Begin);
 
@@ -556,7 +550,7 @@ namespace Compiler {
         if (peek().is(TokenType::Semicolon, U"auto"))
             get();
 
-        return new Class(modifiers, name, genericNames, body);
+        return new Class(name, genericNames, body);
     }
 
     /**
@@ -566,7 +560,7 @@ namespace Compiler {
      * @param genericNames type generic names
      * @return new declared struct
      */
-    Node* NodeParser::nextStruct(List<UString> modifiers, UString name, List<UString> genericNames) {
+    Node* NodeParser::nextStruct(UString name, List<UString> genericNames) {
         // handle normal struct
         if (peek().is(TokenType::Begin)) {
 
@@ -600,7 +594,7 @@ namespace Compiler {
             }
             println(")");
 
-            return new TupleStruct(modifiers, name, genericNames, named, parameters);
+            return new TupleStruct(name, genericNames, named, parameters);
         }
         
         // handle unexpected token
@@ -616,7 +610,7 @@ namespace Compiler {
      * @param genericNames type generic names
      * @return new declared tuple struct
      */
-    Node* NodeParser::nextTupleStruct(List<UString> modifiers, UString name, List<UString> genericNames) {
+    Node* NodeParser::nextTupleStruct(UString name, List<UString> genericNames) {
         return new ErrorNode();
     }
 
@@ -627,7 +621,7 @@ namespace Compiler {
      * @param genericNames type generic names
      * @return new declared enum
      */
-    Node* NodeParser::nextEnum(List<UString> modifiers, UString name, List<UString> genericNames) {
+    Node* NodeParser::nextEnum(UString name, List<UString> genericNames) {
         return new ErrorNode();
     }
 
@@ -638,7 +632,7 @@ namespace Compiler {
      * @param genericNames type generic names
      * @return new declared interface
      */
-    Node* NodeParser::nextInterface(List<UString> modifiers, UString name, List<UString> genericNames) {
+    Node* NodeParser::nextInterface(UString name, List<UString> genericNames) {
         return new ErrorNode();
     }
 
@@ -649,7 +643,7 @@ namespace Compiler {
      * @param genericNames type generic names
      * @return new declared annotation
      */
-    Node* NodeParser::nextAnnotation(List<UString> modifiers, UString name, List<UString> genericNames) {
+    Node* NodeParser::nextAnnotation(UString name, List<UString> genericNames) {
         return new ErrorNode();
     }
 
@@ -658,14 +652,14 @@ namespace Compiler {
      * @return new declared type or method
      */
     Node* NodeParser::nextTypeOrMethod() {
+        // handle modifier list or block declaration
+        if (peek().is(TokenType::Modifier))
+            return nextModifiers();
         // handle package method declaration
-        if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier)) 
+        else if (peek().is(TokenType::Type) || peek().is(TokenType::Identifier))
             return nextMethod();
         // handle multi-return method
         else if (peek().is(TokenType::Open))
-            return nextMethod();
-        // handle package method or class declaration
-        else if (peek().is(TokenType::Modifier))
             return nextMethod();
         // handle package type declaration
         else if (peek().is(TokenType::Expression))
@@ -1386,6 +1380,26 @@ namespace Compiler {
         get(TokenType::End);
 
         return new Initializator(members);
+    }
+
+    /**
+     * Parse the next modifier list or block.
+     * @return new modifier list or block
+     */
+    Node* NodeParser::nextModifiers() {
+        List<UString> modifiers;
+        while (peek().is(TokenType::Modifier))
+            modifiers.push_back(get().value);
+        // handle modifier block
+        if (peek().is(TokenType::Colon)) {
+            // skip the ':' symbol
+            get();
+            println(Strings::join(modifiers, U" ") << ": ");
+            return new ModifierBlock(modifiers);
+        }
+        // handle normal modifier list
+        print(Strings::join(modifiers, U" ") << " ");
+        return new ModifierList(modifiers);
     }
 
     /**

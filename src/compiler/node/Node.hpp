@@ -7,6 +7,8 @@ namespace Compiler {
      * Represents a registry of the parseable node types.
      */
     enum class NodeType {
+        ModifierList,
+        ModifierBlock,
         Method,
         Field,
         Package,
@@ -109,5 +111,12 @@ namespace Compiler {
          * Debug the content of the parsed node.
          */
         void debug(uint& index) override;
+    };
+
+    class Modifiable : public Node {
+    public:
+        List<UString> modifiers; // to be initialized later
+
+        Modifiable(NodeType type);
     };
 }

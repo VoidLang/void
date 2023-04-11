@@ -3,6 +3,8 @@
 namespace Compiler {
     OutputStream& operator<<(OutputStream& stream, NodeType& type) {
         static const char* const NAMES[] = {
+            "ModifierList",
+            "ModifierBlock",
             "Method",
             "Field",
             "Package",
@@ -94,4 +96,8 @@ namespace Compiler {
     void FinishNode::debug(uint& index) {
         println("Finish");
     }
+
+    Modifiable::Modifiable(NodeType type) 
+        : Node(type)
+    { }
 }

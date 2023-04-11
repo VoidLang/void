@@ -155,57 +155,51 @@ namespace Compiler {
 
         /**
          * Parse the next class type declaration.
-         * @param modifiers type access modifiers
          * @param name type name
          * @param genericNames type generic names
          * @return new declared class
          */
-        Node* nextClass(List<UString> modifiers, UString name, List<UString> genericNames);
+        Node* nextClass(UString name, List<UString> genericNames);
 
         /**
          * Parse the next struct type declaration.
-         * @param modifiers type access modifiers
          * @param name type name
          * @param genericNames type generic names
          * @return new declared struct
          */
-        Node* nextStruct(List<UString> modifiers, UString name, List<UString> genericNames);
+        Node* nextStruct(UString name, List<UString> genericNames);
 
         /**
          * Parse the next tuple struct type declaration.
-         * @param modifiers type access modifiers
          * @param name type name
          * @param genericNames type generic names
          * @return new declared tuple struct
          */
-        Node* nextTupleStruct(List<UString> modifiers, UString name, List<UString> genericNames);
+        Node* nextTupleStruct(UString name, List<UString> genericNames);
 
         /**
          * Parse the next class enum type declaration.
-         * @param modifiers type access modifiers
          * @param name type name
          * @param genericNames type generic names
          * @return new declared enum
          */
-        Node* nextEnum(List<UString> modifiers, UString name, List<UString> genericNames);
+        Node* nextEnum(UString name, List<UString> genericNames);
 
         /**
          * Parse the next interface type declaration.
-         * @param modifiers type access modifiers
          * @param name type name
          * @param genericNames type generic names
          * @return new declared interface
          */
-        Node* nextInterface(List<UString> modifiers, UString name, List<UString> genericNames);
+        Node* nextInterface(UString name, List<UString> genericNames);
 
         /**
          * Parse the next annotation type declaration.
-         * @param modifiers type access modifiers
          * @param name type name
          * @param genericNames type generic names
          * @return new declared annotation
          */
-        Node* nextAnnotation(List<UString> modifiers, UString name, List<UString> genericNames);
+        Node* nextAnnotation(UString name, List<UString> genericNames);
 
         /**
          * Parse the next type or method declaration.
@@ -319,6 +313,12 @@ namespace Compiler {
          * @return new structure initializatior
          */
         Node* nextInitializator();
+
+        /**
+         * Parse the next modifier list or block.
+         * @return new modifier list or block
+         */
+        Node* nextModifiers();
 
         /**
          * Check if the first operator has a predecende priority over the second operator.

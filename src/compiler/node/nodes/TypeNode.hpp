@@ -5,22 +5,44 @@
 #include "../../token/Token.hpp"
 
 namespace Compiler {
-    class TypeNode : public Node {
+    class ModifierList : public Node {
     public:
         List<UString> modifiers;
 
+        ModifierList(List<UString> modifiers);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug(uint& index) override;
+    };
+
+    class ModifierBlock : public Node {
+    public:
+        List<UString> modifiers;
+
+        ModifierBlock(List<UString> modifiers);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug(uint& index) override;
+    };
+
+    class TypeNode : public Modifiable {
+    public:
         UString name;
 
         List<UString> genericNames;
 
-        TypeNode(NodeType type, List<UString> modifiers, UString name, List<UString> genericNames);
+        TypeNode(NodeType type, UString name, List<UString> genericNames);
     };
 
     class Class : public TypeNode {
     public:
         List<Node*> body;
 
-        Class(List<UString> modifiers, UString name, List<UString> genericNames, List<Node*> body);
+        Class(UString name, List<UString> genericNames, List<Node*> body);
     };
 
     class Struct : public Node {
@@ -46,7 +68,7 @@ namespace Compiler {
 
         List<TupleParameter> parameters;
 
-        TupleStruct(List<UString> modifiers, UString name, List<UString> genericNames, bool named, List<TupleParameter> parameters);
+        TupleStruct(UString name, List<UString> genericNames, bool named, List<TupleParameter> parameters);
     };
 
     class Enum : public Node {
