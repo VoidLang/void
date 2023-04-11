@@ -143,10 +143,20 @@ namespace Compiler {
         Node* nextMethod();
 
         /**
-         * Parse the next field node.
+         * Parse the next field declaration.
          * @return new field node
          */
         Node* nextField();
+
+        /**
+         * Parse the next multi-field declaration.
+         * @param type multi-field type
+         * @param generics type generic token
+         * @param name first field's name
+         * @param value first field's value
+         * @return new multi-field node
+         */
+        Node* nextMultiField(Token type, List<Token> generics, UString name, Option<Node*> value);
 
         /**
          * Parse the next type declaration.

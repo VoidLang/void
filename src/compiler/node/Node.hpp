@@ -11,6 +11,7 @@ namespace Compiler {
         ModifierBlock,
         Method,
         Field,
+        MultiField,
         Package,
         Import,
         Class,

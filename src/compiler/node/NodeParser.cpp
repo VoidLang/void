@@ -474,7 +474,7 @@ namespace Compiler {
     }
 
     /**
-     * Parse the next field node.
+     * Parse the next field declaration.
      * @return new field node
      */
     Node* NodeParser::nextField() {
@@ -507,16 +507,23 @@ namespace Compiler {
             return new FieldNode(type, typeGenerics, name, {});
         }
 
+        // handle multi-field declaration
+        else if (peek().is(TokenType::Comma))
+            return nextMultiField(type, typeGenerics, name, {});
+
         // handle field value assignation
         get(TokenType::Operator, U"=");
 
         // parse the value of the field
         Node* value = nextExpression();
 
-        // skip the auto-inserted semicolon
-        if (peek().is(TokenType::Semicolon))
-            get();
+        // handle multi-field declaration
+        if (peek().is(TokenType::Comma))
+            return nextMultiField(type, typeGenerics, name, makeOptional(value));
 
+        // skip the semicolon after the field declaration
+        get(TokenType::Semicolon);
+       
         print(" = ");
         uint index = -1;
         value->debug(index);
@@ -524,6 +531,62 @@ namespace Compiler {
             println("");
 
         return new FieldNode(type, typeGenerics, name, makeOptional(value));
+    }
+
+    /**
+     * Parse the next multi-field declaration.
+     * @param type multi-field type
+     * @param generics type generic token
+     * @param name first field's name
+     * @param value first field's value
+     * @return new multi-field node
+     */
+    Node* NodeParser::nextMultiField(Token type, List<Token> generics, UString name, Option<Node*> value) {
+        // skip the ',' symbol
+        get(TokenType::Comma);
+
+        // create the map of the field registry
+        TreeMap<UString, Option<Node*>> fields;
+        fields[name] = value;
+
+        if (value.has_value()) {
+            uint index = -1;
+            print(" = ");
+            (*value)->debug(index);
+        }
+
+    parseField:
+        // parse the name of the field
+        UString fieldName = get(TokenType::Identifier).value;
+            
+        print(", " << fieldName);
+
+        // parse the value of the field
+        Option<Node*> fieldValue;
+        if (peek().is(TokenType::Operator, U"=")) {
+            get();
+            fieldValue = nextExpression();
+            print(" = ");
+            uint index = -1;
+            (*fieldValue)->debug(index);
+        }
+
+        // register the field
+        // TODO error if the field name is already in the map
+        fields[fieldName] = fieldValue;
+
+        // check for more fields
+        if (peek().is(TokenType::Comma)) {
+            get();
+            goto parseField;
+        }
+
+        // skip the semicolon after the multi-field declaration
+        get(TokenType::Semicolon);
+
+        println("");
+
+        return new MultiField(type, generics, fields);
     }
 
     /**
