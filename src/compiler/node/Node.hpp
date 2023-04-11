@@ -23,7 +23,7 @@ namespace Compiler {
         LocalDeclare,
         MultiLocalDeclare,
         LocalDeclareAssign,
-        LocalDeclareDestruct,
+        LocalDeclareDestructure,
         LocalAssign,
         Value,
         New,

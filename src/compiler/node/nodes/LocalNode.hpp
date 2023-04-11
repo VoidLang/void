@@ -56,13 +56,13 @@ namespace Compiler {
     };
 
     
-    class LocalDeclareDestruct : public Node {
+    class LocalDeclareDestructure : public Node {
     public:
         List<UString> members;
 
         Node* value;
 
-        LocalDeclareDestruct(List<UString> members, Node* value);
+        LocalDeclareDestructure(List<UString> members, Node* value);
 
         /**
          * Debug the content of the parsed node.

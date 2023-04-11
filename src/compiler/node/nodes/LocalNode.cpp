@@ -102,16 +102,16 @@ namespace Compiler {
         index--;
     }
 
-    LocalDeclareDestruct::LocalDeclareDestruct(List<UString> members, Node* value)
-        : Node(NodeType::LocalDeclare), members(members), value(value)
+    LocalDeclareDestructure::LocalDeclareDestructure(List<UString> members, Node* value)
+        : Node(NodeType::LocalDeclareDestructure), members(members), value(value)
     { }
 
     /**
      * Debug the content of the parsed node.
      */
-    void LocalDeclareDestruct::debug(uint& index) {
+    void LocalDeclareDestructure::debug(uint& index) {
         index++;
-        println("LocalDeclareDestruct {");
+        println("LocalDeclareDestructure {");
 
         println(Strings::fill(index + 1, "    ") << "members: " << Strings::join(members, U", "));
 

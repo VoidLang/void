@@ -918,7 +918,7 @@ namespace Compiler {
             if (peek().is(TokenType::Semicolon))
                 get();
 
-            return new LocalDeclareDestruct(members, value);
+            return new LocalDeclareDestructure(members, value);
         }
 
         // parse the generic tokens of the variable type
