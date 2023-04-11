@@ -561,46 +561,39 @@ namespace Compiler {
      * @return new declared struct
      */
     Node* NodeParser::nextStruct(UString name, List<UString> genericNames) {
-        // handle normal struct
-        if (peek().is(TokenType::Begin)) {
+        // handle tuple struct declaration
+        if (peek().is(TokenType::Open))
+            return nextTupleStruct(name, genericNames);
 
-        }
-
-        // handle tuple struct
-        else if (peek().is(TokenType::Open)) {
-            // parse the fields of the tuple struct
-            List<TupleParameter> parameters;
-            bool named = false;
-            parseTupleParameters(parameters, named);
-
-            // handle semicolon after the declaration
-            if (peek().is(TokenType::Semicolon))
-                get();
-
-            print("(");
-            for (uint i = 0; i < parameters.size(); i++) {
-                auto param = parameters[i];
-                print(param.type.value);
-                if (!param.generics.empty()) {
-                    print("<");
-                    for (auto token : param.generics)
-                        print(token.value);
-                    print(">");
-                }
-                if (named)
-                    print(" " << param.name);
-                if (i < parameters.size() - 1)
-                    print(", ");
-            }
-            println(")");
-
-            return new TupleStruct(name, genericNames, named, parameters);
-        }
-        
         // handle unexpected token
-        Token error = peek();
-        println("Error (Struct) " << error);
-        return new ErrorNode();
+        if (!peek().is(TokenType::Begin)) {
+            Token error = peek();
+            println("Error (Struct) " << error);
+            return new ErrorNode();
+        }
+
+        // handle normal struct declaration
+        
+        // handle struct body begin
+        get(TokenType::Begin);
+
+        println(" {");
+
+        // parse the body of the struct
+        List<Node*> body;
+        while (!peek().is(TokenType::End))
+            body.push_back(nextContent());
+
+        // handle struct body end
+        get(TokenType::End);
+
+        println("}");
+
+        // handle auto-inserted semicolon at the end or the body
+        if (peek().is(TokenType::Semicolon, U"auto"))
+            get();
+
+        return new NormalStruct(name, genericNames, body);
     }
 
     /**
@@ -611,7 +604,33 @@ namespace Compiler {
      * @return new declared tuple struct
      */
     Node* NodeParser::nextTupleStruct(UString name, List<UString> genericNames) {
-        return new ErrorNode();
+        // parse the fields of the tuple struct
+        List<TupleParameter> parameters;
+        bool named = false;
+        parseTupleParameters(parameters, named);
+
+        // handle semicolon after the declaration
+        if (peek().is(TokenType::Semicolon))
+            get();
+
+        print("(");
+        for (uint i = 0; i < parameters.size(); i++) {
+            auto param = parameters[i];
+            print(param.type.value);
+            if (!param.generics.empty()) {
+                print("<");
+                for (auto token : param.generics)
+                    print(token.value);
+                print(">");
+            }
+            if (named)
+                print(" " << param.name);
+            if (i < parameters.size() - 1)
+                print(", ");
+        }
+        println(")");
+
+        return new TupleStruct(name, genericNames, named, parameters);
     }
 
     /**
@@ -1464,8 +1483,11 @@ namespace Compiler {
      * @return new declared type, method or field
      */
     Node* NodeParser::nextContent() {
+        // handle modifier list or block declaration
+        if (peek().is(TokenType::Modifier))
+            return nextModifiers();
         // handle method or field declaration
-        if (peek().is(2, TokenType::Type, TokenType::Identifier) && at(cursor + 1).is(TokenType::Identifier)) {
+        else if (peek().is(2, TokenType::Type, TokenType::Identifier) && at(cursor + 1).is(TokenType::Identifier)) {
             if (at(cursor + 2).is(TokenType::Open))
                 return nextMethod();
             return nextField();
@@ -1473,23 +1495,6 @@ namespace Compiler {
         // handle multi-return method
         else if (peek().is(TokenType::Open))
             return nextMethod();
-        // handle method or type declaration
-        else if (peek().is(TokenType::Modifier)) {
-            // temporarily skip the modifiers before the declaration
-            uint index = cursor;
-            while (at(index).is(TokenType::Modifier))
-                index++;
-            // handle type decleration
-            if (at(index).is(TokenType::Expression))
-                return nextType();
-            // handle method or field declaration
-            else if (at(index).is(2, TokenType::Type, TokenType::Identifier) && at(index + 1).is(TokenType::Identifier)) {
-                // handle method declaration
-                if (at(index + 2).is(TokenType::Open))
-                    return nextMethod();
-                return nextField();
-            }
-        }
         // handle package type declaration
         else if (peek().is(TokenType::Expression))
             return nextType();

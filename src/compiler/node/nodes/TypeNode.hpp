@@ -45,8 +45,11 @@ namespace Compiler {
         Class(UString name, List<UString> genericNames, List<Node*> body);
     };
 
-    class Struct : public Node {
+    class NormalStruct : public TypeNode {
+    public:
+        List<Node*> body;
 
+        NormalStruct(UString name, List<UString> genericNames, List<Node*> body);
     };
 
     class TupleParameter {

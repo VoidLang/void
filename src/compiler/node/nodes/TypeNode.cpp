@@ -32,6 +32,10 @@ namespace Compiler {
         : TypeNode(NodeType::Class, name, genericNames), body(body)
     { }
 
+    NormalStruct::NormalStruct(UString name, List<UString> genericNames, List<Node*> body)
+        : TypeNode(NodeType::Struct, name, genericNames), body(body)
+    { }
+
     TupleParameter::TupleParameter(Token type, List<Token> generics, int dimensions, UString name) 
         : type(type), generics(generics), dimensions(dimensions), name(name)
     { }
