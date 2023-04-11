@@ -66,6 +66,7 @@
     <ClCompile Include="src\compiler\node\Node.cpp" />
     <ClCompile Include="src\compiler\node\NodeParser.cpp" />
     <ClCompile Include="src\compiler\node\nodes\ControlFlow.cpp" />
+    <ClCompile Include="src\compiler\node\nodes\FieldNode.cpp" />
     <ClCompile Include="src\compiler\node\nodes\FileInfo.cpp" />
     <ClCompile Include="src\compiler\node\nodes\LocalNode.cpp" />
     <ClCompile Include="src\compiler\node\nodes\MethodNode.cpp" />

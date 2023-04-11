@@ -293,7 +293,7 @@ namespace Compiler {
         
         // get the name of the method
         // void greet(String person) { println($"Hi, {person}") }
-        //      ^^^^^ the identifier after the type token(s) indicate the name of hte method
+        //      ^^^^^ the identifier after the type token(s) is the name of the method
         UString name = get(TokenType::Identifier).value;
 
         // handle method generic types
@@ -478,7 +478,52 @@ namespace Compiler {
      * @return new field node
      */
     Node* NodeParser::nextField() {
-        return new ErrorNode();
+        // get the type of the field
+        Token type = get(2, TokenType::Type, TokenType::Identifier);
+
+        // handle field type generic tokens
+        // List<Order> myOrders
+        //     ^^^^^^^ these are placed after the type token
+        List<Token> typeGenerics = parseGenerics();
+
+        // get the name of the method
+        // float foo = 10_000
+        //       ^^^ the identifier after the type token(s) is the name of the method
+        UString name = get(TokenType::Identifier).value;
+
+        print(type.value);
+        if (!typeGenerics.empty()) {
+            print("<");
+            for (auto token : typeGenerics)
+                print(token.value);
+            print(">");
+        }
+        print(" " << name);
+
+        // handle field without an explicit default value
+        if (peek().is(TokenType::Semicolon)) {
+            get();
+            println("");
+            return new FieldNode(type, typeGenerics, name, {});
+        }
+
+        // handle field value assignation
+        get(TokenType::Operator, U"=");
+
+        // parse the value of the field
+        Node* value = nextExpression();
+
+        // skip the auto-inserted semicolon
+        if (peek().is(TokenType::Semicolon))
+            get();
+
+        print(" = ");
+        uint index = -1;
+        value->debug(index);
+        if (value->type == NodeType::Value || value->type == NodeType::Template)
+            println("");
+
+        return new FieldNode(type, typeGenerics, name, makeOptional(value));
     }
 
     /**

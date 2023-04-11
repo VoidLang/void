@@ -5,6 +5,7 @@
 #include "Node.hpp"
 
 #include "nodes/MethodNode.hpp"
+#include "nodes/FieldNode.hpp"
 #include "nodes/FileInfo.hpp"
 #include "nodes/TypeNode.hpp"
 #include "nodes/LocalNode.hpp"

@@ -238,6 +238,9 @@
     <ClCompile Include="src\compiler\node\nodes\ControlFlow.cpp">
       <Filter>compiler\node\nodes</Filter>
     </ClCompile>
+    <ClCompile Include="src\compiler\node\nodes\FieldNode.cpp">
+      <Filter>compiler\node\nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="util">

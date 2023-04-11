@@ -4,9 +4,8 @@
 #include "../../token/Token.hpp"
 
 namespace Compiler {
-    class FieldNode {
-        List<UString> modifiers;
-
+    class FieldNode : public Modifiable {
+    public:
         Token type;
 
         List<Token> generics;
@@ -14,5 +13,7 @@ namespace Compiler {
         UString name;
 
         Option<Node*> value;
+    
+        FieldNode(Token type, List<Token> generics, UString name, Option<Node*> value);
     };
 }
