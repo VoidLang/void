@@ -9,7 +9,11 @@ namespace Compiler {
         : TypeNode(NodeType::Class, modifiers, name, genericNames), body(body)
     { }
 
-    TupleStruct::TupleStruct(List<UString> modifiers, UString name, List<UString> genericNames, bool typed, List<Parameter> parameters) 
-        : TypeNode(NodeType::TupleStruct, modifiers, name, genericNames), typed(typed), parameters(parameters)
+    TupleParameter::TupleParameter(Token type, List<Token> generics, int dimensions, UString name) 
+        : type(type), generics(generics), dimensions(dimensions), name(name)
+    { }
+
+    TupleStruct::TupleStruct(List<UString> modifiers, UString name, List<UString> genericNames, bool named, List<TupleParameter> parameters) 
+        : TypeNode(NodeType::TupleStruct, modifiers, name, genericNames), named(named), parameters(parameters)
     { }
 }

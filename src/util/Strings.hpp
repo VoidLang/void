@@ -46,6 +46,12 @@ namespace Void {
         String fromUTF(UString utf);
 
         /**
+         * Convert an utf-16 string to an utf-16 string.
+         * @return utf-16 string
+         */
+        UString toUTF(String string);
+
+        /**
          * Fill a new string with the given string n times.
          * @param count fill count
          * @param string fill source

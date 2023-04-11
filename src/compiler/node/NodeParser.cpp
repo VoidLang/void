@@ -574,9 +574,9 @@ namespace Compiler {
 
         else if (peek().is(TokenType::Open)) {
             // parse the fields of the tuple struct
-            List<Parameter> parameters;
-            bool typed = false;
-            parseParameters(Token::of(TokenType::Open, U"("), Token::of(TokenType::Close, U")"), parameters, typed);
+            List<TupleParameter> parameters;
+            bool named = false;
+            parseTupleParameters(parameters, named);
 
             // handle semicolon after the declaration
             if (peek().is(TokenType::Semicolon))
@@ -585,17 +585,23 @@ namespace Compiler {
             print("(");
             for (uint i = 0; i < parameters.size(); i++) {
                 auto param = parameters[i];
-                if (typed)
-                    print(param.type.value << " ");
-                print(param.name);
+                print(param.type.value);
+                if (!param.generics.empty()) {
+                    print("<");
+                    for (auto token : param.generics)
+                        print(token.value);
+                    print(">");
+                }
+                if (named)
+                    print(" " << param.name);
                 if (i < parameters.size() - 1)
                     print(", ");
             }
             println(")");
 
-            return new TupleStruct(modifiers, name, genericNames, typed, parameters);
+            return new TupleStruct(modifiers, name, genericNames, named, parameters);
         }
-
+        
         // handle unexpected token
         Token error = peek();
         println("Error (Struct) " << error);
@@ -1897,5 +1903,63 @@ namespace Compiler {
             //             ^ the "|" operator indicates, that the lambda parameter list has been ended
             get(end.type, end.value);
         }
+    }
+
+    /**
+     * Parse the next tuple parameter list declaration.
+     * @param parameters result of the tuple parameters
+     * @param named result that is true if the parameters are named
+     */
+    void NodeParser::parseTupleParameters(List<TupleParameter>& parameters, bool& named) {
+        // skip the beginning of the tuple parameter list
+        get(TokenType::Open);
+
+        uint typeIndex = 0;
+
+        bool noNamed = false;
+
+        // check if the tuple parameter list is not empty
+        if (!peek().is(TokenType::Close)) {
+        parseParameter:
+            // parse the type of the parameter
+            Token type = get(2, TokenType::Type, TokenType::Identifier);
+
+            // parse the generic tokens of the type
+            List<Token> generics = parseGenerics();
+
+            // parse the array dimensions of the type
+            int dimensions = parseArray();
+
+            // parse the name of the parameter 
+            UString name;
+            if (peek().is(TokenType::Identifier)) {
+                name = get().value;
+                named = true;
+
+                if (noNamed)
+                    error("Insconsistent tuple parameter naming.")
+            }
+            // there is no explicit parameter naming here, use indices instead
+            else {
+                name = Strings::toUTF(toString(typeIndex));
+                noNamed = true;
+
+                if (named)
+                    error("Insconsistent tuple parameter naming.")
+            }
+
+            typeIndex++;
+
+            parameters.push_back(TupleParameter(type, generics, dimensions, name));
+
+            // check if more parameters are yet to be paresd
+            if (peek().is(TokenType::Comma)) {
+                get();
+                goto parseParameter;
+            }
+        }
+
+        // skip the ending of the tuple parameter list
+        get(TokenType::Close);
     }
 }

@@ -415,5 +415,12 @@ namespace Compiler {
          * @return new parameter list
          */
         void parseParameters(Token begin, Token end, List<Parameter>& parameters, bool& typed);
+
+        /**
+         * Parse the next tuple parameter list declaration.
+         * @param parameters result of the tuple parameters
+         * @param named result that is true if the parameters are named
+         */
+        void parseTupleParameters(List<TupleParameter>& parameters, bool& named);
     };
 }

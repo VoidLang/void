@@ -2,8 +2,7 @@
 
 #include "../../../Common.hpp"
 #include "../Node.hpp"
-
-#include "MethodNode.hpp"
+#include "../../token/Token.hpp"
 
 namespace Compiler {
     class TypeNode : public Node {
@@ -28,14 +27,26 @@ namespace Compiler {
 
     };
 
+    class TupleParameter {
+    public:
+        Token type;
+
+        List<Token> generics;
+
+        int dimensions;
+
+        UString name;
+
+        TupleParameter(Token type, List<Token> generics, int dimensions, UString name);
+    };
+
     class TupleStruct : public TypeNode {
     public:
+        bool named;
 
-        bool typed;
+        List<TupleParameter> parameters;
 
-        List<Parameter> parameters;
-
-        TupleStruct(List<UString> modifiers, UString name, List<UString> genericNames, bool typed, List<Parameter> parameters);
+        TupleStruct(List<UString> modifiers, UString name, List<UString> genericNames, bool named, List<TupleParameter> parameters);
     };
 
     class Enum : public Node {

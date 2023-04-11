@@ -117,6 +117,16 @@ namespace Void {
     }
 
     /**
+     * Convert an utf-16 string to an utf-16 string.
+     * @return utf-16 string
+     */
+    UString Strings::toUTF(String string) {
+        // create a UTF-16 codecvt facet
+        std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;
+        return converter.from_bytes(string);
+    }
+
+    /**
      * Fill a new string with the given string n times.
      * @param count fill count
      * @param string fill source
