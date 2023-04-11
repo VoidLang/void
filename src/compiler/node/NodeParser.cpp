@@ -543,9 +543,9 @@ namespace Compiler {
         println(" {");
 
         // parse the body of the type
-        List<Node*> nodes;
+        List<Node*> body;
         while (!peek().is(TokenType::End))
-            nodes.push_back(nextContent());
+            body.push_back(nextContent());
 
         // handle type body end
         get(TokenType::End);
@@ -556,7 +556,7 @@ namespace Compiler {
         if (peek().is(TokenType::Semicolon, U"auto"))
             get();
 
-        return new ErrorNode();
+        return new Class(modifiers, name, genericNames, body);
     }
 
     /**
@@ -572,6 +572,7 @@ namespace Compiler {
 
         }
 
+        // handle tuple struct
         else if (peek().is(TokenType::Open)) {
             // parse the fields of the tuple struct
             List<TupleParameter> parameters;
