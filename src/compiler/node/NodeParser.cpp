@@ -582,7 +582,8 @@ namespace Compiler {
         }
 
         // skip the semicolon after the multi-field declaration
-        get(TokenType::Semicolon);
+        if (peek().is(TokenType::Semicolon))
+            get(TokenType::Semicolon);
 
         println("");
 
@@ -938,6 +939,10 @@ namespace Compiler {
             return new LocalDeclare(type, typeGenerics, name);
         }
 
+        // handle multi-local declaration
+        else if (peek().is(TokenType::Comma))
+            return nextMultiLocalDeclaration(type, typeGenerics, name, {});
+
         // handle the assignation of the local variable
         // let number = 100
         //            ^ the equals sign indicates that the assignation of the local variable has been started
@@ -948,13 +953,63 @@ namespace Compiler {
         //             ^^^^^^^^^^^^^ the instructions after the equals sign is the value of the local variable
         Node* value = nextExpression();
 
+        // handle multi-local declaration
+        if (peek().is(TokenType::Comma))
+            return nextMultiLocalDeclaration(type, typeGenerics, name, makeOptional(value));
+
         // skip the semicolon after the declaration
         // let variable = 100;
         //                   ^ the (auto-inserted) semicolon indicates, that the assigning variable declaration has been ended
-        if (peek().is(TokenType::Semicolon))
+        else if (peek().is(TokenType::Semicolon))
             get();
 
         return new LocalDeclareAssign(type, typeGenerics, name, value);
+    }
+
+    /**
+     * Parse the next multi-local-variable declaration.
+     * @param type multi-local type
+     * @param generics type generic token
+     * @param name first local's name
+     * @param value first local's value
+     * @return new multi-variable declaration
+     */
+    Node* NodeParser::nextMultiLocalDeclaration(Token type, List<Token> generics, UString name, Option<Node*> value) {
+        // skip the ',' symbol
+        get(TokenType::Comma);
+
+        // create the map of the variable registry
+        TreeMap<UString, Option<Node*>> locals;
+        locals[name] = value;
+
+    parseLocal:
+        // parse the name of the local variable
+        UString localName = get(TokenType::Identifier).value;
+
+        // parse the value of the local variable
+        Option<Node*> localValue;
+        if (peek().is(TokenType::Operator, U"=")) {
+            // skip the '=' symbol
+            get();
+            localValue = nextExpression();
+        }
+
+        // register the local variable
+        locals[localName] = localValue;
+
+        // check if there are more local variables yet to be parsed
+        if (peek().is(TokenType::Comma)) {
+            // skip the ',' symbol
+            get();
+            // parse the next local variable
+            goto parseLocal;
+        }
+
+        // skip the semicolon after the multi-field declaration
+        if (peek().is(TokenType::Semicolon))
+            get();
+
+        return new MultiLocalDeclare(type, generics, locals);
     }
 
     /**

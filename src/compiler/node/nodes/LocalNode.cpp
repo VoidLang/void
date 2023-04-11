@@ -6,7 +6,7 @@ using namespace Void;
 
 namespace Compiler {
     LocalDeclare::LocalDeclare(Token type, List<Token> generics, UString name)
-        : Node(NodeType::LocalDeclare), type(type), generics(generics), name(name)
+        : Modifiable(NodeType::LocalDeclare), type(type), generics(generics), name(name)
     { }
 
     /**
@@ -31,9 +31,48 @@ namespace Compiler {
         index--;
     }
 
+    MultiLocalDeclare::MultiLocalDeclare(Token type, List<Token> generics, TreeMap<UString, Option<Node*>> locals)
+        : Modifiable(NodeType::MultiLocalDeclare), type(type), generics(generics), locals(locals)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void MultiLocalDeclare::debug(uint& index) {
+        index++;
+        println("MultiLocalDeclare {");
+
+        println(Strings::fill(index + 1, "    ") << "type: " << type);
+
+        if (!generics.empty()) {
+            print(Strings::fill(index + 1, "    ") << "generics: ");
+            for (auto gen : generics)
+                print(gen.value);
+            println("");
+        }
+
+        println(Strings::fill(index + 1, "    ") << "fields: [");
+        for (auto& [key, value] : locals) {
+            print(Strings::fill(index + 2, "    ") << key);
+            if (value.has_value()) {
+                print(": ");
+                index++;
+                (*value)->debug(index);
+                index--;
+                if ((*value)->type == NodeType::Value || (*value)->type == NodeType::Template)
+                    println("");
+            } else {
+                println("");
+            }
+        }
+        println(Strings::fill(index + 1, "    ") << "]");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
+    }
 
     LocalDeclareAssign::LocalDeclareAssign(Token type, List<Token> generics, UString name, Node* value)
-        : Node(NodeType::LocalDeclareAssign), generics(generics), type(type), name(name), value(value)
+        : Modifiable(NodeType::LocalDeclareAssign), generics(generics), type(type), name(name), value(value)
     { }
 
     /**

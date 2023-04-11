@@ -255,7 +255,7 @@ namespace Compiler {
         println(Strings::fill(index + 1, "    ") << "]");
 
         if (initializator != nullptr) {
-            print(Strings::fill(index + 1, "    ") << "initializator: ");
+            print(Strings::fill(index + 1, "    "));
             initializator->debug(index);
         }
 

@@ -5,7 +5,7 @@
 #include "../Node.hpp"
 
 namespace Compiler {
-    class LocalDeclare : public Node {
+    class LocalDeclare : public Modifiable {
     public:
         Token type;
 
@@ -21,8 +21,23 @@ namespace Compiler {
         void debug(uint& index) override;
     };
 
+    class MultiLocalDeclare : public Modifiable {
+    public:
+        Token type;
 
-    class LocalDeclareAssign : public Node {
+        List<Token> generics;
+
+        TreeMap<UString, Option<Node*>> locals;
+    
+        MultiLocalDeclare(Token type, List<Token> generics, TreeMap<UString, Option<Node*>> locals);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug(uint& index) override;
+    };
+
+    class LocalDeclareAssign : public Modifiable {
     public:
         Token type;
 

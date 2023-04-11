@@ -237,6 +237,16 @@ namespace Compiler {
         Node* nextLocalDeclaration();
 
         /**
+         * Parse the next multi-local-variable declaration.
+         * @param type multi-local type
+         * @param generics type generic token
+         * @param name first local's name
+         * @param value first local's value
+         * @return new multi-variable declaration
+         */
+        Node* nextMultiLocalDeclaration(Token type, List<Token> generics, UString name, Option<Node*> value);
+
+        /**
          * Parse the next local variable value assignation.
          * @return new local assignation
          */

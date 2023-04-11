@@ -17,6 +17,7 @@ namespace Compiler {
             "Interface",
             "Annotation",
             "LocalDeclare",
+            "MultiLocalDeclare",
             "LocalDeclareAssign",
             "LocalDeclareDestruct",
             "LocalAssign",
