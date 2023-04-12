@@ -72,6 +72,15 @@ namespace Compiler {
     }
 
     /**
+     * Determine if this node has the given type.
+     * @param type target type to check
+     * @return true if the type matches this node
+     */
+    bool Node::is(NodeType type) {
+        return this->type == type;
+    }
+
+    /**
      * Initialize the error node.
      */
     ErrorNode::ErrorNode()

@@ -53,13 +53,13 @@ namespace Compiler {
         Node* next();
 
         /**
-         * Get the current at the index.
+         * Get the node at the current index.
          * @return currently parsed token
          */
         Token peek();
 
         /**
-         * Get the current at the index.
+         * Get the node at the current index.
          * Check if the retrieved token does not match the given type.
          * @param type required token type
          * @return currently parsed token
@@ -67,7 +67,7 @@ namespace Compiler {
         Token peek(TokenType type);
 
         /**
-         * Get the current at the index.
+         * Get the node at the index.
          * Check if the retrieved token does not match any of the given typs.
          * @param size required token types' length
          * @return currently parsed token
@@ -113,14 +113,14 @@ namespace Compiler {
         /**
          * Get the token at the given index.
          * @param index token data index
-         * @return otken at the index or null if not in bounds
+         * @return token at the index or null if not in bounds
          */
         Token at(uint index);
 
         /**
          * Determine if the given index is in bounds of the data size.
          * @param index target index to check
-         * @return true if hte index is in bounds
+         * @return true if the index is in bounds
          */
         bool has(uint index);
 
@@ -392,6 +392,13 @@ namespace Compiler {
          * @return true if the operator expects two values
          */
         bool isComplexOperator(UString target);
+
+        /**
+         * Determine if the given operator should be terminated as it is.
+         * @param target target operator
+         * @return true if the operator parsing should terminate
+         */
+        bool shouldOperatorTerminate(UString target);
 
         /**
          * Test if the given operator is applicable before a value.

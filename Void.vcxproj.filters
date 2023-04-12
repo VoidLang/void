@@ -123,6 +123,9 @@
     <ClInclude Include="src\compiler\node\nodes\FieldNode.hpp">
       <Filter>compiler\node\nodes</Filter>
     </ClInclude>
+    <ClInclude Include="src\compiler\builder\NodeBuilder.hpp">
+      <Filter>compiler\builder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -241,6 +244,9 @@
     <ClCompile Include="src\compiler\node\nodes\FieldNode.cpp">
       <Filter>compiler\node\nodes</Filter>
     </ClCompile>
+    <ClCompile Include="src\compiler\builder\NodeBuilder.cpp">
+      <Filter>compiler\builder</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="util">
@@ -276,7 +282,7 @@
     <Filter Include="compiler\node\nodes">
       <UniqueIdentifier>{4570172b-fdb1-4af5-9015-45234f192a6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="compiler\node\builder">
+    <Filter Include="compiler\builder">
       <UniqueIdentifier>{c9ed9a22-dfd7-4a29-8b38-01922a1957fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

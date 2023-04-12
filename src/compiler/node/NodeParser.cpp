@@ -29,7 +29,7 @@ namespace Compiler {
         else if (peek().is(TokenType::Modifier))
             return nextModifiers();
         // handle method or type declaration
-        else if (peek().is(5, TokenType::Type, TokenType::Identifier, TokenType::Open, TokenType::Modifier, TokenType::Expression))
+        else if (peek().is(4, TokenType::Type, TokenType::Identifier, TokenType::Open, TokenType::Expression))
             return nextTypeOrMethod();
         // handle unexpected token
         Token error = peek();
@@ -38,15 +38,15 @@ namespace Compiler {
     }
 
     /**
-     * Get the current at the index.
-     * @return currently parsed token
-     */
+      * Get the node at the current index.
+      * @return currently parsed token
+      */
     Token NodeParser::peek() {
         return at(cursor);
     }
 
     /**
-     * Get the current at the index.
+     * Get the node at the current index.
      * Check if the retrieved token does not match the given type.
      * @param type required token type
      * @return currently parsed token
@@ -61,9 +61,9 @@ namespace Compiler {
     }
 
     /**
-     * Get the current at the index.
+     * Get the node at the current index.
      * Check if the retrieved token does not match any of the given typs.
-     * @param length of required token types
+     * @param size required token types' length
      * @return currently parsed token
      */
     Token NodeParser::peek(uint size, ...) {
@@ -207,7 +207,7 @@ namespace Compiler {
     /**
      * Get the token at the given index.
      * @param index token data index
-     * @return otken at the index or null if not in bounds
+     * @return token at the index or null if not in bounds
      */
     Token NodeParser::at(uint index) {
         return has(index) ? tokens[index] : Token::of(TokenType::Finish);
@@ -216,7 +216,7 @@ namespace Compiler {
     /**
      * Determine if the given index is in bounds of the data size.
      * @param index target index to check
-     * @return true if hte index is in bounds
+     * @return true if the index is in bounds
      */
     bool NodeParser::has(uint index) {
         return index >= 0 && index < tokens.size();
@@ -885,9 +885,9 @@ namespace Compiler {
         // ^^^^^ the type or identifier indicates the type of the local variable
         Token type = get(2, TokenType::Type, TokenType::Identifier);
 
-        // handle tuple destruction
+        // handle tuple destructuration
         // let (a, b) = foo()
-        //     ^ the open parenthesis after "let" indicates, that the tuple value should be destructed
+        //     ^ the open parenthesis after "let" indicates, that the tuple value should be destructured
         if (peek().is(TokenType::Open)) {
             // TODO make sure that type is "let"
             List<UString> members;
@@ -899,10 +899,10 @@ namespace Compiler {
             // handle more tuple members
             if (peek().is(TokenType::Comma))
                 goto parseTupleMember;
-            // handle tuple destruction ending
+            // handle tuple destructuration ending
             get(TokenType::Close);
 
-            // handle the assignation of the tuple destruction
+            // handle the assignation of the tuple destructuration
             // let (a, b) = foo()
             //            ^ the equals sign indicates that the assignation of the local variable has been started
             get(TokenType::Operator, U"=");
@@ -1821,8 +1821,11 @@ namespace Compiler {
      */
     UString NodeParser::parseOperator() {
         UString result;
-        while (peek().is(TokenType::Operator)) 
+        while (peek().is(TokenType::Operator)) {
             result += get().value;
+            if (shouldOperatorTerminate(result))
+                return result;
+        }
         while (peek().is(TokenType::Colon)) {
             get();
             result += ':';
@@ -1863,6 +1866,16 @@ namespace Compiler {
             || target == U"?"
             || target == U":"
             || target == U".";
+    }
+
+    /**
+     * Determine if the given operator should be terminated as it is.
+     * @param target target operator
+     * @return true if the operator parsing should terminate
+     */
+    bool NodeParser::shouldOperatorTerminate(UString target) {
+        return target == U"&&"
+            || target == U"||";
     }
 
     /**

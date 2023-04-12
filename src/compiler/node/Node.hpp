@@ -80,6 +80,13 @@ namespace Compiler {
          * @param bytecode result bytecode list
          */
         virtual void build(List<String>& bytecode);
+    
+        /**
+         * Determine if this node has the given type.
+         * @param type target type to check
+         * @return true if the type matches this node
+         */
+        bool is(NodeType type);
     };
     
     /**

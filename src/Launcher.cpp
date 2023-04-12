@@ -9,11 +9,12 @@
 
 #include "util/Files.hpp"
 
+#include "compiler/Project.hpp"
 #include "compiler/token/Token.hpp"
 #include "compiler/token/Tokenizer.hpp"
 #include "compiler/token/Transformer.hpp"
-#include "compiler/Project.hpp"
 #include "compiler/node/NodeParser.hpp"
+#include "compiler/builder/NodeBuilder.hpp"
 
 using namespace Compiler;
 
@@ -162,15 +163,21 @@ namespace Void {
         println("\n--- DEBUG: ---\n");
         
         NodeParser parser(tokens);
+        List<Node*> nodes;
         while (true) {
-            Compiler::Node* node = parser.next();
+            Node* node = parser.next();
 
             if (node->type == NodeType::Error)
                 error("Error!")
 
             else if (node->type == NodeType::Finish)
                 break;
+
+            nodes.push_back(node);
         }
+
+        NodeBuilder builder(nodes);
+        builder.build();
     }
 
     /**

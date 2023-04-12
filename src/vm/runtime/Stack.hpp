@@ -27,7 +27,7 @@ namespace Void {
      * Represents a value holder element of the sub-stack.
      */
     template <typename T>
-    class Node {
+    class StackNode {
     public:
         /**
          * The data of the node.
@@ -37,13 +37,13 @@ namespace Void {
         /**
          * The next node of the node.
          */
-        Node<T>* next;
+        StackNode<T>* next;
 
         /**
          * Initialize a new node with an initial value.
          * @param data node data
          */
-        Node(T data) {
+        StackNode(T data) {
             this->data = data;
             this->next = next;
         }
@@ -58,12 +58,12 @@ namespace Void {
         /**
          * The first element of the sub-stack.
          */
-        Node<T>* first = NULL;
+        StackNode<T>* first = NULL;
 
         /**
          * The last element of the sub-stack.
          */
-        Node<T>* last = NULL;
+        StackNode<T>* last = NULL;
 
         /**
          * The count of elements in the sun-stack.
@@ -77,7 +77,7 @@ namespace Void {
          */
         void push(T value) {
             // create a new node for the value
-            Node<T>* newNode = new Node<T>(value);
+            StackNode<T>* newNode = new StackNode<T>(value);
 
             // check if the sub-stack is empty
             if (last == NULL)
@@ -101,12 +101,12 @@ namespace Void {
          */
         T pull() {
             // check if the sub-stack has no elements
-            Node<T>* temp = first;
+            StackNode<T>* temp = first;
             if (temp == NULL)
                 return {};
             // delete the node of the element
             T value = temp->data;
-            Node<T>* next = temp->next;
+            StackNode<T>* next = temp->next;
             delete temp;
             // check if no elements left
             if (next == NULL) {
@@ -150,7 +150,7 @@ namespace Void {
         T at(uint index) {
             // recursively loop through the elements of the sub-stack
             uint currentIndex = 0;
-            Node<T>* node = first;
+            StackNode<T>* node = first;
             while (node != NULL) {
                 // move to the next node
                 if (currentIndex++ < index)
@@ -176,10 +176,10 @@ namespace Void {
          */
         void clear() {
             // recursively loop through the elements of the sub-stack
-            Node<T>* node = first;
+            StackNode<T>* node = first;
             while (node != NULL) {
                 // get the next node
-                Node<T>* next = node->next;
+                StackNode<T>* next = node->next;
                 // delete the current node
                 delete node;
                 // continue checking with the next element

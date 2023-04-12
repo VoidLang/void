@@ -133,6 +133,8 @@ typedef char32_t cint;
 
 #define instanceof(obj, T) \
     ((bool) (dynamic_cast<T*>(obj) != nullptr))
+#define as(obj, T) \
+    dynamic_cast<T*>(obj)
 
 // time
 

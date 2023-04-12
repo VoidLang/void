@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Common.hpp" />
+    <ClInclude Include="src\compiler\builder\NodeBuilder.hpp" />
     <ClInclude Include="src\compiler\node\Node.hpp" />
     <ClInclude Include="src\compiler\node\NodeParser.hpp" />
     <ClInclude Include="src\compiler\node\nodes\ControlFlow.hpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="src\vm\VirtualMachine.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\compiler\builder\NodeBuilder.cpp" />
     <ClCompile Include="src\compiler\node\Node.cpp" />
     <ClCompile Include="src\compiler\node\NodeParser.cpp" />
     <ClCompile Include="src\compiler\node\nodes\ControlFlow.cpp" />
