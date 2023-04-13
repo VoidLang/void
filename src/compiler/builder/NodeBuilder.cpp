@@ -37,6 +37,9 @@ namespace Compiler {
             // handle package struct declaration
             else if (peek()->is(NodeType::Struct))
                 nextPackageStruct();
+            // handle package tuple struct declaration
+            else if (peek()->is(NodeType::TupleStruct))
+                nextPackageTupleStruct();
             // handle modifier list declaration
             else if (peek()->is(NodeType::ModifierList))
                 modifiers = as(get(), ModifierList);
@@ -52,8 +55,9 @@ namespace Compiler {
     void NodeBuilder::nextPackage() {
         Package* package = as(get(), Package);
         // TODO validate the package name
-        // TODO check if the package was already given
-        this->package = package->name;
+        UString name = package->name;
+        checkTypeNameAvailable(name);
+        this->package = name;
     }
 
     /**
@@ -70,8 +74,9 @@ namespace Compiler {
      */
     void NodeBuilder::nextPackageClass() {
         Class* classNode = as(get(), Class);
-        // TODO check if the class name is already reserved for a type in the package
-        classes[classNode->name] = classNode;
+        UString name = classNode->name;
+        checkTypeNameAvailable(name);
+        classes[name] = classNode;
     }
 
     /**
@@ -79,8 +84,48 @@ namespace Compiler {
      */
     void NodeBuilder::nextPackageStruct() {
         NormalStruct* normalStruct = as(get(), NormalStruct);
-        // TODO check if the struct name is already reserved for a type in the package
-        structs[normalStruct->name] = normalStruct;
+        UString name = normalStruct->name;
+        checkTypeNameAvailable(name);
+        structs[name] = normalStruct;
+    }
+
+    /**
+     * Handle the next pacakge tuple struct declaration.
+     */
+    void NodeBuilder::nextPackageTupleStruct() {
+        TupleStruct* tupleStruct = as(get(), TupleStruct);
+        UString name = tupleStruct->name;
+        checkTypeNameAvailable(name);
+        tupleStructs[name] = tupleStruct;
+    }
+
+    /**
+     * Check if the given name is already used by a type in the package.
+     * @param name type name to check
+     */
+    void NodeBuilder::checkTypeNameAvailable(UString name) {
+        // check if a package class uses the given name
+        for (auto& [_, classNode] : classes) {
+            if (classNode->name == name)
+                goto error;
+        }
+
+        // check if a package struct uses the given name
+        for (auto& [_, structNode] : structs) {
+            if (structNode->name == name)
+                goto error;
+        }
+
+        // check if a package tuple struct uses the given name
+        for (auto& [_, tupleStruct] : tupleStructs) {
+            if (tupleStruct->name == name)
+                goto error;
+        }
+
+        return;
+
+    error:
+        error("Type name '" << name << "' is already declared in this package.");
     }
 
     /**

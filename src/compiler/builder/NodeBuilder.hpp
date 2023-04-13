@@ -49,6 +49,11 @@ namespace Compiler {
          */
         Map<UString, NormalStruct*> structs;
 
+        /**
+         * The map of the package tuple structs.
+         */
+        Map<UString, TupleStruct*> tupleStructs;
+
     public:
         /**
          * Initialize the node builder.
@@ -80,6 +85,17 @@ namespace Compiler {
          * Handle the next package struct declaration.
          */
         void nextPackageStruct();
+
+        /**
+         * Handle the next pacakge tuple struct declaration.
+         */
+        void nextPackageTupleStruct();
+
+        /**
+         * Check if the given name is already used by a type in the package.
+         * @param name type name to check
+         */
+        void checkTypeNameAvailable(UString name);
 
         /**
          * Get the node at the current index.
