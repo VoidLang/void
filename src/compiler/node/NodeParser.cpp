@@ -1865,7 +1865,8 @@ namespace Compiler {
             || target == U"?."
             || target == U"?"
             || target == U":"
-            || target == U".";
+            || target == U"."
+            || target == U"^";
     }
 
     /**
