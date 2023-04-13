@@ -73,6 +73,31 @@ namespace Compiler {
         void build(List<String>& bytecode) override;
     };
 
+    class JoinOperation : public Node {
+    public:
+        /**
+         * The target expression of the operation.
+         */
+        Node* target;
+
+        /**
+         * The child expressions of the operation.
+         */
+        List<Node*> children;
+
+        /**
+         * Ubutuakuze the join operation.
+         * @param target first expression
+         * @param children operatorands
+         */
+        JoinOperation(Node* left, List<Node*> right);
+
+        /**
+         * Debug the content of the parsed node.
+         */
+        void debug(uint& index) override;
+    };
+
     class SideOperation : public Node {
     public:
         UString target;

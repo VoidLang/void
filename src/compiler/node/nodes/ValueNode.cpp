@@ -46,6 +46,65 @@ namespace Compiler {
     void Operation::build(List<String>& bytecode) {
     }
 
+    /**
+     * Debug the content of the parsed node.
+     */
+    void Operation::debug(uint& index) {
+        index++;
+        println("Operation {");
+
+        print(Strings::fill(index + 1, "    ") << "left: ");
+        left->debug(index);
+        if (left->type == NodeType::Value || right->type == NodeType::Template)
+            println("");
+
+        println(Strings::fill(index + 1, "    ") << "operator: '" << target << "'");
+
+        print(Strings::fill(index + 1, "    ") << "right: ");
+        right->debug(index);
+        if (right->type == NodeType::Value || right->type == NodeType::Template)
+            println("");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
+    }
+
+    /**
+     * Ubutuakuze the join operation.
+     * @param target first expression
+     * @param children operatorands
+     */
+    JoinOperation::JoinOperation(Node* target, List<Node*> children)
+        : Node(NodeType::JoinOperation), target(target), children(children)
+    { }
+
+    /**
+     * Debug the content of the parsed node.
+     */
+    void JoinOperation::debug(uint& index) {
+        index++;
+        println("JoinOperation {");
+
+        print(Strings::fill(index + 1, "    ") << "target: ");
+        target->debug(index);
+        if (target->type == NodeType::Value || target->type == NodeType::Template)
+            println("");
+
+        println(Strings::fill(index + 1, "    ") << "children: [");
+        for (auto child : children) {
+            print(Strings::fill(index + 2, "    "));
+            index++;
+            child->debug(index);
+            index--;
+            if (child->type == NodeType::Value || child->type == NodeType::Template)
+                println("");
+        }
+        println(Strings::fill(index + 1, "    ") << "]");
+
+        println(Strings::fill(index, "    ") << "}");
+        index--;
+    }
+
     SideOperation::SideOperation(UString target, Node* operand, bool left)
         : Node(NodeType::SideOperation), target(target), operand(operand), left(left)
     { }
@@ -67,31 +126,6 @@ namespace Compiler {
             println("");
 
         println(Strings::fill(index, "    ") << "}");
-        index--;
-    }
-
-    /**
-     * Debug the content of the parsed node.
-     */
-    void Operation::debug(uint& index) {
-        index++;
-
-        println("Operation {");
-
-        print(Strings::fill(index + 1, "    ") << "left: ");
-        left->debug(index);
-        if (left->type == NodeType::Value)
-            println("");
-
-        println(Strings::fill(index + 1, "    ") << "operator: '" << target << "'");
-
-        print(Strings::fill(index + 1, "    ") << "right: ");
-        right->debug(index);
-        if (right->type == NodeType::Value)
-            println("");
-
-        println(Strings::fill(index, "    ") << "}");
-
         index--;
     }
 

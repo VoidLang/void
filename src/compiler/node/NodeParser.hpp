@@ -22,7 +22,8 @@ namespace Compiler {
         {U"*", {2, 0}},
         {U"/", {2, 0}},
         {U"%", {2, 0}},
-        {U"^", {3, 1}}
+        {U"^", {3, 1}},
+        {U".", {4, 0}}
     };
 
     /**
@@ -228,6 +229,12 @@ namespace Compiler {
          * Parse the next expression instruction.
          * @return new expression
          */
+        Node* nextExpression(bool ignoreJoin);
+
+        /**
+         * Parse the next expression instruction.
+         * @return new expression
+         */
         Node* nextExpression();
 
         /**
@@ -262,13 +269,13 @@ namespace Compiler {
          * Parse the next literal value or method call declaration.
          * @return new literal or method call
          */
-        Node* nextLiteralOrMethodCall();
+        Node* nextLiteralOrMethodCall(bool ignoreJoin);
 
         /**
          * Parse the next string template declaration.
          * @return new string template 
          */
-        Node* nextStringTemplate();
+        Node* nextStringTemplate(bool ignoreJoin);
 
         /**
          * Parse the next single value operator declaration.
@@ -292,7 +299,7 @@ namespace Compiler {
          * Parse the next group or tuple declaration.
          * @return new group or tuple
          */
-        Node* nextGroupOrTuple();
+        Node* nextGroupOrTuple(bool ignoreJoin);
 
         /**
          * Parse the next if statement declaration.
@@ -327,7 +334,7 @@ namespace Compiler {
          * Parse the new statement declaration.
          * @return new "new" statement
          */
-        Node* nextNewStatement();
+        Node* nextNewStatement(bool ignoreJoin);
 
         /**
          * Parse the next structure initializator declaration.
@@ -355,6 +362,13 @@ namespace Compiler {
          * @return fixed node operations
          */
         Node* fixOperationTree(Node* root);
+
+        /**
+         * Parse the next join operation.
+         * @param target fisrt node of join operation
+         * @return new join operation
+         */
+        Node* nextJoinOperation(Node* target);
 
         /**
          * Parse the generic types of a type.

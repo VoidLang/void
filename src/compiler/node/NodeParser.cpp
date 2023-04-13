@@ -170,7 +170,7 @@ namespace Compiler {
 
         // get the current token and move the cursor
         Token token = get();
-        
+
         // check if the current token does not match any of the required types
         for (TokenType type : types) {
             if (token.is(type))
@@ -178,20 +178,20 @@ namespace Compiler {
         }
         // token does not match any of the types
         print("Invalid token. Expected ");
-       
+
         // print the expected token types
         if (size == 1) {
             print(types[0]);
             goto end;
         }
-        for (uint i = 0; i < size - 1; i++) 
+        for (uint i = 0; i < size - 1; i++)
             print(types[i] << ", ");
-        
+
         print("or " << types.back());
 
     end:
         println(", but got " << token);
-        
+
         exit(-1);
         return Token::of(TokenType::None);
     }
@@ -248,10 +248,10 @@ namespace Compiler {
             // List<Set<Float>> 
             //     ^   ^     ^^ this list holds multiple sets of floats
             List<Token> typeGenerics = parseGenerics();
-            
+
             // check if the type has a name
             Option<UString> name;
-            if (peek().is(TokenType::Identifier)) 
+            if (peek().is(TokenType::Identifier))
                 name = get().value;
 
             // register the return type
@@ -262,7 +262,7 @@ namespace Compiler {
             //           ^ comma indicates, that there are more generic types
             if (peek(2, TokenType::Comma, TokenType::Close).is(TokenType::Comma))
                 goto parseReturnType;
-            
+
             // handle multi-return exit
             // (int, int) getTwoNumbers()
             //          ^ closing parenthesis indicates, that the multi-return types' declaration has ended
@@ -289,8 +289,8 @@ namespace Compiler {
             returnTypes.push_back(ReturnType(type, typeGenerics, {}));
         }
 
-        exitReturnTypes:
-        
+    exitReturnTypes:
+
         // get the name of the method
         // void greet(String person) { println($"Hi, {person}") }
         //      ^^^^^ the identifier after the type token(s) is the name of the method
@@ -345,132 +345,132 @@ namespace Compiler {
             get();
             goto noParams;
         }
-        
-        parseParam: {
-            // get the type of the parameter
-            // void foo(int i)
-            //          ^^^ this indicates the type of the parameter
-            Token paramType = get(2, TokenType::Identifier, TokenType::Type);
-            // handle type generic arguments
-            // void takeOrders(List<Order> orders)
-            //                     ^ just like before, generic types are placed in between angle brackets
-            List<Token> paramGenerics = parseGenerics();
 
-            // handle method array type
-            // int[] getPositionXYZ()
-            //    ^^ square brackets after the type indicates that they are arrays
-            int dimensions = parseArray();
+    parseParam: {
+        // get the type of the parameter
+        // void foo(int i)
+        //          ^^^ this indicates the type of the parameter
+        Token paramType = get(2, TokenType::Identifier, TokenType::Type);
+        // handle type generic arguments
+        // void takeOrders(List<Order> orders)
+        //                     ^ just like before, generic types are placed in between angle brackets
+        List<Token> paramGenerics = parseGenerics();
 
-            // handle variadic method
-            // List<T> fromElements<T>(T... elements)
-            //                          ^^^ the spread operator indicates, that the type is variadic
-            bool varargs = false;
-            if (peek().is(TokenType::Operator, U".")) {
-                // skip the remaining three dots
-                get();
-                get(TokenType::Operator, U".");
-                get(TokenType::Operator, U".");
-                varargs = true;
-            }
-            
-            // get the name of the parameter
-            // void foo(int test)   void bar(List<Float> myList)
-            //              ^^^^                         ^^^^^^ the name of the kust
-            UString paramName = get(TokenType::Identifier).value;
+        // handle method array type
+        // int[] getPositionXYZ()
+        //    ^^ square brackets after the type indicates that they are arrays
+        int dimensions = parseArray();
 
-            // register the method parameter
-            parameters.push_back(Parameter(paramType, paramGenerics, varargs, paramName));
-
-            // handle more parameters
-            // int subtract(int a, int b)
-            //                   ^ the comma indicates, that there are more parameters to be parsed
-            // void myMethod(int myParam)
-            //                          ^ the closing parenthesis incidate, that the declaration of the parameter list has ended
-            Token token = get(2, TokenType::Comma, TokenType::Close);
-            if (token.is(TokenType::Comma))
-                goto parseParam;
-        }
-
-        // handle method without any parameters
-    noParams:
-
-        // handle method body begin
-        get(TokenType::Begin);
-
-        // parse the body of the method
-        List<Node*> body;
-        while (!peek().is(TokenType::End)) {
-            body.push_back(nextExpression());
-        }
-
-        // handle method body end
-        get(TokenType::End);
-        
-        // skip the auto-inserted semicolon
-        if (peek().is(TokenType::Semicolon))
+        // handle variadic method
+        // List<T> fromElements<T>(T... elements)
+        //                          ^^^ the spread operator indicates, that the type is variadic
+        bool varargs = false;
+        if (peek().is(TokenType::Operator, U".")) {
+            // skip the remaining three dots
             get();
-
-        if (returnTypes.size() > 1)
-            print("(");
-        for (uint i = 0; i < returnTypes.size(); i++) {
-            ReturnType type = returnTypes[i];
-            print(type.type.value);
-            if (!type.generics.empty()) {
-                print("<");
-                for (uint j = 0; j < type.generics.size(); j++) {
-                    print(type.generics[j].value);
-                }
-                print(">");
-            }
-            if (type.name.has_value())
-                print(" " << *type.name);
-            if (i < returnTypes.size() - 1)
-                print(", ");
+            get(TokenType::Operator, U".");
+            get(TokenType::Operator, U".");
+            varargs = true;
         }
-        if (returnTypes.size() > 1)
-            print(")");
-        print(" ");
 
-        print(name);
+        // get the name of the parameter
+        // void foo(int test)   void bar(List<Float> myList)
+        //              ^^^^                         ^^^^^^ the name of the kust
+        UString paramName = get(TokenType::Identifier).value;
 
-        if (!genericTypes.empty())
-            print("<" << Strings::join(genericTypes, U", ") << ">");
+        // register the method parameter
+        parameters.push_back(Parameter(paramType, paramGenerics, varargs, paramName));
+
+        // handle more parameters
+        // int subtract(int a, int b)
+        //                   ^ the comma indicates, that there are more parameters to be parsed
+        // void myMethod(int myParam)
+        //                          ^ the closing parenthesis incidate, that the declaration of the parameter list has ended
+        Token token = get(2, TokenType::Comma, TokenType::Close);
+        if (token.is(TokenType::Comma))
+            goto parseParam;
+        }
+
+    // handle method without any parameters
+noParams:
+
+    // handle method body begin
+    get(TokenType::Begin);
+
+    // parse the body of the method
+    List<Node*> body;
+    while (!peek().is(TokenType::End)) {
+        body.push_back(nextExpression());
+    }
+
+    // handle method body end
+    get(TokenType::End);
+
+    // skip the auto-inserted semicolon
+    if (peek().is(TokenType::Semicolon))
+        get();
+
+    if (returnTypes.size() > 1)
         print("(");
-
-        for (uint i = 0; i < parameters.size(); i++) {
-            print(parameters[i].type.value);
-            if (!parameters[i].generics.empty()) {
-                print("<");
-                for (uint j = 0; j < parameters[i].generics.size(); j++) {
-                    print(parameters[i].generics[j].value);
-                }
-                print(">");
+    for (uint i = 0; i < returnTypes.size(); i++) {
+        ReturnType type = returnTypes[i];
+        print(type.type.value);
+        if (!type.generics.empty()) {
+            print("<");
+            for (uint j = 0; j < type.generics.size(); j++) {
+                print(type.generics[j].value);
             }
-            if (parameters[i].varargs)
-                print("...");
-
-            print(" " << parameters[i].name);
-            if (i < parameters.size() - 1)
-                print(", ");
+            print(">");
         }
+        if (type.name.has_value())
+            print(" " << *type.name);
+        if (i < returnTypes.size() - 1)
+            print(", ");
+    }
+    if (returnTypes.size() > 1)
+        print(")");
+    print(" ");
 
-        println(") {");
+    print(name);
 
-        for (Node* element : body) {
-            uint index = -1;
-            index++;
-            print(Strings::fill(index + 1, "    "));
-            element->debug(index);
-            index--;
+    if (!genericTypes.empty())
+        print("<" << Strings::join(genericTypes, U", ") << ">");
+    print("(");
+
+    for (uint i = 0; i < parameters.size(); i++) {
+        print(parameters[i].type.value);
+        if (!parameters[i].generics.empty()) {
+            print("<");
+            for (uint j = 0; j < parameters[i].generics.size(); j++) {
+                print(parameters[i].generics[j].value);
+            }
+            print(">");
         }
+        if (parameters[i].varargs)
+            print("...");
 
-        println("}");
+        print(" " << parameters[i].name);
+        if (i < parameters.size() - 1)
+            print(", ");
+    }
 
-        // skip the auto-inserted semicolon
-        if (peek().is(TokenType::Semicolon))
-            get();
-        
-        return new MethodNode(returnTypes, name, parameters, List<Node*>());
+    println(") {");
+
+    for (Node* element : body) {
+        uint index = -1;
+        index++;
+        print(Strings::fill(index + 1, "    "));
+        element->debug(index);
+        index--;
+    }
+
+    println("}");
+
+    // skip the auto-inserted semicolon
+    if (peek().is(TokenType::Semicolon))
+        get();
+
+    return new MethodNode(returnTypes, name, parameters, List<Node*>());
     }
 
     /**
@@ -523,7 +523,7 @@ namespace Compiler {
 
         // skip the semicolon after the field declaration
         get(TokenType::Semicolon);
-       
+
         print(" = ");
         uint index = -1;
         value->debug(index);
@@ -558,7 +558,7 @@ namespace Compiler {
     parseField:
         // parse the name of the field
         UString fieldName = get(TokenType::Identifier).value;
-            
+
         print(", " << fieldName);
 
         // parse the value of the field
@@ -682,7 +682,7 @@ namespace Compiler {
         }
 
         // handle normal struct declaration
-        
+
         // handle struct body begin
         get(TokenType::Begin);
 
@@ -802,7 +802,7 @@ namespace Compiler {
      * Parse the next expression instruction.
      * @return new expression
      */
-    Node* NodeParser::nextExpression() {
+    Node* NodeParser::nextExpression(bool ignoreJoin) {
         // handle local variable declaration
         // let myVariable = 100
         // ^^^ the "let" keyword indicates that, the local variable declaration has been started
@@ -823,7 +823,7 @@ namespace Compiler {
         // let a = (b + c) + d
         //         ^ the open parenthesis indicate, that the following nodes should be placed in a node group
         else if (peek().is(TokenType::Open))
-            return nextGroupOrTuple();
+            return nextGroupOrTuple(ignoreJoin);
 
         // handle lambda function
         else if (peek().is(TokenType::Operator, U"|"))
@@ -831,13 +831,13 @@ namespace Compiler {
 
         // handle string template
         else if (peek().is(TokenType::Operator, U"$"))
-            return nextStringTemplate();
+            return nextStringTemplate(ignoreJoin);
 
         // handle literal constant or identifier
         // let name = "John Doe"
         //            ^^^^^^^^^^ the literal token indicates, that a value is expected
         else if (peek().isLiteral() || peek().is(TokenType::Identifier))
-            return nextLiteralOrMethodCall();
+            return nextLiteralOrMethodCall(ignoreJoin);
 
         // handle single value operation
         // TODO make sure the target operator is a single-value operator
@@ -866,13 +866,21 @@ namespace Compiler {
 
         // handle new statement
         else if (peek().is(TokenType::Expression, U"new"))
-            return nextNewStatement();
+            return nextNewStatement(ignoreJoin);
 
         // TODO handle local variable assignation
         // handle unexpected token
         Token error = peek();
         println("Error (Expression) " << error);
         return new ErrorNode();
+    }
+
+    /**
+     * Parse the next expression instruction.
+     * @return new expression
+     */
+    Node* NodeParser::nextExpression() {
+        return nextExpression(false);
     }
 
     /**
@@ -1054,7 +1062,7 @@ namespace Compiler {
      * Parse the next literal value or method call declaration.
      * @return new literal or method call
      */
-    Node* NodeParser::nextLiteralOrMethodCall() {
+    Node* NodeParser::nextLiteralOrMethodCall(bool ignoreJoin) {
         // handle literal constant or identifier
         // 
         // let name = "John Doe"
@@ -1079,6 +1087,10 @@ namespace Compiler {
         //               ^ the operator after a literal indicates, that there are more expressions to be parsed
         //                 the two operands are groupped together by an Operation node
         else if (peek().is(2, TokenType::Operator, TokenType::Colon)) {
+            if (ignoreJoin)
+                return new Value(value);
+            if (peek().val(U"."))
+                return nextJoinOperation(new Value(value));
             UString target = parseOperator();
             // handle right-side single-value operation
             if (isRightOperator(target))
@@ -1109,6 +1121,10 @@ namespace Compiler {
             // outer(inner(123) + 2)
             //                  ^ the operator indicates, that the method call should be groupped with the expression afterwards
             if (peek().is(TokenType::Operator)) {
+                if (ignoreJoin)
+                    return new MethodCall(value.value, arguments);
+                if (peek().val(U"."))
+                    return nextJoinOperation(new MethodCall(value.value, arguments));
                 UString target = parseOperator();
                 // TODO make more proper error handling
                 if (!isComplexOperator(target))
@@ -1168,6 +1184,10 @@ namespace Compiler {
 
             // handle operation after an index fetch
             if (peek().is(TokenType::Operator)) {
+                if (ignoreJoin)
+                    return new IndexFetch(value.value, index);
+                if (peek().val(U"."))
+                    return nextJoinOperation(new IndexFetch(value.value, index));
                 UString target = parseOperator();
                 // TODO make more proper error handling
                 if (!isComplexOperator(target))
@@ -1188,7 +1208,7 @@ namespace Compiler {
      * Parse the next string template declaration.
      * @return new string template
      */
-    Node* NodeParser::nextStringTemplate() {
+    Node* NodeParser::nextStringTemplate(bool ignoreJoin) {
         // skip the '$' sign
         get(TokenType::Operator, U"$");
         // get the string value of the template
@@ -1196,6 +1216,10 @@ namespace Compiler {
 
         // handle operation after template string
         if (peek().is(TokenType::Operator)) {
+            if (ignoreJoin)
+                return new Template(value);
+            if (peek().val(U"."))
+                return nextJoinOperation(new Template(value));
             UString target = parseOperator();
             // TODO make more proper error handling
             if (!isComplexOperator(target))
@@ -1270,7 +1294,7 @@ namespace Compiler {
      * Parse the next group or tuple declaration.
      * @return new group or tuple
      */
-    Node* NodeParser::nextGroupOrTuple() {
+    Node* NodeParser::nextGroupOrTuple(bool ignoreJoin) {
         // let a = (b + c) + d
         //         ^ the open parenthesis indicate, that the following nodes should be placed in a node group
         // skip the '(' sign
@@ -1315,6 +1339,10 @@ namespace Compiler {
         // (2 + 3) + 7
         //         ^ the operator indicates, that the method call should be groupped with the expression afterwards
         if (peek().is(TokenType::Operator)) {
+            if (ignoreJoin)
+                return new Group(value);
+            if (peek().val(U"."))
+                return nextJoinOperation(new Group(value));
             UString target = parseOperator();
             // TODO make more proper error handling
             if (!isComplexOperator(target))
@@ -1463,7 +1491,7 @@ namespace Compiler {
      * Parse the new statement declaration.
      * @return new "new" statement
      */
-    Node* NodeParser::nextNewStatement() {
+    Node* NodeParser::nextNewStatement(bool ignoreJoin) {
         // skip the "new" keyword
         get(TokenType::Expression, U"new");
 
@@ -1501,6 +1529,10 @@ namespace Compiler {
 
         // handle operation after constructor
         if (peek().is(TokenType::Operator)) {
+            if (ignoreJoin)
+                return node;
+            if (peek().val(U"."))
+                return nextJoinOperation(node);
             UString target = parseOperator();
             return new Operation(node, target, nextExpression());
         }
@@ -1696,6 +1728,42 @@ namespace Compiler {
         get(TokenType::Semicolon);
         println("import \"" << name << '"');
         return new Import(name);
+    }
+
+    /**
+     * Parse the next join operation.
+     * @param target fisrt node of join operation
+     * @return new join operation
+     */
+    Node* NodeParser::nextJoinOperation(Node* target) {
+        List<Node*> children;
+
+        get(TokenType::Operator, U".");
+
+    parseChild:
+        Node* child = nextExpression(true);
+        children.push_back(child);
+
+        // check if more children are yet to be parsed
+        if (peek().is(TokenType::Operator, U".")) {
+            get();
+            goto parseChild;
+        }
+
+        Node* operation = new JoinOperation(target, children);
+
+        if (peek().is(TokenType::Operator)) {
+            UString target = parseOperator();
+            // handle right-side single-value operation
+            if (isRightOperator(target))
+                return new SideOperation(target, operation, false);
+            // TODO make more proper error handling
+            if (!isComplexOperator(target))
+                error("Expected complex operator, but got " << target);
+            return fixOperationTree(new Operation(operation, target, nextExpression()));
+        }
+
+        return operation;
     }
 
     /**

@@ -54,7 +54,6 @@ namespace Compiler {
      */
     void NodeBuilder::nextPackage() {
         Package* package = as(get(), Package);
-        // TODO validate the package name
         UString name = package->name;
         checkTypeNameAvailable(name);
         this->package = name;

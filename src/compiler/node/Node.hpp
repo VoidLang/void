@@ -29,6 +29,7 @@ namespace Compiler {
         New,
         Initializator,
         Operation,
+        JoinOperation,
         SideOperation,
         MethodCall,
         Group,
