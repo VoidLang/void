@@ -64,7 +64,7 @@ namespace Compiler {
      */
     void NodeBuilder::nextPackageMethod() {
         MethodNode* method = as(get(), MethodNode);
-        // TODO check if the method signature is already in use in this scope
+        checkMethodAvailable(method->name, method->parameters);
         methods.push_back(method);
     }
 
@@ -103,28 +103,84 @@ namespace Compiler {
      * @param name type name to check
      */
     void NodeBuilder::checkTypeNameAvailable(UString name) {
+        if (getType(name) != nullptr)
+            error("Type name '" << name << "' is already declared in this package.");
+    }
+
+    /**
+     * Check if the given method signature is already used by a method in the package.
+     * @param name method name to check
+     * @param parameters method parameters to check
+     */
+    void NodeBuilder::checkMethodAvailable(UString name, List<Parameter> parameters) {
+        if (getMethod(name, parameters) != nullptr) {
+            print("Method " << name << "(");
+            for (uint i = 0; i < parameters.size(); i++) {
+                print(parameters[i].type.value);
+                if (i < parameters.size() - 1)
+                    print(", ");
+            }
+            error(") is already declared in this package.");
+        }
+    }
+
+    /**
+     * Get a type from the package by its name.
+     * @param name target type name
+     * @return found type or nullptr if not found
+     */
+    TypeNode* NodeBuilder::getType(UString name) {
         // check if a package class uses the given name
         for (auto& [_, classNode] : classes) {
             if (classNode->name == name)
-                goto error;
+                return classNode;
         }
 
         // check if a package struct uses the given name
         for (auto& [_, structNode] : structs) {
             if (structNode->name == name)
-                goto error;
+                return structNode;
         }
 
         // check if a package tuple struct uses the given name
         for (auto& [_, tupleStruct] : tupleStructs) {
             if (tupleStruct->name == name)
-                goto error;
+                return tupleStruct;
         }
 
-        return;
+        // package type not found, return null type pointer
+        return nullptr;
+    }
 
-    error:
-        error("Type name '" << name << "' is already declared in this package.");
+    /**
+     * Get a method from the package by its signature.
+     * @param name target method name
+     * @param parameters target method parameters
+     * @return found method or nullptr if not found
+     */
+    MethodNode* NodeBuilder::getMethod(UString name, List<Parameter> parameters) {
+        // get the length of the required parameters list
+        ulong checkLength = parameters.size();
+        // loop through the declared package methods
+        for (MethodNode* method : methods) {
+            // get the length of the method's parameter list
+            ulong methodLength = method->parameters.size();
+            // ignore the method if the method name or parameters length does not match
+            if (method->name != name || methodLength != checkLength)
+                continue;
+            // check if the method parameters match
+            for (ulong i = 0; i < checkLength; i++) {
+                // ignore method if the parameter at the 
+                // current index does not match
+                if (method->parameters[i].type.value != parameters[i].type.value)
+                    goto search;
+            }
+            // method parameters matches, method found
+            return method;
+        search:;
+        }
+        // method not found, return a null method pointer
+        return nullptr;
     }
 
     /**

@@ -98,6 +98,28 @@ namespace Compiler {
         void checkTypeNameAvailable(UString name);
 
         /**
+         * Check if the given method signature is already used by a method in the package.
+         * @param name method name to check
+         * @param parameters method parameters to check
+         */
+        void checkMethodAvailable(UString name, List<Parameter> parameters);
+
+        /**
+         * Get a type from the package by its name.
+         * @param name target type name
+         * @return found type or nullptr if not found
+         */
+        TypeNode* getType(UString name);
+
+        /**
+         * Get a method from the package by its signature.
+         * @param name target method name
+         * @param parameters target method parameters
+         * @return found method or nullptr if not found
+         */
+        MethodNode* getMethod(UString name, List<Parameter> parameters);
+
+        /**
          * Get the node at the current index.
          * @return currently parsed token
          */

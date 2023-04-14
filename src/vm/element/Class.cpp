@@ -296,7 +296,7 @@ namespace Void {
      * @return found method or nullptr
      */
     Method* Class::getMethod(String name, List<String> parameters) {
-        // get the length of the erquired parameters list
+        // get the length of the required parameters list
         ulong checkLength = parameters.size();
         // loop through the declared class methods
         for (Method* method : methods) {
