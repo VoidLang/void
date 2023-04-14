@@ -5,8 +5,65 @@ using namespace Void;
 
 namespace Compiler {
     MethodNode::MethodNode(List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body)
-        : Modifiable(NodeType::Method),returnTypes(returnTypes), name(name), parameters(parameters), body(body)
+        : Modifiable(NodeType::Method), returnTypes(returnTypes), name(name), parameters(parameters), body(body)
     { }
+
+    /**
+     * Build bytecode for this node.
+     * @param bytecode result bytecode list
+     */
+    void MethodNode::build(List<UString>& bytecode) {
+        bytecode.push_back(U"    mdef " + name);
+        if (!modifiers.empty())
+            bytecode.push_back(U"    mmod " + Strings::join(modifiers, U" "));
+        // TODO make an universal type parser for parameters & return type
+        if (!parameters.empty()) {
+            UString params;
+            for (uint i = 0; i < parameters.size(); i++) {
+                params += parameters[i].type.value;
+                if (i < parameters.size() - 1)
+                    params += U" ";
+            }
+            bytecode.push_back(U"    mparam " + params);
+        }
+        bytecode.push_back(U"    mreturn " + parseReturnType());
+        bytecode.push_back(U"    mbegin");
+        bytecode.push_back(U"    mend");
+    }
+
+    /**
+     * Parse the return type of the method.
+     */
+    UString MethodNode::parseReturnType() {
+        // TODO handle tuple return type
+        if (returnTypes.size() > 1)
+            // TODO return void for now
+            return U"V";
+
+        Token type = returnTypes[0].type;
+        UString value = type.value;
+        if (value == U"void")
+            return U"V";
+        else if (value == U"byte")
+            return U"B";
+        else if (value == U"short")
+            return U"S";
+        else if (value == U"int")
+            return U"I";
+        else if (value == U"long")
+            return U"J";
+        else if (value == U"float")
+            return U"F";
+        else if (value == U"double")
+            return U"D";
+        else if (value == U"bool")
+            return U"Z";
+        // TODO try to resolve identifier type
+        else
+            error("Unknown return type: '" << type << "'.");
+            
+        return U"V";
+    }
 
     Parameter::Parameter(Token type, List<Token> generics, bool varargs, UString name)
         : type(type), generics(generics), varargs(varargs), name(name)

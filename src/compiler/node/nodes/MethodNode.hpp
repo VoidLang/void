@@ -2,6 +2,7 @@
 
 #include "../../../Common.hpp"
 #include "../../token/Token.hpp"
+#include "TypeNode.hpp"
 #include "../Node.hpp"
 
 namespace Compiler {
@@ -39,7 +40,23 @@ namespace Compiler {
 
         List<Node*> body;
 
+        UString package = U"";
+
+        TypeNode* parent = nullptr;
+
         MethodNode(List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body);
+
+        /**
+         * Build bytecode for this node.
+         * @param bytecode result bytecode list
+         */
+        void build(List<UString>& bytecode) override;
+
+    private:
+        /**
+         * Parse the return type of the method.
+         */
+        UString parseReturnType();
     };
 
     class MethodCall : public Node {

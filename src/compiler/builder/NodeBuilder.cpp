@@ -64,6 +64,10 @@ namespace Compiler {
      */
     void NodeBuilder::nextPackageMethod() {
         MethodNode* method = as(get(), MethodNode);
+        // set the package of the method
+        method->package = package;
+        // make the package method static
+        method->modifiers.push_back(U"static");
         checkMethodAvailable(method->name, method->parameters);
         methods.push_back(method);
     }
@@ -202,6 +206,22 @@ namespace Compiler {
             // compile the class node to bytecode
             classNode->build(bytecode);
         }
+
+        // return if there are no package methods to be parsed
+        if (methods.empty())
+            return;
+        
+        // create an anonymus class for storing package methods
+        bytecode.push_back(U"cdef <package>" + package);
+        bytecode.push_back(U"cbegin");
+
+        // compile the package methods
+        for (MethodNode* method : methods) {
+            // compile the method node to bytevode
+            method->build(bytecode);
+        }
+
+        bytecode.push_back(U"cend");
     }
 
     /**
