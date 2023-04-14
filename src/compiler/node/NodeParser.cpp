@@ -1712,7 +1712,7 @@ noParams:
         // ensure that the package is ended by a semicolon
         get(TokenType::Semicolon);
         println("package \"" << name << '"');
-        return new Package(name);
+        return new PackageSet(name);
     }
 
     /**

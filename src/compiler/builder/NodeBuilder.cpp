@@ -1,5 +1,9 @@
 #include "NodeBuilder.hpp"
 
+#include "../../util/Strings.hpp"
+
+using namespace Void;
+
 namespace Compiler {
     /**
      * Initialize the node builder.
@@ -28,6 +32,9 @@ namespace Compiler {
             // handle package declaration
             if (peek()->is(NodeType::Package))
                 nextPackage();
+            // handle package import declaration
+            else if (peek()->is(NodeType::Import))
+                nextImport();
             // handle package method declaration
             else if (peek()->is(NodeType::Method))
                 nextPackageMethod();
@@ -53,10 +60,25 @@ namespace Compiler {
      * Handle the next package declaration.
      */
     void NodeBuilder::nextPackage() {
-        Package* package = as(get(), Package);
+        PackageSet* package = as(get(), PackageSet);
+        // TODO check if multiple package declarations were in the file
         UString name = package->name;
         checkTypeNameAvailable(name);
         this->package = name;
+    }
+
+    /**
+     * Handle the next package import declaration.
+     */
+    void NodeBuilder::nextImport() {
+        Import* import = as(get(), Import);
+        // get the target name of the package
+        List<UString> split = Strings::split(import->package, '/');
+        UString target = split.back();
+        split = Strings::split(target, '.');
+        target = split.back();
+        // register the import
+        imports[target] = import->package;
     }
 
     /**

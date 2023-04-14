@@ -4,11 +4,11 @@
 #include "../Node.hpp"
 
 namespace Compiler {
-    class Package : public Node {
+    class PackageSet : public Node {
     public:
         UString name;
 
-        Package(UString name);
+        PackageSet(UString name);
     };
 
     class Import : public Node {

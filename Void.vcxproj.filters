@@ -126,6 +126,12 @@
     <ClInclude Include="src\compiler\builder\NodeBuilder.hpp">
       <Filter>compiler\builder</Filter>
     </ClInclude>
+    <ClInclude Include="src\compiler\builder\Package.hpp">
+      <Filter>compiler\builder</Filter>
+    </ClInclude>
+    <ClInclude Include="src\compiler\builder\Application.hpp">
+      <Filter>compiler\builder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
@@ -245,6 +251,12 @@
       <Filter>compiler\node\nodes</Filter>
     </ClCompile>
     <ClCompile Include="src\compiler\builder\NodeBuilder.cpp">
+      <Filter>compiler\builder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\builder\Package.cpp">
+      <Filter>compiler\builder</Filter>
+    </ClCompile>
+    <ClCompile Include="src\compiler\builder\Application.cpp">
       <Filter>compiler\builder</Filter>
     </ClCompile>
   </ItemGroup>

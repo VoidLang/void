@@ -75,6 +75,11 @@ namespace Compiler {
         void nextPackage();
 
         /**
+         * Handle the next package import declaration.
+         */
+        void nextImport();
+
+        /**
          * Handle the next package method declaration. 
          */
         void nextPackageMethod();

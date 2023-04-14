@@ -1,7 +1,7 @@
 #include "FileInfo.hpp"
 
 namespace Compiler {
-    Package::Package(UString name) 
+    PackageSet::PackageSet(UString name)
         : Node(NodeType::Package), name(name)
     { }
 
