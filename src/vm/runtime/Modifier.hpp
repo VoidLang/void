@@ -25,9 +25,11 @@ namespace Void {
         ENUM         = 0x00002000,
         STRUCT       = 0x00004000,
         WEAK         = 0x00008000,
-        STRONG       = 0x00010000,
-        DEFAULT      = 0x00020000,
-        ASYNC        = 0x00040000
+        TUPLE_STRUCT = 0x00008000,
+        WEAK         = 0x00010000,
+        STRONG       = 0x00020000,
+        DEFAULT      = 0x00040000,
+        ASYNC        = 0x00080000
     };
 
     /**
