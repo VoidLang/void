@@ -28,6 +28,14 @@ namespace Compiler {
         : Modifiable(type), name(name), genericNames(genericNames)
     { }
 
+    /**
+     * Build bytecode for this node.
+     * @param bytecode result bytecode list
+     */
+    void TypeNode::build(List<UString>& bytecode) {
+
+    }
+
     Class::Class(UString name, List<UString> genericNames, List<Node*> body)
         : TypeNode(NodeType::Class, name, genericNames), body(body)
     { }

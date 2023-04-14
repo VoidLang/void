@@ -80,7 +80,7 @@ namespace Compiler {
          * Build bytecode for this node.
          * @param bytecode result bytecode list
          */
-        virtual void build(List<String>& bytecode);
+        virtual void build(List<UString>& bytecode);
     
         /**
          * Determine if this node has the given type.

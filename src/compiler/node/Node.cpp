@@ -68,7 +68,7 @@ namespace Compiler {
      * Build bytecode for this node.
      * @param bytecode result bytecode list
      */
-    void Node::build(List<String>& bytecode) {
+    void Node::build(List<UString>& bytecode) {
         println("Building not implemented for " << type);
     }
 

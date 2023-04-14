@@ -73,6 +73,9 @@ namespace Compiler {
      */
     void NodeBuilder::nextPackageClass() {
         Class* classNode = as(get(), Class);
+        // set the package of the class
+        // TODO handle class child types
+        classNode->package = package;
         UString name = classNode->name;
         checkTypeNameAvailable(name);
         classes[name] = classNode;
@@ -83,6 +86,9 @@ namespace Compiler {
      */
     void NodeBuilder::nextPackageStruct() {
         NormalStruct* normalStruct = as(get(), NormalStruct);
+        // set the package of the struct
+        // TODO handle struct child types
+        normalStruct->package = package;
         UString name = normalStruct->name;
         checkTypeNameAvailable(name);
         structs[name] = normalStruct;
@@ -93,6 +99,9 @@ namespace Compiler {
      */
     void NodeBuilder::nextPackageTupleStruct() {
         TupleStruct* tupleStruct = as(get(), TupleStruct);
+        // set the package of the tuple struct
+        // TODO handle tuple struct child types
+        tupleStruct->package = package;
         UString name = tupleStruct->name;
         checkTypeNameAvailable(name);
         tupleStructs[name] = tupleStruct;
@@ -181,6 +190,18 @@ namespace Compiler {
         }
         // method not found, return a null method pointer
         return nullptr;
+    }
+
+    /**
+     * Compile the parsed nodes to executable bytecode.
+     * @bytecode executable bytecode result
+     */
+    void NodeBuilder::compile(List<UString>& bytecode) {
+        // compile the package classes
+        for (auto& [_, classNode] : classes) {
+            // compile the class node to bytecode
+            classNode->build(bytecode);
+        }
     }
 
     /**

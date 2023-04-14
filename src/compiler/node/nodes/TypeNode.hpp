@@ -35,7 +35,17 @@ namespace Compiler {
 
         List<UString> genericNames;
 
+        UString package = U"";
+
+        TypeNode* parent = nullptr;
+
         TypeNode(NodeType type, UString name, List<UString> genericNames);
+
+        /**
+         * Build bytecode for this node.
+         * @param bytecode result bytecode list
+         */
+        void build(List<UString>& bytecode) override;
     };
 
     class Class : public TypeNode {

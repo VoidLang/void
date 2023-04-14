@@ -25,7 +25,7 @@ namespace Compiler {
      * Build bytecode for this node.
      * @param bytecode result bytecode list
      */
-    void Value::build(List<String>& bytecode) {
+    void Value::build(List<UString>& bytecode) {
 
     }
 
@@ -43,7 +43,7 @@ namespace Compiler {
      * Build bytecode for this node.
      * @param bytecode result bytecode list
      */
-    void Operation::build(List<String>& bytecode) {
+    void Operation::build(List<UString>& bytecode) {
     }
 
     /**
@@ -153,7 +153,7 @@ namespace Compiler {
      * Build bytecode for this node.
      * @param bytecode result bytecode list
      */
-    void Group::build(List<String>& bytecode) {
+    void Group::build(List<UString>& bytecode) {
     }
 
     Template::Template(Token value)

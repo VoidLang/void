@@ -178,6 +178,13 @@ namespace Void {
 
         NodeBuilder builder(nodes);
         builder.build();
+
+        println("\n--- BYTECODE: ---\n");
+
+        List<UString> bytecode;
+        builder.compile(bytecode);
+        for (UString instruction : bytecode)
+            println(instruction);
     }
 
     /**

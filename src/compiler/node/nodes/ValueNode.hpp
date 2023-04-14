@@ -30,7 +30,7 @@ namespace Compiler {
          * Build bytecode for this node.
          * @param bytecode result bytecode list
          */
-        void build(List<String>& bytecode) override;
+        void build(List<UString>& bytecode) override;
     };
 
     /**
@@ -70,7 +70,7 @@ namespace Compiler {
          * Build bytecode for this node.
          * @param bytecode result bytecode list
          */
-        void build(List<String>& bytecode) override;
+        void build(List<UString>& bytecode) override;
     };
 
     class JoinOperation : public Node {
@@ -129,7 +129,7 @@ namespace Compiler {
          * Build bytecode for this node.
          * @param bytecode result bytecode list
          */
-        void build(List<String>& bytecode) override;
+        void build(List<UString>& bytecode) override;
     };
 
     class Template : public Node {

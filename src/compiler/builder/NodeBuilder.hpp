@@ -120,6 +120,12 @@ namespace Compiler {
         MethodNode* getMethod(UString name, List<Parameter> parameters);
 
         /**
+         * Compile the parsed nodes to executable bytecode.
+         * @bytecode executable bytecode result
+         */
+        void compile(List<UString>& bytecode);
+
+        /**
          * Get the node at the current index.
          * @return currently parsed token
          */
