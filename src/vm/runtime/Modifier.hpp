@@ -24,7 +24,6 @@ namespace Void {
         ANNOTATION   = 0x00001000,
         ENUM         = 0x00002000,
         STRUCT       = 0x00004000,
-        WEAK         = 0x00008000,
         TUPLE_STRUCT = 0x00008000,
         WEAK         = 0x00010000,
         STRONG       = 0x00020000,

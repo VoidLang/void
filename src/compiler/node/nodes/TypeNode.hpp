@@ -42,10 +42,10 @@ namespace Compiler {
         TypeNode(NodeType type, UString name, List<UString> genericNames);
 
         /**
-         * Build bytecode for this node.
-         * @param bytecode result bytecode list
+         * Get the fully qualified name of the type.
+         * @return type name with package and parent
          */
-        void build(List<UString>& bytecode) override;
+        UString getFullName();
     };
 
     class Class : public TypeNode {
@@ -53,6 +53,12 @@ namespace Compiler {
         List<Node*> body;
 
         Class(UString name, List<UString> genericNames, List<Node*> body);
+
+        /**
+         * Build bytecode for this node.
+         * @param bytecode result bytecode list
+         */
+        void build(List<UString>& bytecode) override;
     };
 
     class NormalStruct : public TypeNode {

@@ -27,6 +27,9 @@ namespace Compiler {
         /**
          * The name of the package of the file.
          */
+        // TODO make the package name something invalid by default, therefore
+        // if the source file does not set the package, name, an other package
+        // will not be able to resolve the content of this package
         UString package;
 
         /**

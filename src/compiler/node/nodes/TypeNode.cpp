@@ -29,16 +29,34 @@ namespace Compiler {
     { }
 
     /**
-     * Build bytecode for this node.
-     * @param bytecode result bytecode list
+     * Get the fully qualified name of the type.
+     * @return type name with package and parent
      */
-    void TypeNode::build(List<UString>& bytecode) {
-
+    UString TypeNode::getFullName() {
+        UString prefix;
+        if (!package.empty())
+            prefix += package + U"/";
+        if (parent != nullptr)
+            prefix += parent->name + U".";
+        return prefix + name;
     }
 
     Class::Class(UString name, List<UString> genericNames, List<Node*> body)
         : TypeNode(NodeType::Class, name, genericNames), body(body)
     { }
+
+    /**
+     * Build bytecode for this node.
+     * @param bytecode result bytecode list
+     */
+    void Class::build(List<UString>& bytecode) {
+        bytecode.push_back(U"cdef " + getFullName());
+        if (!modifiers.empty()) 
+            bytecode.push_back(U"cmod " + Strings::join(modifiers, U" "));
+        bytecode.push_back(U"cbegin");
+
+        bytecode.push_back(U"cend");
+    }
 
     NormalStruct::NormalStruct(UString name, List<UString> genericNames, List<Node*> body)
         : TypeNode(NodeType::Struct, name, genericNames), body(body)
