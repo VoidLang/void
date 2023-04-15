@@ -15,6 +15,13 @@
 
 namespace Compiler {
     class Application;
+    class MethodNode;
+    class Class;
+    class NormalStruct;
+    class TupleStruct;
+    class TypeNode;
+    class MethodNode;
+    class Parameter;
 
     /**
      * Represens a per-file package. Each source file is a package as well. If the package is 
@@ -33,7 +40,7 @@ namespace Compiler {
         // TODO make the package name something invalid by default, therefore
         // if the source file does not set the package, name, an other package
         // will not be able to resolve the content of this package
-        UString name;
+        UString name = U"<default name>";
 
         /**
          * Determine if the package has a name specified.
@@ -64,6 +71,12 @@ namespace Compiler {
          * The map of the package tuple structs.
          */
         Map<UString, TupleStruct*> tupleStructs;
+
+        /**
+         * Initialize the package.
+         * @param application parent application
+         */
+        Package(Application* application);
 
         /**
          * Get a type from the package by its name.

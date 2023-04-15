@@ -470,7 +470,7 @@ noParams:
     if (peek().is(TokenType::Semicolon))
         get();
 
-    return new MethodNode(returnTypes, name, parameters, List<Node*>());
+    return new MethodNode(package, returnTypes, name, parameters, List<Node*>());
     }
 
     /**
@@ -504,7 +504,7 @@ noParams:
         if (peek().is(TokenType::Semicolon)) {
             get();
             println("");
-            return new FieldNode(type, typeGenerics, name, {});
+            return new FieldNode(package, type, typeGenerics, name, {});
         }
 
         // handle multi-field declaration
@@ -530,7 +530,7 @@ noParams:
         if (value->type == NodeType::Value || value->type == NodeType::Template)
             println("");
 
-        return new FieldNode(type, typeGenerics, name, makeOptional(value));
+        return new FieldNode(package, type, typeGenerics, name, makeOptional(value));
     }
 
     /**
@@ -587,7 +587,7 @@ noParams:
 
         println("");
 
-        return new MultiField(type, generics, fields);
+        return new MultiField(package, type, generics, fields);
     }
 
     /**
@@ -659,7 +659,7 @@ noParams:
         if (peek().is(TokenType::Semicolon, U"auto"))
             get();
 
-        return new Class(name, genericNames, body);
+        return new Class(package, name, genericNames, body);
     }
 
     /**
@@ -702,7 +702,7 @@ noParams:
         if (peek().is(TokenType::Semicolon, U"auto"))
             get();
 
-        return new NormalStruct(name, genericNames, body);
+        return new NormalStruct(package, name, genericNames, body);
     }
 
     /**
@@ -739,7 +739,7 @@ noParams:
         }
         println(")");
 
-        return new TupleStruct(name, genericNames, named, parameters);
+        return new TupleStruct(package, name, genericNames, named, parameters);
     }
 
     /**
@@ -926,7 +926,7 @@ noParams:
             if (peek().is(TokenType::Semicolon))
                 get();
 
-            return new LocalDeclareDestructure(members, value);
+            return new LocalDeclareDestructure(package, members, value);
         }
 
         // parse the generic tokens of the variable type
@@ -944,7 +944,7 @@ noParams:
         //          ^ the (auto-inserted) semicolon indicates that the local variable is not initialized by defualt
         if (peek().is(TokenType::Semicolon)) {
             get();
-            return new LocalDeclare(type, typeGenerics, name);
+            return new LocalDeclare(package, type, typeGenerics, name);
         }
 
         // handle multi-local declaration
@@ -971,7 +971,7 @@ noParams:
         else if (peek().is(TokenType::Semicolon))
             get();
 
-        return new LocalDeclareAssign(type, typeGenerics, name, value);
+        return new LocalDeclareAssign(package, type, typeGenerics, name, value);
     }
 
     /**
@@ -1017,7 +1017,7 @@ noParams:
         if (peek().is(TokenType::Semicolon))
             get();
 
-        return new MultiLocalDeclare(type, generics, locals);
+        return new MultiLocalDeclare(package, type, generics, locals);
     }
 
     /**
@@ -1038,7 +1038,7 @@ noParams:
         if (peek().is(TokenType::Semicolon))
             get();
 
-        return new LocalAssign(name, value);
+        return new LocalAssign(package, name, value);
     }
 
     /**
@@ -1055,7 +1055,7 @@ noParams:
         // parse the body of the lambda function
         List<Node*> body = parseStatementBody();
 
-        return new Lambda(typed, parameters, body);
+        return new Lambda(package, typed, parameters, body);
     }
 
     /**
@@ -1080,7 +1080,7 @@ noParams:
         // let myUninitializedVariable;
         //                            ^ the (auto-inserted) semicolon indicates, that the variable is declared, but is not yet assigned with a value
         if (peek().is(TokenType::Semicolon))
-            return new Value(value);
+            return new Value(package, value);
 
         // handle operation between two expressions
         // let var = 100 + 
@@ -1088,17 +1088,17 @@ noParams:
         //                 the two operands are groupped together by an Operation node
         else if (peek().is(2, TokenType::Operator, TokenType::Colon)) {
             if (ignoreJoin)
-                return new Value(value);
+                return new Value(package, value);
             if (peek().val(U"."))
-                return nextJoinOperation(new Value(value));
+                return nextJoinOperation(new Value(package, value));
             UString target = parseOperator();
             // handle right-side single-value operation
             if (isRightOperator(target))
-                return new SideOperation(target, new Value(value), false);
+                return new SideOperation(package, target, new Value(package, value), false);
             // TODO make more proper error handling
             if (!isComplexOperator(target))
                 error("Expected complex operator, but got " << target);
-            return fixOperationTree(new Operation(new Value(value), target, nextExpression()));
+            return fixOperationTree(new Operation(package, new Value(package, value), target, nextExpression()));
         }
 
         // handle method call
@@ -1122,42 +1122,42 @@ noParams:
             //                  ^ the operator indicates, that the method call should be groupped with the expression afterwards
             if (peek().is(TokenType::Operator)) {
                 if (ignoreJoin)
-                    return new MethodCall(value.value, arguments);
+                    return new MethodCall(package, value.value, arguments);
                 if (peek().val(U"."))
-                    return nextJoinOperation(new MethodCall(value.value, arguments));
+                    return nextJoinOperation(new MethodCall(package, value.value, arguments));
                 UString target = parseOperator();
                 // TODO make more proper error handling
                 if (!isComplexOperator(target))
                     error("Expected complex operator, but got " << target);
-                return fixOperationTree(new Operation(new MethodCall(value.value, arguments), target, nextExpression()));
+                return fixOperationTree(new Operation(package, new MethodCall(package, value.value, arguments), target, nextExpression()));
             }
 
-            return new MethodCall(value.value, arguments);
+            return new MethodCall(package, value.value, arguments);
         }
 
         // handle group closing
         // let val = (1 + 2) / 3
         //                 ^ the close parenthesis indicates, that we are not expecting any value after the current token
         else if (peek().is(TokenType::Close))
-            return new Value(value);
+            return new Value(package, value);
 
         // handle argument list or array fill
         // foo(123, 450.7)
         //        ^ the comma indicates, that the expression has been terminated
         else if (peek().is(TokenType::Comma))
-            return new Value(value);
+            return new Value(package, value);
 
         // handle index closing or array end
         // foo[10] = 404
         //       ^ the closing square bracket indicates, that the expression has been terminated
         else if (peek().is(TokenType::Stop))
-            return new Value(value);
+            return new Value(package, value);
 
         // handle initializator end
         // new Pair { key: "value" }
         //                         ^ the closing vracket indicates, that the initializator has been terminated
         else if (peek().is(TokenType::End))
-            return new Value(value);
+            return new Value(package, value);
 
         // handle indexing
         else if (peek().is(TokenType::Start)) {
@@ -1179,24 +1179,24 @@ noParams:
                 if (peek().is(TokenType::Semicolon))
                     get();
 
-                return new IndexAssign(value.value, index, indexValue);
+                return new IndexAssign(package, value.value, index, indexValue);
             }
 
             // handle operation after an index fetch
             if (peek().is(TokenType::Operator)) {
                 if (ignoreJoin)
-                    return new IndexFetch(value.value, index);
+                    return new IndexFetch(package, value.value, index);
                 if (peek().val(U"."))
-                    return nextJoinOperation(new IndexFetch(value.value, index));
+                    return nextJoinOperation(new IndexFetch(package, value.value, index));
                 UString target = parseOperator();
                 // TODO make more proper error handling
                 if (!isComplexOperator(target))
                     error("Expected complex operator, but got " << target);
-                return fixOperationTree(new Operation(new IndexFetch(value.value, index), target, nextExpression()));
+                return fixOperationTree(new Operation(package, new IndexFetch(package, value.value, index), target, nextExpression()));
             }
 
             // there is no value assignation, handle index fetch
-            return new IndexFetch(value.value, index);
+            return new IndexFetch(package, value.value, index);
         }
 
         Token error = peek();
@@ -1217,17 +1217,17 @@ noParams:
         // handle operation after template string
         if (peek().is(TokenType::Operator)) {
             if (ignoreJoin)
-                return new Template(value);
+                return new Template(package, value);
             if (peek().val(U"."))
-                return nextJoinOperation(new Template(value));
+                return nextJoinOperation(new Template(package, value));
             UString target = parseOperator();
             // TODO make more proper error handling
             if (!isComplexOperator(target))
                 error("Expected complex operator, but got " << target);
-            return fixOperationTree(new Operation(new Template(value), target, nextExpression()));
+            return fixOperationTree(new Operation(package, new Template(package, value), target, nextExpression()));
         }
 
-        return new Template(value);
+        return new Template(package, value);
     }
 
     /**
@@ -1245,7 +1245,7 @@ noParams:
         if (!isLeftOperator(target))
             error("Expected left-side operator, but got " << target);
 
-        return new SideOperation(target, operand, true);
+        return new SideOperation(package, target, operand, true);
     }
 
     /**
@@ -1259,7 +1259,7 @@ noParams:
         // check if the return statement has no value to return
         if (peek().is(TokenType::Semicolon)) {
             get();
-            return new Return();
+            return new Return(package);
         }
 
         // parse the value to be retured
@@ -1269,7 +1269,7 @@ noParams:
         if (peek().is(TokenType::Semicolon))
             get();
 
-        return new Return(value);
+        return new Return(package, value);
     }
 
     /**
@@ -1287,7 +1287,7 @@ noParams:
         if (peek().is(TokenType::Semicolon))
             get();
 
-        return new Defer(instruction);
+        return new Defer(package, instruction);
     }
 
     /**
@@ -1327,7 +1327,7 @@ noParams:
             // handle tuple ending
             get(TokenType::Close);
 
-            return new Tuple(members);
+            return new Tuple(package, members);
         }
 
         // handle the group closing
@@ -1340,17 +1340,17 @@ noParams:
         //         ^ the operator indicates, that the method call should be groupped with the expression afterwards
         if (peek().is(TokenType::Operator)) {
             if (ignoreJoin)
-                return new Group(value);
+                return new Group(package, value);
             if (peek().val(U"."))
-                return nextJoinOperation(new Group(value));
+                return nextJoinOperation(new Group(package, value));
             UString target = parseOperator();
             // TODO make more proper error handling
             if (!isComplexOperator(target))
                 error("Expected complex operator, but got " << target);
-            return fixOperationTree(new Operation(new Group(value), target, nextExpression()));
+            return fixOperationTree(new Operation(package, new Group(package, value), target, nextExpression()));
         }
 
-        return new Group(value);
+        return new Group(package, value);
     }
 
     /**
@@ -1368,14 +1368,14 @@ noParams:
         // tbh, I'm not quite sure why is this allowed in so many languages, but I'll just support doing it
         if (peek().is(TokenType::Semicolon)) {
             get();
-            return new If(condition, List<Node*>());
+            return new If(package, condition, List<Node*>());
         }
 
         // parse the body of the if statement
         List<Node*> body = parseStatementBody();
 
         // parse the if statement
-        If* statement = new If(condition, body);
+        If* statement = new If(package, condition, body);
 
         // handle else or else if cases
         if (peek().is(TokenType::Expression, U"else")) {
@@ -1421,13 +1421,13 @@ noParams:
         // tbh, I'm not quite sure why is this allowed in so many languages, but I'll just support doing it
         if (peek().is(TokenType::Semicolon)) {
             get();
-            return new ElseIf(condition, List<Node*>());
+            return new ElseIf(package, condition, List<Node*>());
         }
 
         // parse the body of the else if statement
         List<Node*> body = parseStatementBody();
 
-        return new ElseIf(condition, body);
+        return new ElseIf(package, condition, body);
     }
 
     /**
@@ -1441,7 +1441,7 @@ noParams:
         // parse the body of the else statement
         List<Node*> body = parseStatementBody();
 
-        return new Else(body);
+        return new Else(package, body);
     }
 
     /**
@@ -1459,13 +1459,13 @@ noParams:
         // tbh, I'm not quite sure why is this allowed in so many languages, but I'll just support doing it
         if (peek().is(TokenType::Semicolon)) {
             get();
-            return new While(condition, List<Node*>());
+            return new While(package, condition, List<Node*>());
         }
 
         // parse the body of the while statement
         List<Node*> body = parseStatementBody();
 
-        return new While(condition, body);
+        return new While(package, condition, body);
     }
 
     /**
@@ -1484,7 +1484,7 @@ noParams:
         // parse the condition of the do-while statement
         Node* condition = parseCondition();
 
-        return new DoWhile(body, condition);
+        return new DoWhile(package, body, condition);
     }
 
     /**
@@ -1525,7 +1525,7 @@ noParams:
             initializator = nextInitializator();
         }
 
-        Node* node = new NewNode(name, type, arguments, initializator);
+        Node* node = new NewNode(package, name, type, arguments, initializator);
 
         // handle operation after constructor
         if (peek().is(TokenType::Operator)) {
@@ -1534,7 +1534,7 @@ noParams:
             if (peek().val(U"."))
                 return nextJoinOperation(node);
             UString target = parseOperator();
-            return new Operation(node, target, nextExpression());
+            return new Operation(package, node, target, nextExpression());
         }
 
         // check if the method call is used as a statement or isn't expecting to be passed in a nested context
@@ -1593,7 +1593,7 @@ noParams:
         // skip the '}' symbol
         get(TokenType::End);
 
-        return new Initializator(members);
+        return new Initializator(package, members);
     }
 
     /**
@@ -1609,11 +1609,11 @@ noParams:
             // skip the ':' symbol
             get();
             println(Strings::join(modifiers, U" ") << ": ");
-            return new ModifierBlock(modifiers);
+            return new ModifierBlock(package, modifiers);
         }
         // handle normal modifier list
         print(Strings::join(modifiers, U" ") << " ");
-        return new ModifierList(modifiers);
+        return new ModifierList(package, modifiers);
     }
 
     /**
@@ -1712,7 +1712,7 @@ noParams:
         // ensure that the package is ended by a semicolon
         get(TokenType::Semicolon);
         println("package \"" << name << '"');
-        return new PackageSet(name);
+        return new PackageSet(package, name);
     }
 
     /**
@@ -1727,7 +1727,7 @@ noParams:
         // ensure that the package is ended by a semicolon
         get(TokenType::Semicolon);
         println("import \"" << name << '"');
-        return new Import(name);
+        return new Import(package, name);
     }
 
     /**
@@ -1750,17 +1750,17 @@ noParams:
             goto parseChild;
         }
 
-        Node* operation = new JoinOperation(target, children);
+        Node* operation = new JoinOperation(package, target, children);
 
         if (peek().is(TokenType::Operator)) {
             UString target = parseOperator();
             // handle right-side single-value operation
             if (isRightOperator(target))
-                return new SideOperation(target, operation, false);
+                return new SideOperation(package, target, operation, false);
             // TODO make more proper error handling
             if (!isComplexOperator(target))
                 error("Expected complex operator, but got " << target);
-            return fixOperationTree(new Operation(operation, target, nextExpression()));
+            return fixOperationTree(new Operation(package, operation, target, nextExpression()));
         }
 
         return operation;

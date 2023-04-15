@@ -1,11 +1,11 @@
 #include "FileInfo.hpp"
 
 namespace Compiler {
-    PackageSet::PackageSet(UString name)
-        : Node(NodeType::Package), name(name)
+    PackageSet::PackageSet(Package* package, UString name)
+        : Node(NodeType::Package, package), name(name)
     { }
 
-    Import::Import(UString package)
-        : Node(NodeType::Import), package(package)
+    Import::Import(Package* package, UString target)
+        : Node(NodeType::Import, package), target(target)
     { }
 }

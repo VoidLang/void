@@ -14,6 +14,10 @@
 #include "compiler/token/Tokenizer.hpp"
 #include "compiler/token/Transformer.hpp"
 #include "compiler/node/Node.hpp"
+#include "compiler/node/nodes/ControlFlow.hpp"
+#include "compiler/node/nodes/ValueNode.hpp"
+#include "compiler/builder/Application.hpp"
+#include "compiler/builder/Package.hpp"
 #include "compiler/node/NodeParser.hpp"
 #include "compiler/builder/NodeBuilder.hpp"
 
@@ -165,7 +169,7 @@ namespace Void {
 
         Application* application = new Application();
 
-        Package* package = new Package();
+        Package* package = new Package(application);
         
         NodeParser parser(package, tokens);
         List<Node*> nodes;

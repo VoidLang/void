@@ -4,8 +4,8 @@
 using namespace Void;
 
 namespace Compiler {
-    MethodNode::MethodNode(List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body)
-        : Modifiable(NodeType::Method), returnTypes(returnTypes), name(name), parameters(parameters), body(body)
+    MethodNode::MethodNode(Package* package, List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body)
+        : Modifiable(NodeType::Method, package), returnTypes(returnTypes), name(name), parameters(parameters), body(body)
     { }
 
     /**
@@ -73,8 +73,8 @@ namespace Compiler {
         : type(type), generics(generics), name(name)
     { }
 
-    MethodCall::MethodCall(UString name, List<Node*> arguments)
-        : Node(NodeType::MethodCall), name(name), arguments(arguments)
+    MethodCall::MethodCall(Package* package, UString name, List<Node*> arguments)
+        : Node(NodeType::MethodCall, package), name(name), arguments(arguments)
     { }
 
     /**
@@ -101,8 +101,8 @@ namespace Compiler {
         index--;
     }
 
-    Lambda::Lambda(bool typed, List<Parameter> parameters, List<Node*> body)
-        : Node(NodeType::Lambda), typed(typed), parameters(parameters), body(body)
+    Lambda::Lambda(Package* package, bool typed, List<Parameter> parameters, List<Node*> body)
+        : Node(NodeType::Lambda, package), typed(typed), parameters(parameters), body(body)
     { }
 
     /**

@@ -1,11 +1,11 @@
 #include "FieldNode.hpp"
 
 namespace Compiler {
-    FieldNode::FieldNode(Token type, List<Token> generics, UString name, Option<Node*> value)
-        : Modifiable(NodeType::Field), type(type), generics(generics), name(name), value(value)
+    FieldNode::FieldNode(Package* package, Token type, List<Token> generics, UString name, Option<Node*> value)
+        : Modifiable(NodeType::Field, package), type(type), generics(generics), name(name), value(value)
     { }
 
-    MultiField::MultiField(Token type, List<Token> generics, TreeMap<UString, Option<Node*>> fields)
-        : Modifiable(NodeType::MultiField), type(type), generics(generics), fields(fields)
+    MultiField::MultiField(Package* package, Token type, List<Token> generics, TreeMap<UString, Option<Node*>> fields)
+        : Modifiable(NodeType::MultiField, package), type(type), generics(generics), fields(fields)
     { }
 }

@@ -65,6 +65,7 @@ namespace Compiler {
         UString name = package->name;
         checkTypeNameAvailable(name);
         this->package->name = name;
+        this->package->named = true;
     }
 
     /**
@@ -73,12 +74,12 @@ namespace Compiler {
     void NodeBuilder::nextImport() {
         Import* import = as(get(), Import);
         // get the target name of the package
-        List<UString> split = Strings::split(import->package, '/');
+        List<UString> split = Strings::split(import->package->name, '/');
         UString target = split.back();
         split = Strings::split(target, '.');
         target = split.back();
         // register the import
-        package->imports[target] = import->package;
+        package->imports[target] = import->target;
     }
 
     /**

@@ -1,5 +1,9 @@
 #include "Node.hpp"
 
+#include "../../util/Strings.hpp"
+
+using namespace Void;
+
 namespace Compiler {
     OutputStream& operator<<(OutputStream& stream, NodeType& type) {
         static const char* const NAMES[] = {
@@ -52,9 +56,10 @@ namespace Compiler {
     /**
      * Initialize the node.
      * @param type node type
+     * @param package node parent
      */
-    Node::Node(NodeType type)
-        : type(type)
+    Node::Node(NodeType type, Package* package)
+        : type(type), package(package)
     { }
 
     /**
@@ -85,7 +90,7 @@ namespace Compiler {
      * Initialize the error node.
      */
     ErrorNode::ErrorNode()
-        : Node(NodeType::Error)
+        : Node(NodeType::Error, nullptr)
     { exit(501); } // TODO handle exception instead of panicing
 
     /**
@@ -99,7 +104,7 @@ namespace Compiler {
      * Initialize the finish node.
      */
     FinishNode::FinishNode()
-        : Node(NodeType::Finish)
+        : Node(NodeType::Finish, nullptr)
     { }
 
     /**
@@ -109,7 +114,7 @@ namespace Compiler {
         println("Finish");
     }
 
-    Modifiable::Modifiable(NodeType type) 
-        : Node(type)
+    Modifiable::Modifiable(NodeType type, Package* package)
+        : Node(type, package)
     { }
 }

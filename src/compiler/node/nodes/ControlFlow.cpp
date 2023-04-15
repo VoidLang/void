@@ -5,12 +5,12 @@
 using namespace Void;
 
 namespace Compiler {
-    Return::Return(Node* value)
-        : Node(NodeType::Return), value(value)
+    Return::Return(Package* package, Node* value)
+        : Node(NodeType::Return, package), value(value)
     { }
 
-    Return::Return()
-        : Node(NodeType::Return)
+    Return::Return(Package* package)
+        : Node(NodeType::Return, package)
     { }
 
     /**
@@ -31,8 +31,8 @@ namespace Compiler {
         index--;
     }
 
-    Defer::Defer(Node* instruction)
-        : Node(NodeType::Defer), instruction(instruction)
+    Defer::Defer(Package* package, Node* instruction)
+        : Node(NodeType::Defer, package), instruction(instruction)
     { }
 
     /**
@@ -51,8 +51,8 @@ namespace Compiler {
         index--;
     }
 
-    If::If(Node* condition, List<Node*> body)
-        : Node(NodeType::If), condition(condition), body(body)
+    If::If(Package* package, Node* condition, List<Node*> body)
+        : Node(NodeType::If, package), condition(condition), body(body)
     { }
 
     /**
@@ -95,8 +95,8 @@ namespace Compiler {
     }
 
 
-    ElseIf::ElseIf(Node* condition, List<Node*> body) 
-        : Node(NodeType::ElseIf), condition(condition), body(body)
+    ElseIf::ElseIf(Package* package, Node* condition, List<Node*> body)
+        : Node(NodeType::ElseIf, package), condition(condition), body(body)
     { }
 
     /**
@@ -127,8 +127,8 @@ namespace Compiler {
         index--;
     }
 
-    Else::Else(List<Node*> body)
-        : Node(NodeType::Else), body(body)
+    Else::Else(Package* package, List<Node*> body)
+        : Node(NodeType::Else, package), body(body)
     { }
 
     /**
@@ -154,8 +154,8 @@ namespace Compiler {
         index--;
     }
 
-    While::While(Node* condition, List<Node*> body)
-        : Node(NodeType::While), condition(condition), body(body)
+    While::While(Package* package, Node* condition, List<Node*> body)
+        : Node(NodeType::While, package), condition(condition), body(body)
     { }
 
     /**
@@ -186,8 +186,8 @@ namespace Compiler {
         index--;
     }
 
-    DoWhile::DoWhile(List<Node*> body, Node* condition) 
-        : Node(NodeType::DoWhile), body(body), condition(condition)
+    DoWhile::DoWhile(Package* package, List<Node*> body, Node* condition)
+        : Node(NodeType::DoWhile, package), body(body), condition(condition)
     { }
 
     /**

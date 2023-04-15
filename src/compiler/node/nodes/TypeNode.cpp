@@ -4,8 +4,8 @@
 using namespace Void;
 
 namespace Compiler {
-    ModifierList::ModifierList(List<UString> modifiers)
-        : Node(NodeType::ModifierList), modifiers(modifiers)
+    ModifierList::ModifierList(Package* package, List<UString> modifiers)
+        : Node(NodeType::ModifierList, package), modifiers(modifiers)
     { }
 
     /**
@@ -14,8 +14,8 @@ namespace Compiler {
     void ModifierList::debug(uint& index) {
     }
 
-    ModifierBlock::ModifierBlock(List<UString> modifiers) 
-        : Node(NodeType::ModifierBlock), modifiers(modifiers)
+    ModifierBlock::ModifierBlock(Package* package, List<UString> modifiers)
+        : Node(NodeType::ModifierBlock, package), modifiers(modifiers)
     { }
 
     /**
@@ -24,8 +24,8 @@ namespace Compiler {
     void ModifierBlock::debug(uint& index) {
     }
 
-    TypeNode::TypeNode(NodeType type, UString name, List<UString> genericNames)
-        : Modifiable(type), name(name), genericNames(genericNames)
+    TypeNode::TypeNode(NodeType type, Package* package, UString name, List<UString> genericNames)
+        : Modifiable(type, package), name(name), genericNames(genericNames)
     { }
 
     /**
@@ -34,15 +34,15 @@ namespace Compiler {
      */
     UString TypeNode::getFullName() {
         UString prefix;
-        if (!package.empty())
-            prefix += package + U"/";
+        if (package->named)
+            prefix += package->name + U"/";
         if (parent != nullptr)
             prefix += parent->name + U".";
         return prefix + name;
     }
 
-    Class::Class(UString name, List<UString> genericNames, List<Node*> body)
-        : TypeNode(NodeType::Class, name, genericNames), body(body)
+    Class::Class(Package* package, UString name, List<UString> genericNames, List<Node*> body)
+        : TypeNode(NodeType::Class, package, name, genericNames), body(body)
     { }
 
     /**
@@ -58,15 +58,15 @@ namespace Compiler {
         bytecode.push_back(U"cend");
     }
 
-    NormalStruct::NormalStruct(UString name, List<UString> genericNames, List<Node*> body)
-        : TypeNode(NodeType::Struct, name, genericNames), body(body)
+    NormalStruct::NormalStruct(Package* package, UString name, List<UString> genericNames, List<Node*> body)
+        : TypeNode(NodeType::Struct, package, name, genericNames), body(body)
     { }
 
-    TupleParameter::TupleParameter(Token type, List<Token> generics, int dimensions, UString name) 
+    TupleParameter::TupleParameter(Token type, List<Token> generics, int dimensions, UString name)
         : type(type), generics(generics), dimensions(dimensions), name(name)
     { }
 
-    TupleStruct::TupleStruct(UString name, List<UString> genericNames, bool named, List<TupleParameter> parameters) 
-        : TypeNode(NodeType::TupleStruct,name, genericNames), named(named), parameters(parameters)
+    TupleStruct::TupleStruct(Package* package, UString name, List<UString> genericNames, bool named, List<TupleParameter> parameters)
+        : TypeNode(NodeType::TupleStruct, package, name, genericNames), named(named), parameters(parameters)
     { }
 }

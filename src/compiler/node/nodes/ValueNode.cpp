@@ -8,8 +8,8 @@ namespace Compiler {
      * Initialize the single value node.
      * @param value node value
      */
-    Value::Value(Token value)
-        : Node(NodeType::Value), value(value)
+    Value::Value(Package* package, Token value)
+        : Node(NodeType::Value, package), value(value)
     { }
 
     /**
@@ -35,8 +35,8 @@ namespace Compiler {
      * @param target target operator
      * @param right second expression
      */
-    Operation::Operation(Node* left, UString target, Node* right)
-        : Node(NodeType::Operation), left(left), target(target), right(right)
+    Operation::Operation(Package* package, Node* left, UString target, Node* right)
+        : Node(NodeType::Operation, package), left(left), target(target), right(right)
     { }
 
     /**
@@ -74,8 +74,8 @@ namespace Compiler {
      * @param target first expression
      * @param children operatorands
      */
-    JoinOperation::JoinOperation(Node* target, List<Node*> children)
-        : Node(NodeType::JoinOperation), target(target), children(children)
+    JoinOperation::JoinOperation(Package* package, Node* target, List<Node*> children)
+        : Node(NodeType::JoinOperation, package), target(target), children(children)
     { }
 
     /**
@@ -105,8 +105,8 @@ namespace Compiler {
         index--;
     }
 
-    SideOperation::SideOperation(UString target, Node* operand, bool left)
-        : Node(NodeType::SideOperation), target(target), operand(operand), left(left)
+    SideOperation::SideOperation(Package* package, UString target, Node* operand, bool left)
+        : Node(NodeType::SideOperation, package), target(target), operand(operand), left(left)
     { }
 
     /**
@@ -129,8 +129,8 @@ namespace Compiler {
         index--;
     }
 
-    Group::Group(Node* value) 
-        : Node(NodeType::Group), value(value)
+    Group::Group(Package* package, Node* value)
+        : Node(NodeType::Group, package), value(value)
     { }
 
     /**
@@ -156,8 +156,8 @@ namespace Compiler {
     void Group::build(List<UString>& bytecode) {
     }
 
-    Template::Template(Token value)
-        : Node(NodeType::Template), value(value)
+    Template::Template(Package* package, Token value)
+        : Node(NodeType::Template, package), value(value)
     { }
 
     /**
@@ -169,8 +169,8 @@ namespace Compiler {
         index--;
     }
 
-    IndexFetch::IndexFetch(UString name, Node* index)
-        : Node(NodeType::IndexFetch), name(name), index(index)
+    IndexFetch::IndexFetch(Package* package, UString name, Node* index)
+        : Node(NodeType::IndexFetch, package), name(name), index(index)
     { }
 
     /**
@@ -191,8 +191,8 @@ namespace Compiler {
         index--;
     }
 
-    IndexAssign::IndexAssign(UString name, Node* index, Node* value)
-        : Node(NodeType::IndexAssign), name(name), index(index), value(value)
+    IndexAssign::IndexAssign(Package* package, UString name, Node* index, Node* value)
+        : Node(NodeType::IndexAssign, package), name(name), index(index), value(value)
     { }
 
     /**
@@ -218,8 +218,8 @@ namespace Compiler {
         index--;
     }
 
-    Tuple::Tuple(List<Node*> members)
-        : Node(NodeType::Tuple), members(members)
+    Tuple::Tuple(Package* package, List<Node*> members)
+        : Node(NodeType::Tuple, package), members(members)
     { }
 
     /**
@@ -240,8 +240,8 @@ namespace Compiler {
         index--;
     }
 
-    Initializator::Initializator(TreeMap<UString, Node*> members) 
-        : Node(NodeType::Initializator), members(members)
+    Initializator::Initializator(Package* package, TreeMap<UString, Node*> members)
+        : Node(NodeType::Initializator, package), members(members)
     { }
 
     /**
@@ -262,8 +262,8 @@ namespace Compiler {
         index--;
     }
 
-    NewNode::NewNode(UString name, ConstructType type, List<Node*> arguments, Node* initializator)
-        : Node(NodeType::New), name(name), type(type), arguments(arguments), initializator(initializator)
+    NewNode::NewNode(Package* package, UString name, ConstructType type, List<Node*> arguments, Node* initializator)
+        : Node(NodeType::New, package), name(name), type(type), arguments(arguments), initializator(initializator)
     { }
 
     /**

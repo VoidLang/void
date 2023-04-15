@@ -5,8 +5,8 @@
 using namespace Void;
 
 namespace Compiler {
-    LocalDeclare::LocalDeclare(Token type, List<Token> generics, UString name)
-        : Modifiable(NodeType::LocalDeclare), type(type), generics(generics), name(name)
+    LocalDeclare::LocalDeclare(Package* package, Token type, List<Token> generics, UString name)
+        : Modifiable(NodeType::LocalDeclare, package), type(type), generics(generics), name(name)
     { }
 
     /**
@@ -31,8 +31,8 @@ namespace Compiler {
         index--;
     }
 
-    MultiLocalDeclare::MultiLocalDeclare(Token type, List<Token> generics, TreeMap<UString, Option<Node*>> locals)
-        : Modifiable(NodeType::MultiLocalDeclare), type(type), generics(generics), locals(locals)
+    MultiLocalDeclare::MultiLocalDeclare(Package* package, Token type, List<Token> generics, TreeMap<UString, Option<Node*>> locals)
+        : Modifiable(NodeType::MultiLocalDeclare, package), type(type), generics(generics), locals(locals)
     { }
 
     /**
@@ -71,8 +71,8 @@ namespace Compiler {
         index--;
     }
 
-    LocalDeclareAssign::LocalDeclareAssign(Token type, List<Token> generics, UString name, Node* value)
-        : Modifiable(NodeType::LocalDeclareAssign), generics(generics), type(type), name(name), value(value)
+    LocalDeclareAssign::LocalDeclareAssign(Package* package, Token type, List<Token> generics, UString name, Node* value)
+        : Modifiable(NodeType::LocalDeclareAssign, package), generics(generics), type(type), name(name), value(value)
     { }
 
     /**
@@ -102,8 +102,8 @@ namespace Compiler {
         index--;
     }
 
-    LocalDeclareDestructure::LocalDeclareDestructure(List<UString> members, Node* value)
-        : Node(NodeType::LocalDeclareDestructure), members(members), value(value)
+    LocalDeclareDestructure::LocalDeclareDestructure(Package* package, List<UString> members, Node* value)
+        : Node(NodeType::LocalDeclareDestructure, package), members(members), value(value)
     { }
 
     /**
@@ -125,8 +125,8 @@ namespace Compiler {
     }
 
 
-    LocalAssign::LocalAssign(UString name, Node* value) 
-        : Node(NodeType::LocalAssign), name(name), value(value)
+    LocalAssign::LocalAssign(Package* package, UString name, Node* value)
+        : Node(NodeType::LocalAssign, package), name(name), value(value)
     { }
 
     /**

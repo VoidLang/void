@@ -2,6 +2,14 @@
 
 namespace Compiler {
     /**
+     * Initialize the package.
+     * @param application parent application
+     */
+    Package::Package(Application* application)
+        : application(application)
+    { }
+
+    /**
      * Get a type from the package by its name.
      * @param name target type name
      * @return found type or nullptr if not found
