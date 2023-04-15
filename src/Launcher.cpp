@@ -13,6 +13,7 @@
 #include "compiler/token/Token.hpp"
 #include "compiler/token/Tokenizer.hpp"
 #include "compiler/token/Transformer.hpp"
+#include "compiler/node/Node.hpp"
 #include "compiler/node/NodeParser.hpp"
 #include "compiler/builder/NodeBuilder.hpp"
 
@@ -161,8 +162,12 @@ namespace Void {
             println(std::setw(12) << token);
 
         println("\n--- DEBUG: ---\n");
+
+        Application* application = new Application();
+
+        Package* package = new Package();
         
-        NodeParser parser(tokens);
+        NodeParser parser(package, tokens);
         List<Node*> nodes;
         while (true) {
             Node* node = parser.next();
@@ -176,13 +181,13 @@ namespace Void {
             nodes.push_back(node);
         }
 
-        NodeBuilder builder(nodes);
+        NodeBuilder builder(package, nodes);
         builder.build();
 
         println("\n--- BYTECODE: ---\n");
 
         List<UString> bytecode;
-        builder.compile(bytecode);
+        package->compile(bytecode);
         for (UString instruction : bytecode)
             println(instruction);
     }

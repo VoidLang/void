@@ -11,12 +11,22 @@
 #include "../node/nodes/TypeNode.hpp"
 #include "../node/nodes/ValueNode.hpp"
 
+#include "Package.hpp"
+
 namespace Compiler {
     /**
      * Represents a per-file parsed node transformer, that converts nodes to actual program parts, such as classes, methods, etc.
      */
     class NodeBuilder {
     private:
+        /**
+         * The target package of the node builder.
+         */
+        Package* package;
+
+        /**
+         * The list of the parsed nodes to be parsed.
+         */
         List<Node*> nodes;
 
         /**
@@ -24,45 +34,12 @@ namespace Compiler {
          */
         uint cursor = 0;
 
-        /**
-         * The name of the package of the file.
-         */
-        // TODO make the package name something invalid by default, therefore
-        // if the source file does not set the package, name, an other package
-        // will not be able to resolve the content of this package
-        UString package;
-
-        /**
-         * The map of the imported packages.
-         */
-        Map<UString, UString> imports;
-
-        /**
-         * The list of the package methods.
-         */
-        List<MethodNode*> methods;
-
-        /**
-         * The map of the package classes.
-         */
-        Map<UString, Class*> classes;
-
-        /**
-         * The map of the package structs.
-         */
-        Map<UString, NormalStruct*> structs;
-
-        /**
-         * The map of the package tuple structs.
-         */
-        Map<UString, TupleStruct*> tupleStructs;
-
     public:
         /**
          * Initialize the node builder.
          * @param nodes raw nodes input
          */
-        NodeBuilder(List<Node*> nodes);
+        NodeBuilder(Package* package, List<Node*> nodes);
 
         /**
          * Build the program from raw parsed tokens.
@@ -111,27 +88,6 @@ namespace Compiler {
          * @param parameters method parameters to check
          */
         void checkMethodAvailable(UString name, List<Parameter> parameters);
-
-        /**
-         * Get a type from the package by its name.
-         * @param name target type name
-         * @return found type or nullptr if not found
-         */
-        TypeNode* getType(UString name);
-
-        /**
-         * Get a method from the package by its signature.
-         * @param name target method name
-         * @param parameters target method parameters
-         * @return found method or nullptr if not found
-         */
-        MethodNode* getMethod(UString name, List<Parameter> parameters);
-
-        /**
-         * Compile the parsed nodes to executable bytecode.
-         * @bytecode executable bytecode result
-         */
-        void compile(List<UString>& bytecode);
 
         /**
          * Get the node at the current index.

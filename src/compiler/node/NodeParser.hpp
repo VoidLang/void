@@ -12,6 +12,8 @@
 #include "nodes/ValueNode.hpp"
 #include "nodes/ControlFlow.hpp"
 
+#include "../builder/Package.hpp"
+
 namespace Compiler {
     /**
      * The map of the operation's precedences and associativities.
@@ -32,6 +34,11 @@ namespace Compiler {
     class NodeParser {
     private:
         /**
+         * The target package of the node parser.
+         */
+        Package* package;
+
+        /**
          * The list of the tokens to be parsed.
          */
         List<Token> tokens;
@@ -45,7 +52,7 @@ namespace Compiler {
         /**
          * Initialize the token parser.
          */
-        NodeParser(List<Token> tokens);
+        NodeParser(Package* package, List<Token> tokens);
 
         /**
          * Parse the next instruction node.

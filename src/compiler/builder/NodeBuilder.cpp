@@ -9,8 +9,8 @@ namespace Compiler {
      * Initialize the node builder.
      * @param nodes raw nodes input
      */
-    NodeBuilder::NodeBuilder(List<Node*> nodes)
-        : nodes(nodes)
+    NodeBuilder::NodeBuilder(Package* package, List<Node*> nodes)
+        : package(package), nodes(nodes)
     { }
 
     /**
@@ -64,7 +64,7 @@ namespace Compiler {
         // TODO check if multiple package declarations were in the file
         UString name = package->name;
         checkTypeNameAvailable(name);
-        this->package = name;
+        this->package->name = name;
     }
 
     /**
@@ -78,7 +78,7 @@ namespace Compiler {
         split = Strings::split(target, '.');
         target = split.back();
         // register the import
-        imports[target] = import->package;
+        package->imports[target] = import->package;
     }
 
     /**
@@ -87,11 +87,10 @@ namespace Compiler {
     void NodeBuilder::nextPackageMethod() {
         MethodNode* method = as(get(), MethodNode);
         // set the package of the method
-        method->package = package;
         // make the package method static
         method->modifiers.push_back(U"static");
         checkMethodAvailable(method->name, method->parameters);
-        methods.push_back(method);
+        package->methods.push_back(method);
     }
 
     /**
@@ -101,10 +100,9 @@ namespace Compiler {
         Class* classNode = as(get(), Class);
         // set the package of the class
         // TODO handle class child types
-        classNode->package = package;
         UString name = classNode->name;
         checkTypeNameAvailable(name);
-        classes[name] = classNode;
+        package->classes[name] = classNode;
     }
 
     /**
@@ -114,10 +112,9 @@ namespace Compiler {
         NormalStruct* normalStruct = as(get(), NormalStruct);
         // set the package of the struct
         // TODO handle struct child types
-        normalStruct->package = package;
         UString name = normalStruct->name;
         checkTypeNameAvailable(name);
-        structs[name] = normalStruct;
+        package->structs[name] = normalStruct;
     }
 
     /**
@@ -127,10 +124,9 @@ namespace Compiler {
         TupleStruct* tupleStruct = as(get(), TupleStruct);
         // set the package of the tuple struct
         // TODO handle tuple struct child types
-        tupleStruct->package = package;
         UString name = tupleStruct->name;
         checkTypeNameAvailable(name);
-        tupleStructs[name] = tupleStruct;
+        package->tupleStructs[name] = tupleStruct;
     }
 
     /**
@@ -138,7 +134,7 @@ namespace Compiler {
      * @param name type name to check
      */
     void NodeBuilder::checkTypeNameAvailable(UString name) {
-        if (getType(name) != nullptr)
+        if (package->getType(name) != nullptr)
             error("Type name '" << name << "' is already declared in this package.");
     }
 
@@ -148,7 +144,7 @@ namespace Compiler {
      * @param parameters method parameters to check
      */
     void NodeBuilder::checkMethodAvailable(UString name, List<Parameter> parameters) {
-        if (getMethod(name, parameters) != nullptr) {
+        if (package->getMethod(name, parameters) != nullptr) {
             print("Method " << name << "(");
             for (uint i = 0; i < parameters.size(); i++) {
                 print(parameters[i].type.value);
@@ -157,93 +153,6 @@ namespace Compiler {
             }
             error(") is already declared in this package.");
         }
-    }
-
-    /**
-     * Get a type from the package by its name.
-     * @param name target type name
-     * @return found type or nullptr if not found
-     */
-    TypeNode* NodeBuilder::getType(UString name) {
-        // check if a package class uses the given name
-        for (auto& [_, classNode] : classes) {
-            if (classNode->name == name)
-                return classNode;
-        }
-
-        // check if a package struct uses the given name
-        for (auto& [_, structNode] : structs) {
-            if (structNode->name == name)
-                return structNode;
-        }
-
-        // check if a package tuple struct uses the given name
-        for (auto& [_, tupleStruct] : tupleStructs) {
-            if (tupleStruct->name == name)
-                return tupleStruct;
-        }
-
-        // package type not found, return null type pointer
-        return nullptr;
-    }
-
-    /**
-     * Get a method from the package by its signature.
-     * @param name target method name
-     * @param parameters target method parameters
-     * @return found method or nullptr if not found
-     */
-    MethodNode* NodeBuilder::getMethod(UString name, List<Parameter> parameters) {
-        // get the length of the required parameters list
-        ulong checkLength = parameters.size();
-        // loop through the declared package methods
-        for (MethodNode* method : methods) {
-            // get the length of the method's parameter list
-            ulong methodLength = method->parameters.size();
-            // ignore the method if the method name or parameters length does not match
-            if (method->name != name || methodLength != checkLength)
-                continue;
-            // check if the method parameters match
-            for (ulong i = 0; i < checkLength; i++) {
-                // ignore method if the parameter at the 
-                // current index does not match
-                if (method->parameters[i].type.value != parameters[i].type.value)
-                    goto search;
-            }
-            // method parameters matches, method found
-            return method;
-        search:;
-        }
-        // method not found, return a null method pointer
-        return nullptr;
-    }
-
-    /**
-     * Compile the parsed nodes to executable bytecode.
-     * @bytecode executable bytecode result
-     */
-    void NodeBuilder::compile(List<UString>& bytecode) {
-        // compile the package classes
-        for (auto& [_, classNode] : classes) {
-            // compile the class node to bytecode
-            classNode->build(bytecode);
-        }
-
-        // return if there are no package methods to be parsed
-        if (methods.empty())
-            return;
-        
-        // create an anonymus class for storing package methods
-        bytecode.push_back(U"cdef <package>" + package);
-        bytecode.push_back(U"cbegin");
-
-        // compile the package methods
-        for (MethodNode* method : methods) {
-            // compile the method node to bytevode
-            method->build(bytecode);
-        }
-
-        bytecode.push_back(U"cend");
     }
 
     /**

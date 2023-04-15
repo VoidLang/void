@@ -7,8 +7,8 @@ namespace Compiler {
     /**
      * Initialize the token parser.
      */
-    NodeParser::NodeParser(List<Token> tokens)
-        : tokens(tokens)
+    NodeParser::NodeParser(Package* package, List<Token> tokens)
+        : package(package), tokens(tokens)
     { }
 
     /**
