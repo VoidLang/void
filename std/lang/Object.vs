@@ -4,7 +4,6 @@ package "lang"
  * Represents the root class of the class hierarchy.
  * Every class implements the methods of Object, including arrays.
  * @since 1.0
- * @see Type
  */
 public:
 class Object {
