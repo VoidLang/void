@@ -597,8 +597,9 @@ namespace Compiler {
             || token == U"float"
             || token == U"long"
             || token == U"void"
-            || token == U"boolean"
-            || token == U"char";
+            || token == U"bool"
+            || token == U"char"
+            || token == U"string";
     }
 
     /**
