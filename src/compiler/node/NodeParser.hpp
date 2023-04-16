@@ -170,7 +170,7 @@ namespace Compiler {
          * Parse the next type declaration.
          * @return new declared type
          */
-        Node* nextType();
+        Node* nextTypeDeclaration();
 
         /**
          * Parse the next class type declaration.
@@ -321,7 +321,7 @@ namespace Compiler {
         Node* nextElseIfStatement();
 
         /**
-         * Prase the next else statement declaration.
+         * Parse the next else statement declaration.
          * @return new else statement
          */
         Node* nextElseStatement();
@@ -354,6 +354,25 @@ namespace Compiler {
          * @return new modifier list or block
          */
         Node* nextModifiers();
+
+        /**
+         * Parse the next type specifier declaration.
+         * @return new type specifier
+         */
+        Type nextType();
+
+        /**
+         * Parse the next named type specifier declaration
+         * @param expectName should a name be parsed for the named type
+         * @return new named type specifier
+         */
+        NamedType nextNamedType(bool expectName);
+
+        /**
+         * Parse the next parameter type declaration.
+         * @return new parameter type
+         */
+        ParameterType nextParameterType();
 
         /**
          * Check if the first operator has a predecende priority over the second operator.
@@ -393,7 +412,7 @@ namespace Compiler {
          * Parse the array declaration of a type.
          * @return array dimensions
          */
-        int parseArray();
+        uint parseArray();
 
         /**
          * Parse the modifiers of the given node type.
@@ -456,6 +475,12 @@ namespace Compiler {
          * @return new argument list
          */
         List<Node*> parseArguments();
+
+        /**
+         * Parse the next fully qualified name of a type.
+         * @return new fully qualified type tokens
+         */
+        List<Token> parseType();
 
         /**
          * Parse the next parameter list declaration.

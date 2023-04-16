@@ -4,7 +4,7 @@
 using namespace Void;
 
 namespace Compiler {
-    MethodNode::MethodNode(Package* package, List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body)
+    MethodNode::MethodNode(Package* package, List<NamedType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body)
         : Modifiable(NodeType::Method, package), returnTypes(returnTypes), name(name), parameters(parameters), body(body)
     { }
 
@@ -40,7 +40,7 @@ namespace Compiler {
             // TODO return void for now
             return U"V";
 
-        Token type = returnTypes[0].type;
+        Token type = returnTypes[0].types[0];
         UString value = type.value;
         if (value == U"void")
             return U"V";
@@ -69,8 +69,24 @@ namespace Compiler {
         : type(type), generics(generics), varargs(varargs), name(name)
     { }
 
-    ReturnType::ReturnType(Token type, List<Token> generics, Option<UString> name)
-        : type(type), generics(generics), name(name)
+    Type::Type(List<Token> types, List<Token> generics, uint dimensions) 
+        : types(types), generics(generics), dimensions(dimensions)
+    { }
+
+    NamedType::NamedType(List<Token> types, List<Token> generics, uint dimensions, bool named, UString name)
+        : Type(types, generics, dimensions), named(named), name(name)
+    { }
+
+    NamedType::NamedType(Type type, bool named, UString name)
+        : NamedType(type.types, type.generics, type.dimensions, named, name)
+    { }
+
+    ParameterType::ParameterType(List<Token> types, List<Token> generics, uint dimensions, bool variadic, UString name)
+        : Type(types, generics, dimensions), variadic(variadic), name(name)
+    { }
+
+    ParameterType::ParameterType(Type type, bool variadic, UString name)
+        : ParameterType(type.types, type.generics, type.dimensions, variadic, name)
     { }
 
     MethodCall::MethodCall(Package* package, UString name, List<Node*> arguments)

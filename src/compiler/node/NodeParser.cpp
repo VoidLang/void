@@ -233,39 +233,22 @@ namespace Compiler {
         // ^           ^  multi-return types are placed in between parenthesis
         // (bool code, String message) authenticate(String username, String password)
         //       ^^^^         ^^^^^^^ you can even name these return types 
-        List<ReturnType> returnTypes;
+        List<NamedType> returnTypes;
         if (peek().is(TokenType::Open)) {
         parseReturnType:
             get();
-            // get the type of the return type
-            Token type = get(2, TokenType::Type, TokenType::Identifier);
-            // generic types are declared after the type specifier
-            // List<User> getAllUsers()
-            //     ^    ^ generic types are put in between angle brackets
-            // you may have nested, or multiple generic types as well
-            // Map<UUID, Player> getPlayer(UUID uuid)
-            //         ^ types are separated by a comma
-            // List<Set<Float>> 
-            //     ^   ^     ^^ this list holds multiple sets of floats
-            List<Token> typeGenerics = parseGenerics();
+            // parse the next tuple member type
+            NamedType type = nextNamedType(true);
 
-            // check if the type has a name
-            Option<UString> name;
-            if (peek().is(TokenType::Identifier))
-                name = get().value;
-
-            // register the return type
-            returnTypes.push_back(ReturnType(type, typeGenerics, name));
-
-            // handle more arguments
-            // Map<String, MoreTokens> doSomething() 
-            //           ^ comma indicates, that there are more generic types
+            // handle more type members
+            // (MyType, OtherType) doSomething() 
+            //        ^ comma indicates, that there are more types to be parsed
             if (peek(2, TokenType::Comma, TokenType::Close).is(TokenType::Comma))
                 goto parseReturnType;
 
             // handle multi-return exit
             // (int, int) getTwoNumbers()
-            //          ^ closing parenthesis indicates, that the multi-return types' declaration has ended
+            //          ^ closing parenthesis indicates, that the multi-return type declaration has been ended
             else if (peek().is(TokenType::Close)) {
                 get();
                 goto exitReturnTypes;
@@ -277,16 +260,11 @@ namespace Compiler {
         // int getUserBalance(String user)
         // ^^^ the method has only one return type, "int"
         else {
-            // get the type of the method
-            Token type = get(2, TokenType::Type, TokenType::Identifier);
-
-            // simple return-types may have generics as well
-            // List<Order> getRecentOrders()
-            //     ^^^^^^^ these are also placed after the type token
-            List<Token> typeGenerics = parseGenerics();
+            // parse the type of the method
+            NamedType type = nextNamedType(false);
 
             // register the return type without name
-            returnTypes.push_back(ReturnType(type, typeGenerics, {}));
+            returnTypes.push_back(type);
         }
 
     exitReturnTypes:
@@ -359,7 +337,7 @@ namespace Compiler {
         // handle method array type
         // int[] getPositionXYZ()
         //    ^^ square brackets after the type indicates that they are arrays
-        int dimensions = parseArray();
+        uint dimensions = parseArray();
 
         // handle variadic method
         // List<T> fromElements<T>(T... elements)
@@ -394,6 +372,10 @@ namespace Compiler {
     // handle method without any parameters
 noParams:
 
+    // skip the auto-inserted semicolon before the method body
+    if (peek().is(TokenType::Semicolon, U"auto"))
+        get();
+
     // handle method body begin
     get(TokenType::Begin);
 
@@ -413,8 +395,12 @@ noParams:
     if (returnTypes.size() > 1)
         print("(");
     for (uint i = 0; i < returnTypes.size(); i++) {
-        ReturnType type = returnTypes[i];
-        print(type.type.value);
+        NamedType type = returnTypes[i];
+        for (uint j = 0; j < type.types.size(); j++) {
+            print(type.types[j].value);
+            if (j < type.types.size() - 1)
+                print(".");
+        }
         if (!type.generics.empty()) {
             print("<");
             for (uint j = 0; j < type.generics.size(); j++) {
@@ -422,8 +408,11 @@ noParams:
             }
             print(">");
         }
-        if (type.name.has_value())
-            print(" " << *type.name);
+        for (uint j = 0; j < type.dimensions; j++) {
+            print("[]");
+        }
+        if (type.named)
+            print(" " << type.name);
         if (i < returnTypes.size() - 1)
             print(", ");
     }
@@ -594,7 +583,7 @@ noParams:
      * Parse the next type declaration.
      * @return new declared type
      */
-    Node* NodeParser::nextType() {
+    Node* NodeParser::nextTypeDeclaration() {
         // get the kind of the type
         // class MyClass {
         // ^^^^^ the expression indicates the kind of the type
@@ -791,7 +780,7 @@ noParams:
             return nextMethod();
         // handle package type declaration
         else if (peek().is(TokenType::Expression))
-            return nextType();
+            return nextTypeDeclaration();
         // handle unexpected token
         Token error = peek();
         println("Error (Type/Method) " << error);
@@ -1431,7 +1420,7 @@ noParams:
     }
 
     /**
-     * Prase the next else statement declaration.
+     * Parse the next else statement declaration.
      * @return new else statement
      */
     Node* NodeParser::nextElseStatement() {
@@ -1617,6 +1606,77 @@ noParams:
     }
 
     /**
+     * Parse the next type specifier declaration.
+     * @return new type specifier
+     */
+    Type NodeParser::nextType() {
+        // parse the specifier tokens of the type
+        // User.Type getUserType()
+        // ^^^^^^^^^ the tokens joined with the '.' operator are the specifiers of the type
+        List<Token> types = parseType();
+
+        // parse the generic tokens of the type
+        // List<Element> myList
+        //     ^^^^^^^^^ the tokens between angle brackets are the generic tokens of the type
+        List<Token> generics = parseGenerics();
+
+        // check if primitive type has generic type arguments
+        if (types[0].is(TokenType::Type) && !generics.empty())
+            error("Primitive types cannot have generic type arguments.");
+
+        // parse the array dimensions of the type
+        // Item<Foo>[] myArray
+        //          ^^ the square brackets after the specifiers and generics, are the array dimension specifier
+        uint dimensions = parseArray();
+
+        return Type(types, generics, dimensions);
+    }
+
+    /**
+     * Parse the next named type specifier declaration
+     * @param expectName should a name be parsed for the named type
+     * @return new named type specifier
+     */
+    NamedType NodeParser::nextNamedType(bool expectName) {
+        // parse the type of the named type
+        Type type = nextType();
+
+        // parse the name of the named type if we are expecting one
+        UString name;
+        bool named = false;
+        if (expectName && peek().is(TokenType::Identifier)) {
+            name = get().value;
+            named = true;
+        }
+
+        return NamedType(type, named, name);
+    }
+
+    /**
+     * Parse the next parameter type declaration.
+     * @return new parameter type
+     */
+    ParameterType NodeParser::nextParameterType() {
+        // parse the type of the parameter type
+        Type type = nextType();
+
+        // check if the parameter type is variadic
+        bool variadic = false;
+        if (peek().is(TokenType::Operator, U".")) {
+            // skip the "..." operators
+            get(TokenType::Operator, U".");
+            get(TokenType::Operator, U".");
+            get(TokenType::Operator, U".");
+            variadic = true;
+        }
+
+        // parse the name of the parameter type
+        UString name = get(TokenType::Identifier).value;
+
+        return ParameterType(type, variadic, name);
+    }
+
+    /**
      * Check if the first operator has a predecende priority over the second operator.
      * @param first first operator to check
      * @param second second operator to check
@@ -1692,7 +1752,7 @@ noParams:
             return nextMethod();
         // handle package type declaration
         else if (peek().is(TokenType::Expression))
-            return nextType();
+            return nextTypeDeclaration();
         // TODO handle field
         // handle unexpected token
         Token error = peek();
@@ -1847,14 +1907,14 @@ noParams:
      * Parse the array declaration of a type.
      * @return array dimensions
      */
-    int NodeParser::parseArray() {
+    uint NodeParser::parseArray() {
         // loop while the token is an array start
         // int[] myArray
         //    ^  square brackets indicate that the type is an array
         // float[][] my2DArray
         //      ^ ^ multiple square brackets indicate the dimensions of an array
         //           this one is a 2 dimensional array for example
-        int dimensions = 0;
+        uint dimensions = 0;
         while (peek().is(TokenType::Start)) {
             get();
             // float[] getVectorElements()
@@ -2073,6 +2133,38 @@ noParams:
     }
 
     /**
+     * Parse the next fully qualified name of a type.
+     * @return new fully qualified type tokens
+     */
+    List<Token> NodeParser::parseType() {
+        List<Token> result;
+
+        // get the first part of the fully qualified type
+        Token first = get(2, TokenType::Type, TokenType::Identifier);
+        result.push_back(first);
+
+        // check if the type is a primitive type
+        // primitive types cannot have nested members, therefore we don't need to check for more tokens
+        if (first.is(TokenType::Type))
+            return result;
+
+        // check if there are more type tokens to be parsed
+        if (peek().is(TokenType::Operator, U".")) {
+        parseType:
+            // skip the '.' symbol
+            get();
+            // parse the next type part
+            Token token = get(2, TokenType::Type, TokenType::Identifier);
+            result.push_back(token);
+            // check if there are more type tokens to be parsed
+            if (peek().is(TokenType::Operator, U"."))
+                goto parseType;
+        }
+
+        return result;
+    }
+
+    /**
      * Parse the next parameter list declaration.
      * @param begin parameter list prefix
      * @param end parameter list suffix
@@ -2193,7 +2285,7 @@ noParams:
             List<Token> generics = parseGenerics();
 
             // parse the array dimensions of the type
-            int dimensions = parseArray();
+            uint dimensions = parseArray();
 
             // parse the name of the parameter 
             UString name;

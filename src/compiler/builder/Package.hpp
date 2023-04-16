@@ -40,12 +40,12 @@ namespace Compiler {
         // TODO make the package name something invalid by default, therefore
         // if the source file does not set the package, name, an other package
         // will not be able to resolve the content of this package
-        UString name = U"<default name>";
+        UString name = createAnonymusName(U"package");
 
         /**
          * Determine if the package has a name specified.
          */
-        bool named;
+        bool named = false;
 
         /**
          * The map of the imported packages.
@@ -98,5 +98,18 @@ namespace Compiler {
          * @bytecode executable bytecode result
          */
         void compile(List<UString>& bytecode);
+
+        /**
+         * Try to resolve a declared type from the package.
+         * @param type target type name
+         * @return fully qualified type, or empty string if not found
+         */
+        UString resolveType(Token type);
+
+        /**
+         * Create an anonymus name for the given type specifier.
+         * @param prefix type specifier prefix
+         */
+        static UString createAnonymusName(UString prefix);
     };
 }

@@ -160,3 +160,16 @@ template <typename T>
 using Option = std::optional<T>;
 #define makeOptional(x) \
     std::make_optional(x)
+
+// random
+
+#define random() \
+    (static_cast <float> (rand()) / static_cast <float> (RAND_MAX))
+
+// this will generate a number from 0.0 to some arbitrary float, max
+#define randomTo(max) \
+    (static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/max)))
+
+// this will generate a number from some arbitrary min to some arbitrary max
+#define rangomRange(min, max) \
+    (min + static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX/(max-min))))

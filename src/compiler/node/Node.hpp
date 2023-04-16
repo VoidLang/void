@@ -486,20 +486,42 @@ namespace Compiler {
         Parameter(Token type, List<Token> generics, bool varargs, UString name);
     };
 
-    class ReturnType {
+    class Type {
     public:
-        Token type;
+        List<Token> types;
 
         List<Token> generics;
 
-        Option<UString> name;
+        uint dimensions;
 
-        ReturnType(Token type, List<Token> generics, Option<UString> name);
+        Type(List<Token> types, List<Token> generics, uint dimensions);
+    };
+
+    class NamedType : public Type {
+    public:
+        bool named;
+
+        UString name;
+
+        NamedType(List<Token> types, List<Token> generics, uint dimensions, bool named, UString name);
+
+        NamedType(Type type, bool named, UString name);
+    };
+
+    class ParameterType : public Type {
+    public:
+        bool variadic;
+
+        UString name;
+
+        ParameterType(List<Token> types, List<Token> generics, uint dimensions, bool variadic, UString name);
+
+        ParameterType(Type type, bool variadic, UString name);
     };
 
     class MethodNode : public Modifiable {
     public:
-        List<ReturnType> returnTypes;
+        List<NamedType> returnTypes;
 
         UString name;
 
@@ -511,7 +533,7 @@ namespace Compiler {
 
         TypeNode* parent = nullptr;
 
-        MethodNode(Package* package, List<ReturnType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body);
+        MethodNode(Package* package, List<NamedType> returnTypes, UString name, List<Parameter> parameters, List<Node*> body);
 
         /**
          * Build bytecode for this node.
