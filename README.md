@@ -20,6 +20,9 @@ Void is designed to satisfy the needs of multiple development paradigms. Unlike 
 ## Want to know more?
 [Join the discord server](https://discord.gg/HdgnHqqGAW)
 
+## Want to help the project?
+[Donate to the Void Project](https://paypal.me/voidlang)
+
 ## Examples
 Below are few examples showcasing what Void provides to enchant programming experience.
 
