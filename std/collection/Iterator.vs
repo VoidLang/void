@@ -9,8 +9,7 @@ package "collection"
  * # Examples
  * ```
  * let fruits = ["Oranges", "Bananas", "Oranges"]
- * let iter = fruits.iterator()
- * while (iter.more())
+ * while ((let iter = fruits.iter()).more())
  *     println(iter.next())
  * ```
  * 
@@ -54,7 +53,7 @@ interface Iterator<E> {
      * ```
      * let numbers = [1, 2, 3, 4, 5]
      * 
-     * while (let iter = numbers.iter(); iter.more())
+     * while ((let iter = numbers.iter()).more())
      *     if (iter.next().get() % 2 == 0) 
      *         iter.remove()
      *  
