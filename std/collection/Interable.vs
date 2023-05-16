@@ -18,7 +18,7 @@ class Iterable<T> {
      * Retrieve an iterator over elements of type T.
      * @return a new iterator of T
      */
-    Iterator<T> iterator()
+    Iterator<T> iter()
 
     /**
      * Perform the given action for each element of this iterable.
