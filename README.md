@@ -3,6 +3,11 @@
 Any fool can write code that a computer can understand. Good programmers write code that humans can understand.
 – Martin Fowler.
 
+# Warning!
+Void is currently being rewritten, as currently I'm mainly focusing on implementing Void for native.
+A temporary compiler is made in Java, which transforms Void source code to machine code using LLVM.
+Therefore, this repository is now deprecated, check out [LLVM-Backend](https://github.com/VoidLang/LLVM-Backend) and [VoidCompiler](https://github.com/VoidLang/VoidCompiler) in the meantime.
+For further information, join the [discord server](https://discord.gg/HdgnHqqGAW).
 ## What is Void?
 Void is a virtual-machine-based programing language designed for developers to be able to create clean, fast and stable multi-platform applications.
 
