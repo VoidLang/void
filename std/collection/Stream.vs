@@ -230,7 +230,7 @@ interface Stream<T> {
      * let lightest = weights
      *     .stream()
      *     .min(int::cmp)
-     *     .get()
+     *     .unwrap()
      * 
      * assert lightest == 3
      * ```
@@ -251,7 +251,7 @@ interface Stream<T> {
      * let heaviest = weights
      *     .stream()
      *     .max(int::cmp)
-     *     .get()
+     *     .unwrap()
      * 
      * assert heaviest == 100
      * ```
@@ -311,7 +311,7 @@ interface Stream<T> {
      *
      * let user = database
      *     .findFirst(|user| user.id == 102)
-     *     .get()
+     *     .unwrap()
      *
      * let user.name == "Jane Doe"
      * ```
@@ -340,7 +340,7 @@ interface Stream<T> {
      * let book = shelf
      *     .stream()
      *     .findLast(|book| book.author == "John Doe")
-     *     .get()
+     *     .unwrap()
      *
      * assert book.name == "How to write safe code?"
      * ```
@@ -361,7 +361,7 @@ interface Stream<T> {
      * let secondEvenNumber = numbers
      *     .stream()
      *     .findNth(|x| x % 2 == 0, 1)
-     *     .get()
+     *     .unwrap()
      *
      * assert secondEvenNumber == 4
      * ```
@@ -499,7 +499,7 @@ interface Stream<T> {
      *     .stream()
      *     .sort(|a, b| a.balance - b.balance)
      *     .findLast()
-     *     .get()
+     *     .unwrap()
      *
      * assert richest.name == "Jane Doe"
      * ```
@@ -531,7 +531,7 @@ interface Stream<T> {
      *     .stream()
      *     .sort(|profile| profile.balance)
      *     .findLast()
-     *     .get()
+     *     .unwrap()
      *
      * assert richest.name == "Jane Doe"
      * ```

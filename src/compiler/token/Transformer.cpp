@@ -98,8 +98,8 @@ namespace Compiler {
 
     /**
      * Determine if there are more tokens to be parsed.
-    * @return true if there are more tokens
-    */
+     * @return true if there are more tokens
+     */
     bool Transformer::hasNext() {
         return cursor >= 0 && cursor < tokens.size();
     }
@@ -111,7 +111,7 @@ namespace Compiler {
         // check for line command start
         if (!token.is(TokenType::Operator, U"/") || !nextToken.is(TokenType::Operator, U"/"))
             return;
-        // loop unti a new line has started
+        // loop until a new line starts
         while (true) {
             Token token = safeGet(cursor++);
             if (token.is(TokenType::NewLine)) {
@@ -122,7 +122,7 @@ namespace Compiler {
     }
 
     /**
-     * Ignore tokens that belong to a block of comments..
+     * Ignore tokens that belong to a block of comments.
      */
     void Transformer::handleCommentBlock() {
         // check for block command start

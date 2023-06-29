@@ -62,7 +62,7 @@ namespace Compiler {
 
     /**
      * Get the node at the current index.
-     * Check if the retrieved token does not match any of the given typs.
+     * Check if the retrieved token does not match any of the given types.
      * @param size required token types' length
      * @return currently parsed token
      */
@@ -369,97 +369,97 @@ namespace Compiler {
             goto parseParam;
         }
 
-    // handle method without any parameters
-noParams:
+        // handle method without any parameters
+    noParams:
 
-    // skip the auto-inserted semicolon before the method body
-    if (peek().is(TokenType::Semicolon, U"auto"))
-        get();
+        // skip the auto-inserted semicolon before the method body
+        if (peek().is(TokenType::Semicolon, U"auto"))
+            get();
 
-    // handle method body begin
-    get(TokenType::Begin);
+        // handle method body begin
+        get(TokenType::Begin);
 
-    // parse the body of the method
-    List<Node*> body;
-    while (!peek().is(TokenType::End)) {
-        body.push_back(nextExpression());
-    }
+        // parse the body of the method
+        List<Node*> body;
+        while (!peek().is(TokenType::End)) {
+            body.push_back(nextExpression());
+        }
 
-    // handle method body end
-    get(TokenType::End);
+        // handle method body end
+        get(TokenType::End);
 
-    // skip the auto-inserted semicolon
-    if (peek().is(TokenType::Semicolon))
-        get();
+        // skip the auto-inserted semicolon
+        if (peek().is(TokenType::Semicolon))
+            get();
 
-    if (returnTypes.size() > 1)
+        if (returnTypes.size() > 1)
+            print("(");
+        for (uint i = 0; i < returnTypes.size(); i++) {
+            NamedType type = returnTypes[i];
+            for (uint j = 0; j < type.types.size(); j++) {
+                print(type.types[j].value);
+                if (j < type.types.size() - 1)
+                    print(".");
+            }
+            if (!type.generics.empty()) {
+                print("<");
+                for (uint j = 0; j < type.generics.size(); j++) {
+                    print(type.generics[j].value);
+                }
+                print(">");
+            }
+            for (uint j = 0; j < type.dimensions; j++) {
+                print("[]");
+            }
+            if (type.named)
+                print(" " << type.name);
+            if (i < returnTypes.size() - 1)
+                print(", ");
+        }
+        if (returnTypes.size() > 1)
+            print(")");
+        print(" ");
+
+        print(name);
+
+        if (!genericTypes.empty())
+            print("<" << Strings::join(genericTypes, U", ") << ">");
         print("(");
-    for (uint i = 0; i < returnTypes.size(); i++) {
-        NamedType type = returnTypes[i];
-        for (uint j = 0; j < type.types.size(); j++) {
-            print(type.types[j].value);
-            if (j < type.types.size() - 1)
-                print(".");
-        }
-        if (!type.generics.empty()) {
-            print("<");
-            for (uint j = 0; j < type.generics.size(); j++) {
-                print(type.generics[j].value);
+
+        for (uint i = 0; i < parameters.size(); i++) {
+            print(parameters[i].type.value);
+            if (!parameters[i].generics.empty()) {
+                print("<");
+                for (uint j = 0; j < parameters[i].generics.size(); j++) {
+                    print(parameters[i].generics[j].value);
+                }
+                print(">");
             }
-            print(">");
+            if (parameters[i].varargs)
+                print("...");
+
+            print(" " << parameters[i].name);
+            if (i < parameters.size() - 1)
+                print(", ");
         }
-        for (uint j = 0; j < type.dimensions; j++) {
-            print("[]");
+
+        println(") {");
+
+        for (Node* element : body) {
+            uint index = -1;
+            index++;
+            print(Strings::fill(index + 1, "    "));
+            element->debug(index);
+            index--;
         }
-        if (type.named)
-            print(" " << type.name);
-        if (i < returnTypes.size() - 1)
-            print(", ");
-    }
-    if (returnTypes.size() > 1)
-        print(")");
-    print(" ");
 
-    print(name);
+        println("}");
 
-    if (!genericTypes.empty())
-        print("<" << Strings::join(genericTypes, U", ") << ">");
-    print("(");
+        // skip the auto-inserted semicolon
+        if (peek().is(TokenType::Semicolon))
+            get();
 
-    for (uint i = 0; i < parameters.size(); i++) {
-        print(parameters[i].type.value);
-        if (!parameters[i].generics.empty()) {
-            print("<");
-            for (uint j = 0; j < parameters[i].generics.size(); j++) {
-                print(parameters[i].generics[j].value);
-            }
-            print(">");
-        }
-        if (parameters[i].varargs)
-            print("...");
-
-        print(" " << parameters[i].name);
-        if (i < parameters.size() - 1)
-            print(", ");
-    }
-
-    println(") {");
-
-    for (Node* element : body) {
-        uint index = -1;
-        index++;
-        print(Strings::fill(index + 1, "    "));
-        element->debug(index);
-        index--;
-    }
-
-    println("}");
-
-    // skip the auto-inserted semicolon
-    if (peek().is(TokenType::Semicolon))
-        get();
-
-    return new MethodNode(package, returnTypes, name, parameters, List<Node*>());
+        return new MethodNode(package, returnTypes, name, parameters, List<Node*>());
     }
 
     /**
@@ -1014,7 +1014,7 @@ noParams:
      * @return new local assignation
      */
     Node* NodeParser::nextLocalAssignation() {
-        // get the name of the local variabl
+        // get the name of the local variable
         UString name = get().value;
 
         // skip the equals sign
@@ -1074,7 +1074,7 @@ noParams:
         // handle operation between two expressions
         // let var = 100 + 
         //               ^ the operator after a literal indicates, that there are more expressions to be parsed
-        //                 the two operands are groupped together by an Operation node
+        //                 the two operands are grouped together by an Operation node
         else if (peek().is(2, TokenType::Operator, TokenType::Colon)) {
             if (ignoreJoin)
                 return new Value(package, value);
@@ -1144,7 +1144,7 @@ noParams:
 
         // handle initializator end
         // new Pair { key: "value" }
-        //                         ^ the closing vracket indicates, that the initializator has been terminated
+        //                         ^ the closing bracket indicates, that the initializator has been terminated
         else if (peek().is(TokenType::End))
             return new Value(package, value);
 
@@ -1326,7 +1326,7 @@ noParams:
 
         // handle operation after a node group
         // (2 + 3) + 7
-        //         ^ the operator indicates, that the method call should be groupped with the expression afterwards
+        //         ^ the operator indicates, that the method call should be grouped with the expression afterward
         if (peek().is(TokenType::Operator)) {
             if (ignoreJoin)
                 return new Group(package, value);
@@ -1677,7 +1677,7 @@ noParams:
     }
 
     /**
-     * Check if the first operator has a predecende priority over the second operator.
+     * Check if the first operator has a precedence priority over the second operator.
      * @param first first operator to check
      * @param second second operator to check
      * @return true if the first operator has higher precedence than the second one
@@ -2059,7 +2059,7 @@ noParams:
 
         // handle auto-inserted semicolon after condition
         if (peek().is(TokenType::Semicolon, U"auto")) // make sure to only handle auto-inserted semicolons here, as manually inserting 
-            get();                                    // one would meanm the statement has no body: 
+            get();                                    // one would mean the statement has no body: 
                                                       // <expression> (condition); outer();
                                                       //                         ^ statement terminated here
         return condition;
@@ -2126,7 +2126,7 @@ noParams:
         }
         // handle argument list ending
         // baz("John Doe")
-        //               ^ the close parenthesis indicates, that the argument listhas been ended
+        //               ^ the close parenthesis indicates, that the argument list has been ended
         get(TokenType::Close);
 
         return arguments;

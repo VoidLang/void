@@ -28,7 +28,7 @@ namespace Compiler {
                 return Token::of(TokenType::NewLine);
             }
         }
-        // handle content endxing
+        // handle content ending
         if (peek() == '\0')
             return Token::of(TokenType::Finish);
         // handle identifiers
@@ -156,7 +156,7 @@ namespace Compiler {
         while (isNumberContent(upper(peek()))) {
             // handle floating point number
             if (peek() == '.') {
-                // check if the floating-point number contains multiple dot symchols
+                // check if the floating-point number contains multiple dot symbols
                 if (!integer)
                     return Token::of(TokenType::Unexpected, U"Floating point number cannot have multiple dot symbols.");
                 integer = false;
@@ -196,7 +196,7 @@ namespace Compiler {
                 UString value = range(begin, cursor - 1);
                 return Token::of(type, value);
                 // TODO check if number declaration ended because a type specifier were set, 
-                //  but after the specifier there is no sperator or whitespace eg. 1.5Flol
+                //  but after the specifier there is no separator or whitespace eg. 1.5Flol
             }
             // move to the next number part
             skip(1);
@@ -259,7 +259,7 @@ namespace Compiler {
                 }
                 escapeNext = false;
             }
-            // handle escaping the nex tcharacter
+            // handle escaping the next character
             else if (peek() == '\\')
                 escapeNext = true;
             // handle the ending of the string literal
@@ -349,7 +349,7 @@ namespace Compiler {
     }
 
     /**
-     * Determine if th egiven index is in bounds of the data size.
+     * Determine if the given index is in bounds of the data size.
      * @param index target index to check
      * @return true if the index is in the parsed data
      */
@@ -441,7 +441,7 @@ namespace Compiler {
     }
 
     /**
-     * Check if the given character is the beginning of an annotaion.
+     * Check if the given character is the beginning of an annotation.
      * @param c target character to test
      * @return true if the character is an annotation beginning
      */
@@ -461,7 +461,6 @@ namespace Compiler {
             case 'I':
             case 'L':
             case 'F':
-            case 'l':
                 return true;
             default:
                 return false;
@@ -524,6 +523,7 @@ namespace Compiler {
             case '~':
             case '$':
             case '|':
+            case '%':
                 return true;
             default:
                 return false;
@@ -554,7 +554,7 @@ namespace Compiler {
 
     /**
      * Check if the given token is an expression token.
-     * @param c target character to test
+     * @param token target token to test
      * @return true if the token is an expression
      */
     bool Tokenizer::isExpression(UString token) {
@@ -584,8 +584,8 @@ namespace Compiler {
     }
 
     /**
-     * Check if the given token is a type token.
-     * @param c target character to test
+     * Check if the given token s a type token.
+     * @param token target token  to test
      * @return true if the token is a type
      */
     bool Tokenizer::isType(UString token) {
@@ -603,10 +603,10 @@ namespace Compiler {
     }
 
     /**
-    * Check if the given token is a modifier token.
-    * @param c target character to test
-    * @return true if the token is a modifier
-    */
+     * Check if the given token is a modifier token.
+     * @param c target character to test
+     * @return true if the token is a modifier
+     */
     bool Tokenizer::isModifier(UString token) {
         return token == U"public"
             || token == U"protected"
@@ -627,35 +627,35 @@ namespace Compiler {
     }
 
     /**
-    * Check if the given token is a boolean token.
-    * @param c target character to test
-    * @return true if the token is a boolean
-    */
+     * Check if the given token is a boolean token.
+     * @param c target character to test
+     * @return true if the token is a boolean
+     */
     bool Tokenizer::isBoolean(UString token) {
         return token == U"true" || token == U"false";
     }
 
     /**
-    * Check if the given token is an information token.
-    * @param c target character to test
-    * @return true if the token is an information
-    */
+     * Check if the given token is an information token.
+     * @param c target character to test
+     * @return true if the token is an information
+     */
     bool Tokenizer::isInfo(UString token) {
         return token == U"package" || token == U"import";
     }
 
     /**
-    * Check if the given token is a null token.
-    * @param c target character to test
-    * @return true if the token is a null
-    */
+     * Check if the given token is a null token.
+     * @param c target character to test
+     * @return true if the token is a null
+     */
     bool Tokenizer::isNull(UString token) {
         return token == U"null" || token == U"nullptr";
     }
 
     /**
-     * Get the uppercase format of the given characetr.
-     * @param c target character to be transformerd
+     * Get the uppercase format of the given character.
+     * @param c target character to be transformer
      * @return uppercase representation of the character
      */
     cint Tokenizer::upper(cint c) {
@@ -663,8 +663,8 @@ namespace Compiler {
     }
 
     /**
-     * Get the lowercase format of the given characetr.
-     * @param c target character to be transformerd
+     * Get the lowercase format of the given character.
+     * @param c target character to be transformer
      * @return lowercase representation of the character
      */
     cint Tokenizer::lower(cint c) {

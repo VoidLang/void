@@ -35,7 +35,7 @@ namespace Compiler {
         };
 
         /**
-         * The array of tokens forbidden after the new line for the semicolon the be inserted.
+         * The array of tokens forbidden after the new line for the semicolon to be inserted.
          */
         const Token FORBIDDEN_AFTER[15] = {
             Token::of(TokenType::Operator, U"="),

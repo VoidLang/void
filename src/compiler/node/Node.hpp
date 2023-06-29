@@ -8,7 +8,7 @@ namespace Compiler {
     class Package;
 
     /**
-     * Represents a registry of the parseable node types.
+     * Represents a registry of the parsable node types.
      */
     enum class NodeType {
         ModifierList,
@@ -101,7 +101,7 @@ namespace Compiler {
     };
     
     /**
-     * Represewnts a node that holds the information of a compiling error 
+     * Represents a node that holds the information of a compiling error 
      * that occurred whilst parsing tokens to nodes.
      */
     class ErrorNode : public Node {
