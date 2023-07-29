@@ -1,7 +1,7 @@
 package "util"
 
 /**
- * Represents a container, which includes a value or an error 
+ * Represents a container, which includes either a value or an error 
  * if the value was unable to be retrieved.
  * 
  * # Examples
@@ -13,102 +13,96 @@ package "util"
  * @since 1.0
  */
 public:
-class Result<T, E> {
+enum Result<T, E> {
     /**
-     * The value of the result.
+     * `Ok` indicates, that the result was completed successfully.
      */
-    private T value
+    Ok(T),
 
     /**
-     * The error if the value was unable to be retrieved.
+     * `Err` indicates, that an error occurred whilst completing.
      */
-    private E error
+    Err(E)
 
     /**
-     * Determine if a value is present in the container.
-     * @return true if the result has a value
+     * Indicate, whether the result was successful and contains a value.
+     * 
+     * @return `true` if the result was successful
      */
-    bool good() {
-        return value != null
+    bool ok() {
+        return this is Ok
     }
 
     /**
-     * Determine if an error is present in the container.
-     * @return true if the result has an error
+     * Indicate, whether the result was unsuccessful and contains an error.
+     * 
+     * @return `true` if the result was unsuccessful
      */
-    bool fail() {
-        return error != null
+    bool err() {
+        return this is Err
     }
 
     /**
-     * Retrieve an optional with the value of the result, that is empty if the result has an error.
-     * @return an optional of the result's value
+     * Retrieve the contained value of this result wrapped into an option. 
+     * If the result is failed, `None` is returned.
      */
-    Option<T> ok() {
-        return good() ? Option.of(value) : Option.none()
+    Option<T> value() = switch (this) {
+        case Ok(value) -> ?value
+        default -> Empty
     }
 
     /**
-     * Retrieve an optional with the error of the result, that is empty, if the result has a value.
-     * @return an optional of the result's error
+     * Retrieve the contained error of this result wrapped into an option. 
+     * If the result is successful, `None` is returned.
      */
-    Option<E> err() {
-        return fail() ? Option.of(error) : Option.none()
+    Option<E> error() = switch (this) {
+        case Err(error) -> ?error
+        default -> Empty
     }
 
     /**
-     * Retrieve the contained value of the result.
-     * If no value is associated for the result, an error is thrown.
-     * @return result value
+     * Retrieve the contained value of this error. If this result is failed,
+     * the program panics with an error.
+     * 
+     * @return the value inside the result
      */
-    T unwrap() {
-        if (fail())
-            panic("Called Result.unwrap() on a failed value.")
-        return value
+    T unwrap() = switch (this) {
+        case Ok(value) -> value
+        case Err(error) -> panic($"Called `unwrap()` on an `Err` `Result` value with: {error}")
     }
 
     /**
-     * Retrieve the contained value of the result.
-     * If no value is associated for the result, the default value is retrieved.
-     * @return result value
+     * Retrieve the contained value of this result. If this result is failed,
+     * the default value is returned.
+     * 
+     * @param def the default value to return if this result is `Err`
+     * @return the value inside the result
      */
-    T unwrapOr(T def) {
-        return fail() ? def : value
+    T unwrapOr(T def) = switch (this) {
+        case Ok(value) -> value
+        case Err(_) -> def
     }
 
     /**
-     * Retrieve the contained value of the result.
-     * If no value is associated for the result, the default function is called.
-     * @return result value
+     * Retrieve the contained value of this result. If this result is failed,
+     * the default value is supplied.
+     * 
+     * @param supplier the default value to be supplied if this result is `Err`
+     * @return the value inside the result
      */
-    T unwrapOr(T || def) {
-        return fail() ? def() : value
+    T unwrapOrGet(T || supplier) = switch (this) {
+        case Ok(value) -> value
+        case Err(_) -> supplier()
     }
 
     /**
-     * Retrieve the contained value or throw an exception with the specified message.
-     * @param msg exception message to be thrown
-     * @return option value
+     * Retrieve the contained value of this result. If this result is failed,
+     * the program panics with the specified error message.
+     * 
+     * @return the value inside the result
      */
-    T expect(string msg) {
-        if (fail())
-            panic(msg)
-        return value
-    }
-
-    /**
-     * Create a new successful result with the specified value.
-     * @return a new successful result with a value
-     */
-    static ok(T value) {
-        return Result { value }
-    }
-
-    /**
-     * Create a new failed result with the specified error.
-     * @reutrn a new failed result with an error 
-     */
-    static err(E error) {
-        return Result { error }
+    T expect(string msg) = switch (this) {
+        case Ok(value) -> value
+        case Err(_) -> panic(msg)
     }
 }

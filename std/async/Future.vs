@@ -209,7 +209,7 @@ public:
      * @param fallback the fallback value to be returned if the future execution fails or the timeout is exceeded
      * @return the completion value
      */
-    native Result<T, Error> getOr(long timeout, T fallback) {
+    Result<T, Error> getOr(long timeout, T fallback) {
         return blockAndGet(timeout, ?fallback)
     }
 
@@ -230,7 +230,7 @@ public:
      * @param fallback the fallback value supplier to be called if the future execution fails or the timeout is exceeded
      * @return the completion value
      */
-    native Result<T, Error> getOr(long timeout, T || fallback) {
+    Result<T, Error> getOr(long timeout, T || fallback) {
         return blockAndGet(timeout, ?fallback())
     }
 
@@ -245,7 +245,7 @@ public:
      * @param fallback default value to return if the future isn't completed
      * @return the completion value or the default value
      */
-    native Option<T> getNow(T fallback) = switch (state) {
+    Option<T> getNow(T fallback) = switch (state) {
         case Completed(value) -> Ok(value)
         default -> Empty
     }
@@ -1226,7 +1226,7 @@ public:
      * @param supplier the value supplier that is used to complete the future with
      * @return a new Future
      */
-    static native Future<T> completeAsync<T>(T || supplier) {
+    static Future<T> completeAsync<T>(T || supplier) {
         // create a new empty future to complete asynchronously
         let future = new Future<T>()
         // complete the future using the specified task

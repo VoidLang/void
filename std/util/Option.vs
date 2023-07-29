@@ -57,6 +57,7 @@ public union Option<T> {
      * Retrieve the contained value of this option. If no value is associated for the option,
      * the default value is returned.
      * 
+     * @param def the default value to return if this option is `None`
      * @return the value inside the option
      */
     T unwrapOr(T def) = switch (this) {
@@ -68,6 +69,7 @@ public union Option<T> {
      * Retrieve the contained value of this option. If no value is associated for the option,
      * the default value is supplied.
      * 
+     * @param def the default value to be supplied if this option is `None`
      * @return the value inside the option
      */
     T unwrapOrGet(T || supplier) = switch (this) {
