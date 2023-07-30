@@ -685,7 +685,7 @@ public:
      * If this future fails with an exception, the transformer is called to try to trasform the exception 
      * to a fallback value. Finally, the new future is completed with this value.
      * 
-     * If the transformer's result is a constant, consider using `fallback(T)` instead.
+     * If the transformer's result is a constant, consider using `#fallback(T)` instead.
      * 
      * # Examples
      * ```
@@ -719,6 +719,26 @@ public:
         return future
     }
 
+    /**
+     * Create a new future that will try to transform the old future's exception to a fallback value.
+     * If the transformer fails to transform, the future is failed with the error thrown by the transformer.
+     *
+     * If this future completes successfully, the future is completed with the same exact value.
+     *
+     * If this future fails with an exception, the transformer is called to try to trasform the exception 
+     * to a fallback value. Finally, the new future is completed with this value.
+     * 
+     * If the transformer's result is a constant, consider using `#fallback(T)` instead.
+     * 
+     * # Examples
+     * ```
+     * database.getName("user-0001")
+     *     .fallback(|error| "fallback name")
+     * ```
+     * 
+     * @param transformer the function that transforms an error to T
+     * @return a new future 
+     */
     Future<T> tryFallback(Result<T, Error> |Error| transformer) = synchronized (lock) {
         // check if the future has been already completed either successfully or unsuccessfully 
         switch (state) {
@@ -865,12 +885,75 @@ public:
      * @return a new future of type U
      */
     Future<U> result<U>(U |FutureState| transformer) = synchronized (lock) {
-
+        // call the callback if the future is already completed
+        if (!(state is Empty)) { 
+            return completed(transformer(state))
+        } else {
+            // create a new future to proxy the completion callbacks to
+            let future = new Future<U>()
+            // let the value be transformed by the transformer on completion
+            completionCallbacks.add(|_| {
+                future.complete(transformer(state))
+            })
+            // let the error be recovered by the transformer on failure
+            errorCallbacks.add(|_| {
+                future.complete(transformer(state))
+            })
+            return future
+        }
     }
 
-
+    /**
+     * Register a special handler, that listens to both successful and unsuccessful completions.
+     * Use the transformer to create a new future using the completion value and error.
+     * If the transformer fails to transform the future, the error from the transformer is retrieved.
+     * 
+     * After a successful completion, the specified callback is called with `Completed(T)`.
+     * 
+     * If the future completes with an exception, the callback is called with `Failed(Error)`. 
+     * 
+     * If you wish to determine if the completion was successful, consider pattern matching the result state. 
+     * 
+     * If the future is already completed, the callback is called immediately
+     * with the completed value or error.
+     * 
+     * # Examples
+     * ```
+     * future.result(|state| {
+     *     if (let Completed(value) = state) { 
+     *         println($"Completed result: {value}")
+     *         return value
+     *     } else if (let Failed(error) = state) {
+     *         println($"Unable to fetch result: {error}")
+     *         return getMyFallbackValue()
+     *     }
+     * })
+     * ```
+     *
+     * @param transformer the future value transformer
+     * @return a new future of type U
+     */
     Future<U> tryResult<U>(Result<U, Error> |FutureState| transformer) = synchronized (lock) {
-
+        // call the callback if the future is already completed
+        if (!(state is Empty)) { 
+            return completed(transformer(state))
+        } else {
+            // create a new future to proxy the completion callbacks to
+            let future = new Future<U>()
+            let transform = || {
+                // using the result of the transformer, decide, whether to complete or fail the future
+                let result = transformer(state)
+                if (let Ok(value) = result)
+                    future.complete(value)
+                else if (let Err(error) = result)
+                    future.fail(error)
+            }
+            // let the value be transformed by the transformer on completion
+            completionCallbacks.add(|_| transform())
+            // let the error be recovered by the transformer on failure
+            errorCallbacks.add(|_| transform())
+            return future
+        }
     }
 
     /**
