@@ -60,7 +60,9 @@ interface Iterator<E> {
      * assert numbers == [1, 3, 5]
      * ```
      */
-    default void remove()
+    default void remove() {
+        panic("Method `remove()` is unimplemented for this `Iterator`")
+    }
 
     /**
      * Iterate over the remaining elements of the iterator.

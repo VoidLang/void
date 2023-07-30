@@ -892,13 +892,9 @@ public:
             // create a new future to proxy the completion callbacks to
             let future = new Future<U>()
             // let the value be transformed by the transformer on completion
-            completionCallbacks.add(|_| {
-                future.complete(transformer(state))
-            })
+            completionCallbacks.add(|_| future.complete(transformer(state)))
             // let the error be recovered by the transformer on failure
-            errorCallbacks.add(|_| {
-                future.complete(transformer(state))
-            })
+            errorCallbacks.add(|_| future.complete(transformer(state)))
             return future
         }
     }
@@ -940,6 +936,7 @@ public:
         } else {
             // create a new future to proxy the completion callbacks to
             let future = new Future<U>()
+            // create a lambda that will try to complete the future using the result from the transformer
             let transform = || {
                 // using the result of the transformer, decide, whether to complete or fail the future
                 let result = transformer(state)

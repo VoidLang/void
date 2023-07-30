@@ -601,4 +601,19 @@ interface Stream<T> {
      * @return a list consisting the elements of this stream
      */
     List<T> collect()
+
+    /**
+     * Join the elements of this stream to a string using the specified separator in between elements.
+     * 
+     * # Examples
+     * ```
+     * let test = list()
+     * test.add("one")
+     * test.add("two")
+     * test.add("three")
+     * 
+     * let join = test.stream().join()
+     * assert join == "one, two, three"
+     */
+    string join(string separator)
 }
