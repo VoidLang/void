@@ -1,4 +1,3 @@
-package ""
+package "global"
 
 import "std/lang/*"
-

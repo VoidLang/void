@@ -13,7 +13,7 @@ package "util"
  * @since 1.0
  */
 public:
-enum Result<T, E> {
+union Result<T, E> {
     /**
      * `Ok` indicates, that the result was completed successfully.
      */
