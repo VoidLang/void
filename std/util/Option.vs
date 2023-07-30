@@ -13,7 +13,8 @@ package "util"
  * 
  * @since 1.0
  */
-public union Option<T> {
+public:
+union Option<T> {
     /**
      * `Some` indicates, that the option has a value of type `T`.
      */

@@ -29,7 +29,7 @@ class Iterable<T> {
      * @param action a function to ba called for each elements
      */
     default void forEach(|T| action) {
-        for (T element : this)
+        for (T element in this)
             action(element)
     }
 }
