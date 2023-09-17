@@ -246,7 +246,7 @@ public:
      * @return the completion value or the default value
      */
     Option<T> getNow(T fallback) = switch (state) {
-        case Completed(value) -> Ok(value)
+        case Completed(value) -> Some(value)
         default -> Empty
     }
 
