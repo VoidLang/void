@@ -34,7 +34,7 @@ extern int GetLastError()
  * 
  * @see https://learn.microsoft.com/en-us/windows/console/writeconsole
  */
-extern int WriteConsoleA(int handle, ubyte* buffer, int length, int* written, int reserved)
+extern int WriteConsoleA(int handle, ref ubyte buffer, int length, ref int written, int reserved)
 
 /**
  * Writes a character string to a console screen buffer beginning at the current cursor location.
@@ -50,4 +50,4 @@ extern int WriteConsoleA(int handle, ubyte* buffer, int length, int* written, in
  * 
  * @see https://learn.microsoft.com/en-us/windows/console/writeconsole
  */
-extern int WriteConsoleA(int handle, ushort* buffer, int length, int* written, int reserved)
+extern int WriteConsoleA(int handle, ref ushort buffer, int length, ref int written, int reserved)
