@@ -51,3 +51,12 @@ extern int WriteConsoleA(int handle, ref ubyte buffer, int length, ref int writt
  * @see https://learn.microsoft.com/en-us/windows/console/writeconsole
  */
 extern int WriteConsoleW(int handle, ref ushort buffer, int length, ref int written, int reserved)
+
+/**
+ *-Gets the length of a string, by using the current locale or a specified locale. 
+ * More secure versions of these functions are available; see strnlen, strnlen_s, wcsnlen, 
+ * wcsnlen_s, _mbsnlen, _mbsnlen_l, _mbstrnlen, _mbstrnlen_l.
+ * @param buffer- A Null-terminated string.
+ * @return the locale to use
+ */
+extern int strlen(ref byte buffer)
