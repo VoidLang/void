@@ -50,4 +50,4 @@ extern int WriteConsoleA(int handle, ref ubyte buffer, int length, ref int writt
  * 
  * @see https://learn.microsoft.com/en-us/windows/console/writeconsole
  */
-extern int WriteConsoleA(int handle, ref ushort buffer, int length, ref int written, int reserved)
+extern int WriteConsoleW(int handle, ref ushort buffer, int length, ref int written, int reserved)
