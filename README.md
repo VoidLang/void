@@ -3,21 +3,20 @@
 Any fool can write code that a computer can understand. Good programmers write code that humans can understand.
 – Martin Fowler.
 
-# Warning!
-Void is currently being rewritten, as for now I'm mainly focusing on implementing Void for native.
-A temporary compiler is made in Java, which will transform Void source code to machine code using [LLVM](https://github.com/llvm/llvm-project).
-Therefore, this repository is now deprecated. Check out [LLVM-Backend](https://github.com/VoidLang/LLVM-Backend) and [VoidCompiler](https://github.com/VoidLang/VoidCompiler) in the meantime.
-For further information, join the [discord server](https://discord.gg/HdgnHqqGAW).
+# Disclaimer
+Void has been recently changed paradigma, and now is willing to enter the world of native code.
+This opens up a new era of being able to write blazingly fast applications.
+Void aims to offer an easy and reliable syntax, that ensures that you can sill write safe and simple code, without having to use a heavy runtime. 
 
 ## What is Void?
-Void is a virtual-machine-based programing language designed for developers to be able to create clean, fast and stable multi-platform applications.
+Void is an LLVM-based native programming language that is designed for developers to be able to create clean, fast and stable multi-platform applications with the power that native provides.
 
 It has has a relatively easy syntax, that follows most of the already existing code conventions.
 
 Void features many utilities that enchant the experience of coding, such as object destruction, variable redeclaration, multi-returning, and much more.
 
 ## Why Void?
-Void compiles to bytecode, therefore it allows the application with the same exact code, to be ran on all platforms, whilst forward and backward compatibility is guaranteed.
+Void compiles to LLVM IR, therefore it allows the application with the same exact code, to be compiled to all platforms, whilst forward and backward compatibility is guaranteed. This also makes it easy for Void to communicate with libraries written in other programming languages.
 It has many built-in designs, which makes it much easier to develop enterprise-grade applications.
 
 ## How to use Void?
@@ -31,6 +30,7 @@ Void is designed to satisfy the needs of multiple development paradigms. Unlike 
 
 ## Examples
 Below are few examples showcasing what Void provides to enchant programming experience.
+`Warning: This documentation was made way before, that Void had finally given a complete design, therefore expect some functionalities to be somewhat different when trying Void. Besides, some features may be not yet present in the following lines.`
 
 ### A Hello World application
 
