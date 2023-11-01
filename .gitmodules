@@ -1,0 +1,6 @@
+[submodule "src/llvm-backend"]
+	path = src/llvm-backend
+	url = https://github.com/VoidLang/llvm-backend.git
+[submodule "src/compiler"]
+	path = src/compiler
+	url = https://github.com/VoidLang/void-compiler.git
