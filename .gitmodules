@@ -1,6 +1,0 @@
-[submodule "void-compiler"]
-	path = void-compiler
-	url = https://github.com/VoidLang/void-compiler.git
-[submodule "llvm-backend"]
-	path = llvm-backend
-	url = https://github.com/VoidLang/llvm-backend.git
