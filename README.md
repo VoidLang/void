@@ -6,7 +6,8 @@ Any fool can write code that a computer can understand. Good programmers write c
 # Disclaimer
 Void has been recently changed paradigma, and now is willing to enter the world of native code.
 This opens up a new era of being able to write blazingly fast applications.
-Void aims to offer an easy and reliable syntax, that ensures that you can sill write safe and simple code, without having to use a heavy runtime. 
+Void aims to offer an easy and reliable syntax, that ensures that you can sill write safe and simple code, without having to use a heavy runtime.
+If you want to try Void, or want to see the current progress, check [The Void Compiler](https://github.com/voidlang/void-compiler).
 
 ## What is Void?
 Void is an LLVM-based native programming language that is designed for developers to be able to create clean, fast and stable multi-platform applications with the power that native provides.
